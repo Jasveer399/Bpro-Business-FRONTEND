@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import ReactDOM from "react-dom";
 import { Search, UserCircle } from "lucide-react";
 import { AiOutlineSetting } from "react-icons/ai";
 import { HiOutlineViewGrid } from "react-icons/hi";
@@ -19,8 +20,6 @@ function Header() {
   const handleThemeToggle = (themeMode) => {
     console.log("Theme Mode =>", themeMode);
     toggleTheme(themeMode.toLowerCase());
-    // If you need to dispatch an action to Redux, uncomment the next line
-    // dispatch({ type: 'TOGGLE_THEME', payload: themeMode.toLowerCase() });
     setShowThemeDropdown(false);
   };
 
@@ -59,9 +58,16 @@ function Header() {
     },
   ];
 
+  const DropdownPortal = ({ children }) => {
+    return ReactDOM.createPortal(
+      children,
+      document.body
+    );
+  };
+  
   return (
-    <div className="dark:bg-darkPrimary h-[8%] pt-2  px-10 flex justify-between relative">
-      <div className="flex h-10 w-64 items-center bg-[#f8f9fa] border border-gray-300 dark:border-darkComponet dark:bg-darkComponet rounded-lg px-4 mt-3">
+    <div className="dark:bg-darkPrimary backdrop-blur-md h-[10%] py-2 px-10 flex justify-between relative">
+      <div className="flex h-10 w-64 items-center bg-[#f8f9fa] border border-gray-300 dark:border-darkComponet dark:bg-darkComponet rounded-lg px-4 mt-2">
         <Search className="w-6 h-6 text-gray-400 mr-3" />
         <input
           type="text"
@@ -94,21 +100,30 @@ function Header() {
 
           {/* Dropdown Menu */}
           {showThemeDropdown && (
-            <div className="absolute  right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-darkComponet ring-1 ring-black ring-opacity-5">
-              <div className="py-1" role="menu" aria-orientation="vertical">
-                {themeOptions.map((option, index) => (
-                  <button
-                    key={index}
-                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50"
-                    role="menuitem"
-                    onClick={() => handleThemeToggle(option.label)}
-                  >
-                    <option.icon className="mr-3" size={20} />
-                    <span>{option.label}</span>
-                  </button>
-                ))}
+            <DropdownPortal>
+              <div 
+                className="fixed bg-white dark:bg-darkComponet rounded-md shadow-lg ring-1 ring-black ring-opacity-5"
+                style={{
+                  top: `${document.querySelector('.theme-dropdown').getBoundingClientRect().bottom + window.scrollY}px`,
+                  left: `${document.querySelector('.theme-dropdown').getBoundingClientRect().left + window.scrollX}px`,
+                  width: '12rem',
+                }}
+              >
+                <div className="py-1" role="menu" aria-orientation="vertical">
+                  {themeOptions.map((option, index) => (
+                    <button
+                      key={index}
+                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50"
+                      role="menuitem"
+                      onClick={() => handleThemeToggle(option.label)}
+                    >
+                      <option.icon className="mr-3" size={20} />
+                      <span>{option.label}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            </DropdownPortal>
           )}
         </div>
 
