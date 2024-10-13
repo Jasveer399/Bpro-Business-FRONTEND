@@ -8,7 +8,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { MoreVertical } from "lucide-react";
-import Divider from "../../ui/divider";
+import Divider from "../../ui/Divider";
 
 const data = [
   { name: "Jan", value: 50 },

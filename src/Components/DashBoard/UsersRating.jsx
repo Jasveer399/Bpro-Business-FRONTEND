@@ -1,7 +1,7 @@
 import React from "react";
 import { Star } from "lucide-react";
 import { Box, Typography, Rating } from "@mui/material";
-import Divider from "../../ui/divider";
+import Divider from "../../ui/Divider";
 
 const UsersRating = ({ overallRating, ratingCounts }) => {
   const totalRatings = ratingCounts.reduce((sum, count) => sum + count, 0);
