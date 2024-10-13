@@ -7,9 +7,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { MoreVertical, Eye } from "lucide-react";
+import { MoreVertical } from "lucide-react";
 import Divider from "../../ui/divider";
-import { Rating } from "@mui/material";
 
 const data = [
   { name: "Jan", value: 50 },
