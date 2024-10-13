@@ -9,25 +9,31 @@ const YearSaleCard = ({
   progresBarTitle,
 }) => {
   return (
-    <div className="w-full sm:w-2/3 md:w-1/2 lg:w-1/3 bg-brand-color-3 rounded-2xl px-3 py-8 relative shadow-lg dark:shadow-black">
-      <div className="flex justify-between items-center">
-        <h1 className="p-2 font-semibold text-neutral-700 dark:text-lightPrimary text-[20Px]">
+    <div className="w-full bg-brand-color-3 rounded-2xl p-4 sm:p-6 relative shadow-lg dark:shadow-black">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="font-semibold text-neutral-700 dark:text-lightPrimary text-lg sm:text-xl">
           {title}
         </h1>
-        <img src={image} alt="dailySaleImage" className="absolute top-0 right-1" />
+        <img src={image} alt="yearSaleImage" className="absolute top-0 right-1 sm:right-3" />
       </div>
-      <div className="w-full flex gap-2 justify-start items-center px-4">
-        <h1 className="text-lg sm:text-xl md:text-2xl text-neutral-800 dark:text-lightPrimary font-semibold">
-        ${amount}
+      <div className="w-full flex gap-2 justify-start items-center mb-4">
+        <h1 className="text-xl sm:text-2xl md:text-3xl text-neutral-800 dark:text-lightPrimary font-semibold">
+          ${amount}
         </h1>
+        {persent && (
+          <p className="bg-lightPrimary/20 text-xs sm:text-sm px-2 py-1 rounded-lg text-lightPrimary font-semibold">
+            {persent}
+          </p>
+        )}
       </div>
-      <div className="px-4 mt-4">
-        <p className="text-lightPrimary text-xs sm:text-sm font-semibold">
+      <div>
+        <p className="text-lightPrimary text-xs sm:text-sm font-semibold mb-2">
           {progresBarTitle}
         </p>
-        <div className="w-full h-2 rounded-lg bg-gray-600/20 mt-2">
+        <div className="w-full h-2 rounded-lg bg-gray-600/20">
           <div
-            className={`bg-lightPrimary w-[70%] h-full rounded-lg`}
+            className="bg-lightPrimary h-full rounded-lg"
+            style={{ width: `${progresBarPersent}%` }}
           />
         </div>
       </div>

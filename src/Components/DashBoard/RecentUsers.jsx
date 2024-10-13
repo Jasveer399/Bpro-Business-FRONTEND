@@ -58,12 +58,12 @@ const RecentUsers = () => {
   };
 
   return (
-    <div className="w-full md:w-[70%] bg-white dark:bg-darkgrey shadow-lg dark:shadow-black border border-gray-200 dark:border-gray-600 rounded-2xl px-3 py-4 relative">
-      <h2 className="text-lg font-semibold text-neutral-700 dark:text-lightPrimary mb-4 px-3">
+    <div className="w-full bg-white dark:bg-darkgrey shadow-lg dark:shadow-black border border-gray-200 dark:border-gray-600 rounded-2xl p-4 sm:p-6 relative">
+      <h2 className="text-lg sm:text-xl font-semibold text-neutral-700 dark:text-lightPrimary mb-4">
         Recent Users
       </h2>
-      <Divider />
-      <div className="max-h-52 overflow-y-auto">
+      <Divider className="mb-4" />
+      <div className="md:h-52 h-80 sm:max-h-80 overflow-y-auto">
         {userInfoData.map((user) => (
           <UserInfoTile
             key={user.id}

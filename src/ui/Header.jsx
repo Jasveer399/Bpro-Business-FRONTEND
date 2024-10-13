@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import { Search, UserCircle } from "lucide-react";
+import { Search, UserCircle, Menu } from "lucide-react";
 import { AiOutlineSetting } from "react-icons/ai";
 import { HiOutlineViewGrid } from "react-icons/hi";
 import { PiBell, PiSunDimDuotone, PiMoonDuotone } from "react-icons/pi";
@@ -9,6 +9,7 @@ import { useTheme } from "../Context/ThemeContext";
 
 function Header() {
   const [showThemeDropdown, setShowThemeDropdown] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const dispatch = useDispatch();
 
@@ -28,55 +29,46 @@ function Header() {
       if (showThemeDropdown && !event.target.closest(".theme-dropdown")) {
         setShowThemeDropdown(false);
       }
+      if (showMobileMenu && !event.target.closest(".mobile-menu")) {
+        setShowMobileMenu(false);
+      }
     };
 
     document.addEventListener("click", handleClickOutside);
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, [showThemeDropdown]);
+  }, [showThemeDropdown, showMobileMenu]);
 
   const headerIcons = [
-    {
-      icon: HiOutlineViewGrid,
-      className:
-        "dark:text-gray-300 text-neutral-800 hover:w-6 hover:h-6 transform duration-150 ease-in-out",
-    },
     {
       icon: AiOutlineSetting,
       className: "dark:text-gray-300 animate-spin text-neutral-800",
     },
     {
-      icon: HiOutlineViewGrid,
-      className:
-        "dark:text-gray-300 transform rotate-45 text-neutral-800 hover:w-6 hover:h-6 transform duration-150 ease-in-out",
-    },
-    {
       icon: PiBell,
-      className:
-        "dark:text-gray-300 text-neutral-800 hover:w-6 hover:h-6 transform duration-150 ease-in-out",
+      className: "dark:text-gray-300 text-neutral-800 hover:w-6 hover:h-6 transform duration-150 ease-in-out",
     },
   ];
 
   const DropdownPortal = ({ children }) => {
-    return ReactDOM.createPortal(
-      children,
-      document.body
-    );
+    return ReactDOM.createPortal(children, document.body);
   };
   
   return (
-    <div className="dark:bg-darkPrimary backdrop-blur-md h-[10%] py-2 px-10 flex justify-between relative">
-      <div className="flex h-10 w-64 items-center bg-[#f8f9fa] border border-gray-300 dark:border-darkComponet dark:bg-darkComponet rounded-lg px-4 mt-2">
+    <div className="dark:bg-darkPrimary backdrop-blur-md h-[10%] py-2 px-4 sm:px-10 flex justify-between items-center relative">
+      <div className="flex h-10 w-[80%] sm:w-64 items-center bg-[#f8f9fa] border border-gray-300 dark:border-darkComponet dark:bg-darkComponet rounded-lg px-4 ml-10 md:ml-0">
         <Search className="w-6 h-6 text-gray-400 mr-3" />
         <input
           type="text"
           placeholder="Search..."
-          className="bg-transparent outline-none text-gray-300 w-64"
+          className="bg-transparent outline-none text-gray-300 w-full"
         />
       </div>
-      <div className="flex items-center gap-3">
-        {/* Theme Dropdown Button */}
+      
+
+      {/* Desktop Menu */}
+      <div className="hidden sm:flex items-center gap-3">
         <div className="relative theme-dropdown">
           <button
             className="p-2.5 hover:bg-gray-700/20 rounded-lg"
@@ -86,19 +78,12 @@ function Header() {
             }}
           >
             {theme === "light" ? (
-              <PiSunDimDuotone
-                size={23}
-                className="dark:text-gray-300 text-neutral-800 animate-pulse hover:w-6 hover:h-6 transform duration-150 ease-in-out"
-              />
+              <PiSunDimDuotone size={23} className="dark:text-gray-300 text-neutral-800 animate-pulse hover:w-6 hover:h-6 transform duration-150 ease-in-out" />
             ) : (
-              <PiMoonDuotone
-                size={23}
-                className="dark:text-gray-300 text-neutral-800 hover:w-6 hover:h-6 transform duration-150 ease-in-out"
-              />
+              <PiMoonDuotone size={23} className="dark:text-gray-300 text-neutral-800 hover:w-6 hover:h-6 transform duration-150 ease-in-out" />
             )}
           </button>
 
-          {/* Dropdown Menu */}
           {showThemeDropdown && (
             <DropdownPortal>
               <div 
@@ -127,14 +112,12 @@ function Header() {
           )}
         </div>
 
-        {/* Other Header Icons */}
         {headerIcons.map((iconData, index) => (
           <button key={index} className="p-2.5 h-10 hover:bg-gray-700/20 rounded-lg">
             <iconData.icon size={23} className={iconData.className} />
           </button>
         ))}
 
-        {/* User Profile */}
         <button
           className="p-2.5 hover:bg-gray-700/20 rounded-lg"
           onClick={() => navigate("/profile")}
@@ -142,6 +125,28 @@ function Header() {
            <img src="avatar-1.jpg" alt="user-image" className="rounded-full w-8 h-8" />
         </button>
       </div>
+
+      {/* Mobile Menu */}
+      {showMobileMenu && (
+        <div className="sm:hidden absolute top-full right-0 mt-2 w-48 bg-white dark:bg-darkComponet rounded-md shadow-lg z-10 mobile-menu">
+          <div className="py-2">
+            {headerIcons.map((iconData, index) => (
+              <button key={index} className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50">
+                <iconData.icon size={20} className={iconData.className + " mr-3"} />
+                <span>{iconData.icon.name}</span>
+              </button>
+            ))}
+            <button className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50" onClick={() => setShowThemeDropdown(!showThemeDropdown)}>
+              {theme === "light" ? <PiSunDimDuotone size={20} className="mr-3" /> : <PiMoonDuotone size={20} className="mr-3" />}
+              <span>Theme</span>
+            </button>
+            <button className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50" onClick={() => navigate("/profile")}>
+              <UserCircle size={20} className="mr-3" />
+              <span>Profile</span>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
