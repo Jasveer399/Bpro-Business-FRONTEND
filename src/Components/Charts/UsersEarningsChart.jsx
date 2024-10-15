@@ -8,7 +8,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { MoreVertical } from "lucide-react";
-import Divider from "../../ui/Divider";
+import Divider from "../../ui/divider";
 
 const data = [
   { name: "Jan", value: 50 },
@@ -33,7 +33,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 const UsersEarningsChart = () => {
   return (
-    <div className="dark:bg-darkgrey bg-white  rounded-2xl p-8 text-colorText2 dark:text-colorText shadow-lg dark:shadow-black border border-gray-200 dark:border-gray-600 ">
+    <div className="dark:bg-darkgrey w-full bg-white  rounded-2xl p-8 text-colorText2 dark:text-colorText shadow-lg dark:shadow-black border border-gray-200 dark:border-gray-600 ">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Users From United States</h2>
         <MoreVertical className="text-gray-400 cursor-pointer" />

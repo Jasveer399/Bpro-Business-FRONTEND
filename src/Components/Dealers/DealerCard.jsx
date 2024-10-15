@@ -61,7 +61,7 @@ const DealerCard = () => {
   return (
     <ThemeProvider theme={theme}>
       <Card
-        className="dark:bg-darkComponet border border-gray-200 dark:border-gray-600 shadow-2xl dark:shadow-black text-colorText2 dark:text-colorText"
+        className="dark:bg-darkComponet border border-gray-200 dark:border-gray-600 shadow-2xl dark:shadow-black text-colorText2 dark:text-colorText relative"
         sx={{ maxWidth: 400, marginY: "auto", mt: 2, borderRadius: 5 }}
       >
         <CardHeader
@@ -79,6 +79,7 @@ const DealerCard = () => {
             </Typography>
           }
         />
+        <h1 className=" py-1 px-5 bg-red-600 text-white rounded-full absolute top-2 right-4">20 Day</h1>
         <CardContent>
           <Button
             onClick={toggleExpand}
