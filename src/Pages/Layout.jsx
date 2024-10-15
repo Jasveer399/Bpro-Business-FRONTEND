@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Menu, UserCircle, X } from "lucide-react";
-import { PiMoonDuotone, PiProjectorScreenChart, PiSunDimDuotone } from "react-icons/pi";
+import { PiMoonDuotone, PiSunDimDuotone } from "react-icons/pi";
 import { TfiDashboard } from "react-icons/tfi";
 import Header from "../ui/Header";
 import { useTheme } from "../Context/ThemeContext";
+import { BsFillPersonVcardFill } from "react-icons/bs";
 
 function Layout() {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ function Layout() {
 
   const navItems = [
     { name: "Dashboard", icon: TfiDashboard, link: "/dashboard" },
-    { name: "Statistics", icon: PiProjectorScreenChart, link: "/statistics" },
+    { name: "Dealers", icon: BsFillPersonVcardFill, link: "/dealers" },
     { name: "Users", icon: UserCircle, link: "/users" },
   ];
 
