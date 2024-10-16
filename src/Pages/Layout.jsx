@@ -20,6 +20,7 @@ function Layout() {
     { name: "Dashboard", icon: TfiDashboard, link: "/dashboard" },
     { name: "Dealers", icon: BsFillPersonVcardFill, link: "/dealers" },
     { name: "Users", icon: UserCircle, link: "/users" },
+    { name: "Banner", icon: UserCircle, link: "/banners" },
   ];
 
   useEffect(() => {
