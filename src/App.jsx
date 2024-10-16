@@ -3,6 +3,7 @@ import Layout from "./Pages/Layout";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import Users from "./Pages/Users/Users";
 import Dealers from "./Pages/Dealer/Dealers";
+import Blogs from "./Pages/Blogs/Blogs";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dealers" element={<Dealers />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/blogs" element={<Blogs />} />
         </Route>
       </Routes>
     </>
