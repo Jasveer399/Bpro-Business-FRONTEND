@@ -4,6 +4,9 @@ import YearSaleCard from "../../Components/DashBoard/YearSaleCard";
 import UsersEarningsChart from "../../Components/Charts/UsersEarningsChart";
 import UsersRating from "../../Components/DashBoard/UsersRating";
 import RecentUsers from "../../Components/DashBoard/RecentUsers";
+import ShowDealerData from "../../Components/DashBoard/ShowDealerData";
+import { GoAlertFill } from "react-icons/go";
+import { Users } from "lucide-react";
 
 function Dashboard() {
   const ratingCounts = [384, 145, 24, 10, 1];
@@ -39,8 +42,12 @@ function Dashboard() {
           progresBarPersent={70}
         />
       </div>
-      
-      <div className="mb-6 lg:mb-8">
+
+      <div className="mb-6 w-full lg:mb-8 flex flex-col md:flex-row gap-5">
+        <div className="w-full md:w-1/2  flex flex-col gap-5">
+          <ShowDealerData title="Active Dealers" count={1200} icon={<Users size={60} className='bg-[#1a77d2]/40 p-2.5 rounded-md' />} />
+          <ShowDealerData title="Expiring Subscriptions" count={57} icon={<GoAlertFill size={60} className='bg-[#1a77d2]/40 p-2.5 rounded-md' />} />
+        </div>
         <UsersEarningsChart />
       </div>
 

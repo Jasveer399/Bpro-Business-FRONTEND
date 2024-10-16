@@ -11,7 +11,7 @@ export default {
       colors: {
         lightPrimary: "#F4F7FA",
         colorText: "#d1d3d5",
-        colorText2:"#1d2630",
+        colorText2: "#1d2630",
         blue: "#0c9ef1",
         darkgrey: "#1b232d",
         darkPrimary: "#131920",
@@ -19,7 +19,19 @@ export default {
         darkSideBar: "#1b232d",
         darkTextGreyColor: "#f4f5f5",
       },
+      keyframes: {
+        fadeInDown: {
+          "0%": { opacity: "0", transform: "translateY(-50px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        fadeInUp: {
+          "0%": { opacity: "0", transform: "translateY(50px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+      },
       animation: {
+        fadeInDown: "fadeInDown 0.5s ease-out forwards",
+        fadeInUp: "fadeInUp 0.5s ease-out 0.2s forwards",
         spin: "spin 3s linear infinite",
       },
     },
