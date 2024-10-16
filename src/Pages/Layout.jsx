@@ -22,6 +22,7 @@ function Layout() {
     { name: "Dealers", icon: BsFillPersonVcardFill, link: "/dealers" },
     { name: "Users", icon: UserCircle, link: "/users" },
     { name: "Blogs", icon: ImBlogger , link: "/blogs" },
+    { name: "Banner", icon: UserCircle, link: "/banners" },
   ];
 
   useEffect(() => {
