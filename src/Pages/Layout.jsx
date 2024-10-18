@@ -23,6 +23,7 @@ function Layout() {
     { name: "Users", icon: UserCircle, link: "/users" },
     { name: "Blogs", icon: ImBlogger , link: "/blogs" },
     { name: "Banner", icon: UserCircle, link: "/banners" },
+    { name: "Category", icon: UserCircle, link: "/categories" },
   ];
 
   useEffect(() => {

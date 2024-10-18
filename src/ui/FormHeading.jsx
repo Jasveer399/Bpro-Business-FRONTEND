@@ -12,7 +12,7 @@ function FormHeading({ title, closeDialog }) {
           className="text-xl cursor-pointer hover:text-blue transform duration-150 ease-in-out"
         />
       </div>
-      <Divider />
+      <Divider className="dark:via-darkgrey" />
     </>
   );
 }
