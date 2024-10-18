@@ -8,7 +8,7 @@ function AddCategoryForm({ closeDialog }) {
     formState: { errors },
     handleSubmit,
     register,
-  } = useForm({});
+  } = useForm();
 
   const addCategoryHandler = (data) => {
     console.log("addCategory: ", data);

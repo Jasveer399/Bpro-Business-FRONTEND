@@ -21,6 +21,7 @@ function Layout() {
     { name: "Dealers", icon: BsFillPersonVcardFill, link: "/dealers" },
     { name: "Users", icon: UserCircle, link: "/users" },
     { name: "Banner", icon: UserCircle, link: "/banners" },
+    { name: "Category", icon: UserCircle, link: "/categories" },
   ];
 
   useEffect(() => {

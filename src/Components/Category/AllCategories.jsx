@@ -28,10 +28,10 @@ const AllCategories = () => {
       <table className="w-full mt-2 table-fixed">
         <thead>
           <tr className="text-base dark:text-colorText uppercase">
-            <th className="text-left py-2">Title</th>
-            <th className="text-left py-2">Icon</th>
-            <th className="text-left py-2">Image</th>
-            <th className=" py-2">Action</th>
+            <th className="py-2">Title</th>
+            <th className="py-2">Icon</th>
+            <th className="py-2">Image</th>
+            <th className="py-2">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -40,23 +40,27 @@ const AllCategories = () => {
               key={transaction.id}
               className="border-t border-gray-300 dark:text-colorText"
             >
-              <td className="py-3">{transaction.title}</td>
-              <td className="py-3">
-                <img
-                  src={transaction.icon}
-                  alt={transaction.icon}
-                  className="w-28 h-14 rounded-md"
-                />
+              <td className="py-3 text-center">{transaction.title}</td>
+              <td className="py-3 text-center">
+                <div className="flex justify-center">
+                  <img
+                    src={transaction.icon}
+                    alt={transaction.icon}
+                    className="w-28 h-14 rounded-md"
+                  />
+                </div>
+              </td>
+              <td className="py-3 text-center">
+                <div className="flex justify-center">
+                  <img
+                    src={transaction.image}
+                    alt={transaction.image}
+                    className="w-28 h-14 rounded-md"
+                  />
+                </div>
               </td>
               <td className="py-3">
-                <img
-                  src={transaction.image}
-                  alt={transaction.image}
-                  className="w-28 h-14 rounded-md"
-                />
-              </td>
-              <td className="py-3 flex items-center justify-center mt-4">
-                <div className="flex space-x-2">
+                <div className="flex justify-center space-x-2">
                   <button className="">
                     <PencilIcon size={18} />
                   </button>

@@ -1,6 +1,6 @@
 import React from "react";
 import UserInfoTile from "./UserInfoTile";
-import Divider from "../../ui/Divider"
+import Divider from "../../ui/divider";
 
 const userInfoData = [
   {
