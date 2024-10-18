@@ -8,11 +8,16 @@ const themeSlice = createSlice({
   name: 'theme',
   initialState,
   reducers: {
-    toggleTheme: (state) => {
-      const newTheme = state.theme === 'light' ? 'dark' : 'light';
-      state.theme = newTheme;
-      localStorage.setItem('theme', newTheme);
-    },
+    toggleTheme: (state, action) => {
+      state.theme = action.payload;
+      localStorage.setItem('theme', action.payload);
+      // Update document class for Tailwind
+      if (action.payload === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
   },
 });
 

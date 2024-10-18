@@ -1,6 +1,6 @@
 import React from "react";
 import { CgCloseO } from "react-icons/cg";
-import Divider from "./Divider";
+import Divider from "./divider";
 
 function FormHeading({ title, closeDialog }) {
   return (
@@ -12,7 +12,7 @@ function FormHeading({ title, closeDialog }) {
           className="text-xl cursor-pointer hover:text-blue transform duration-150 ease-in-out"
         />
       </div>
-      <Divider className="dark:via-darkgrey" />
+      <Divider />
     </>
   );
 }

@@ -2,7 +2,6 @@ import React from "react";
 import FormHeading from "../../../ui/FormHeading";
 import FormInput from "../../../ui/FormInput";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { addBanner } from "../../../Utils/server";
 import Loader from "../../../ui/Loader";
@@ -21,30 +20,30 @@ function AddBannerForm({ closeDialog }) {
 
   const watchStatus = watch("status");
 
-  const bannerMutation = useMutation({
-    mutationFn: async (data) => {
-      const res = await axios.post(addBanner, data, { withCredentials: true });
+  // const bannerMutation = useMutation({
+  //   mutationFn: async (data) => {
+  //     const res = await axios.post(addBanner, data, { withCredentials: true });
 
-      return res.data;
-    },
-    onSuccess: (data) => {
-      console.log("Banner Added", data);
-    },
-    onError: (error) => {
-      console.log("Error adding banner", error);
-    },
-  });
+  //     return res.data;
+  //   },
+  //   onSuccess: (data) => {
+  //     console.log("Banner Added", data);
+  //   },
+  //   onError: (error) => {
+  //     console.log("Error adding banner", error);
+  //   },
+  // });
 
-  const addBannerHandler = (data) => {
-    console.log("addBannerHandler: ", data);
-    bannerMutation.mutate(data);
-  };
+  // const addBannerHandler = (data) => {
+  //   console.log("addBannerHandler: ", data);
+  //   bannerMutation.mutate(data);
+  // };
   return (
     <>
       <FormHeading title="Add Banner" closeDialog={closeDialog} />
       <div>
         <form
-          onSubmit={handleSubmit(addBannerHandler)}
+          // onSubmit={handleSubmit(addBannerHandler)}
           className="px-16 mt-4 space-y-4"
         >
           <FormInput
@@ -109,8 +108,8 @@ function AddBannerForm({ closeDialog }) {
           />
           <div className="flex justify-center mt-4">
             <button className="bg-blue px-3 rounded-md font-semibold dark:text-white py-1">
-              {bannerMutation.isPending ? <Loader /> : "Submit"}
-              {/* <Loader/> */}
+              {/* {bannerMutation.isPending ? <Loader /> : "Submit"} */}
+              {/* <Loader/> */}submit
             </button>
           </div>
         </form>

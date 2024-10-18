@@ -4,14 +4,16 @@ import { Search, UserCircle, Menu } from "lucide-react";
 import { AiOutlineSetting } from "react-icons/ai";
 import { HiOutlineViewGrid } from "react-icons/hi";
 import { PiBell, PiSunDimDuotone, PiMoonDuotone } from "react-icons/pi";
-import { useDispatch } from "react-redux";
-import { useTheme } from "../Context/ThemeContext";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleTheme } from "../Redux/Features/themeSlice";
+// import { useTheme } from "../Context/ThemeContext";
 
-function Header() {
+function Header({ isSideBarFull }) {
   const [showThemeDropdown, setShowThemeDropdown] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const { theme, toggleTheme } = useTheme();
+  // const { theme, toggleTheme } = useTheme();
   const dispatch = useDispatch();
+  const theme = useSelector((state) => state.theme.theme)
 
   const themeOptions = [
     { icon: PiSunDimDuotone, label: "Light" },
@@ -19,9 +21,11 @@ function Header() {
   ];
 
   const handleThemeToggle = (themeMode) => {
-    console.log("Theme Mode =>", themeMode);
-    toggleTheme(themeMode.toLowerCase());
-    setShowThemeDropdown(false);
+    // console.log("Theme Mode =>", themeMode);
+    // toggleTheme(themeMode.toLowerCase());
+    // setShowThemeDropdown(false);
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    dispatch(toggleTheme(newTheme));
   };
 
   useEffect(() => {
@@ -56,7 +60,7 @@ function Header() {
   };
   
   return (
-    <div className="dark:bg-darkPrimary backdrop-blur-md h-[10%] py-2 px-4 sm:px-10 flex justify-between items-center relative">
+    <div className="bg-transparent shadow-md backdrop-blur-md h-[10%] py-2 px-4 sm:px-10 flex justify-between items-center z-10 fixed w-full">
       <div className="flex h-10 w-[80%] sm:w-64 items-center bg-[#f8f9fa] border border-gray-300 dark:border-darkComponet dark:bg-darkComponet rounded-lg px-4 ml-10 md:ml-0">
         <Search className="w-6 h-6 text-gray-400 mr-3" />
         <input
@@ -68,19 +72,21 @@ function Header() {
       
 
       {/* Desktop Menu */}
-      <div className="hidden sm:flex items-center gap-3">
+      <div className={`hidden sm:flex items-center gap-3 transform duration-100 ease-in ${
+          isSideBarFull ? "pr-64" : "pr-9"
+        }`}>
         <div className="relative theme-dropdown">
           <button
             className="p-2.5 hover:bg-gray-700/20 rounded-lg"
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowThemeDropdown(!showThemeDropdown);
-            }}
+            // onClick={(e) => {
+            //   e.stopPropagation();
+            //   setShowThemeDropdown(!showThemeDropdown);
+            // }}
           >
             {theme === "light" ? (
-              <PiSunDimDuotone size={23} className="dark:text-gray-300 text-neutral-800 animate-pulse hover:w-6 hover:h-6 transform duration-150 ease-in-out" />
+              <PiSunDimDuotone size={23} className="dark:text-gray-300 text-neutral-800 animate-pulse hover:w-6 hover:h-6 transform duration-150 ease-in-out" onClick={() => handleThemeToggle("Light")} />
             ) : (
-              <PiMoonDuotone size={23} className="dark:text-gray-300 text-neutral-800 hover:w-6 hover:h-6 transform duration-150 ease-in-out" />
+              <PiMoonDuotone size={23} className="dark:text-gray-300 text-neutral-800 hover:w-6 hover:h-6 transform duration-150 ease-in-out" onClick={() => handleThemeToggle("Dark")} />
             )}
           </button>
 
