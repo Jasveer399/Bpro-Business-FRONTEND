@@ -6,6 +6,7 @@ import { TfiDashboard } from "react-icons/tfi";
 import Header from "../ui/Header";
 import { useTheme } from "../Context/ThemeContext";
 import { BsFillPersonVcardFill } from "react-icons/bs";
+import { ImBlogger } from "react-icons/im";
 
 function Layout() {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ function Layout() {
     { name: "Dashboard", icon: TfiDashboard, link: "/dashboard" },
     { name: "Dealers", icon: BsFillPersonVcardFill, link: "/dealers" },
     { name: "Users", icon: UserCircle, link: "/users" },
+    { name: "Blogs", icon: ImBlogger , link: "/blogs" },
     { name: "Banner", icon: UserCircle, link: "/banners" },
     { name: "Category", icon: UserCircle, link: "/categories" },
   ];

@@ -3,6 +3,7 @@ import Layout from "./Pages/Layout";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import Users from "./Pages/Users/Users";
 import Dealers from "./Pages/Dealer/Dealers";
+import Blogs from "./Pages/Blogs/Blogs";
 import Banner from "./Pages/Banner/Banner";
 import Category from "./Pages/Category/Category";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -20,6 +21,7 @@ function App() {
             <Route path="/users" element={<Users />} />
             <Route path="/banners" element={<Banner />} />
             <Route path="/categories" element={<Category />} />
+            <Route path="/blogs" element={<Blogs />} />
           </Route>
         </Routes>
       </QueryClientProvider>
