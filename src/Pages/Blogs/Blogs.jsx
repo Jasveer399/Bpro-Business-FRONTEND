@@ -15,7 +15,7 @@ function Blogs() {
                     width="w-[30%]"
                     height="h-[62%]"
                 >
-                    <AddBlogsForm />
+                    {/* <AddBlogsForm /> */}
                 </Dialog>
             </div>
         </div>
