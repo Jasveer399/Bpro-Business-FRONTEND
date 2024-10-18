@@ -5,7 +5,7 @@ import Divider from "./Divider";
 function FormHeading({ title, closeDialog }) {
   return (
     <>
-      <div className="flex justify-between px-5 py-3 w-full items-center">
+      <div className="flex text-colorText2  justify-between px-5 py-3 w-full items-center">
         <h1 className="font-semibold">{title}</h1>
         <CgCloseO
           onClick={() => closeDialog()}
