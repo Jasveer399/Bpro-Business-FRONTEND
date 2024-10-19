@@ -7,6 +7,7 @@ import Blogs from "./Pages/Blogs/Blogs";
 import Banner from "./Pages/Banner/Banner";
 import Category from "./Pages/Category/Category";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import BlogView from "./Components/Forms/Blogs/BlogView";
 
 function App() {
   const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ function App() {
             <Route path="/banners" element={<Banner />} />
             <Route path="/categories" element={<Category />} />
             <Route path="/blogs" element={<Blogs />} />
+            <Route path="/blogview/:id" element={<BlogView />} />
           </Route>
         </Routes>
       </QueryClientProvider>
