@@ -1,78 +1,94 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { PencilIcon, Trash2 } from "lucide-react";
+import {
+  deleteCategoryAsync,
+  fetchCategoriesAsync,
+} from "../../Redux/Features/categoriesSlice";
+import { useDispatch, useSelector } from "react-redux";
+import Dialog from "../../ui/Dialog";
+import EditCategoryForm from "../Forms/Category/EditCategoryForm";
 
 const AllCategories = () => {
-  const transactions = [
-    {
-      id: 1,
-      title: "Project Alpha 1",
-      icon: "https://nsglobalsystem.com/images/Admin_service_category.png",
-      image: "https://nsglobalsystem.com/images/Admin_service_category.png",
-    },
-    {
-      id: 2,
-      title: "Project Alpha 2",
-      icon: "https://nsglobalsystem.com/images/Admin_service_category.png",
-      image: "https://nsglobalsystem.com/images/Admin_service_category.png",
-    },
-    {
-      id: 3,
-      title: "Project Alpha 3",
-      icon: "https://nsglobalsystem.com/images/Admin_service_category.png",
-      image: "https://nsglobalsystem.com/images/Admin_service_category.png",
-    },
-  ];
+  const dispatch = useDispatch();
+  const { categories, status, error } = useSelector(
+    (state) => state.categories
+  );
+  const [selectedCategory, setSelectedCategory] = useState()
+
+  useEffect(() => {
+    if (status === "idle") {
+      dispatch(fetchCategoriesAsync());
+    }
+  }, [status, dispatch]);
+
+  const deleteHandler = async (id) => {
+    try {
+      await dispatch(deleteCategoryAsync(id)).unwrap();
+      console.log("Category deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete category:", error);
+    }
+  };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-lg dark:bg-darkgrey">
-      <table className="w-full mt-2 table-fixed">
-        <thead>
-          <tr className="text-base dark:text-colorText uppercase">
-            <th className="py-2">Title</th>
-            <th className="py-2">Icon</th>
-            <th className="py-2">Image</th>
-            <th className="py-2">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions.map((transaction) => (
-            <tr
-              key={transaction.id}
-              className="border-t border-gray-300 dark:text-colorText"
-            >
-              <td className="py-3 text-center">{transaction.title}</td>
-              <td className="py-3 text-center">
-                <div className="flex justify-center">
-                  <img
-                    src={transaction.icon}
-                    alt={transaction.icon}
-                    className="w-28 h-14 rounded-md"
-                  />
-                </div>
-              </td>
-              <td className="py-3 text-center">
-                <div className="flex justify-center">
-                  <img
-                    src={transaction.image}
-                    alt={transaction.image}
-                    className="w-28 h-14 rounded-md"
-                  />
-                </div>
-              </td>
-              <td className="py-3">
-                <div className="flex justify-center space-x-2">
-                  <button className="">
-                    <PencilIcon size={18} />
-                  </button>
-                  <button className="">
-                    <Trash2 size={18} />
-                  </button>
-                </div>
-              </td>
+    <div className="bg-white rounded-xl shadow-lg mx-3 dark:bg-darkgrey overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full table-auto">
+          <thead>
+            <tr className="text-base text-white uppercase bg-[#565656] border">
+              <th className="py-5 px-3">Title</th>
+              <th className="py-5 px-3">Icon</th>
+              <th className="py-5 px-3">Image</th>
+              <th className="py-5 px-3">Action</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {categories.map((category) => (
+              <tr
+                key={category.id}
+                className="border border-[rgba(0, 0, 0, 0.06)] text-[#565656] dark:text-lightPrimary"
+              >
+                <td className="py-3 px-3 text-center">{category.title}</td>
+                <td className="py-3 px-3 text-center">
+                  <div className="flex justify-center">
+                    <img
+                      src={category.iconImgUrl}
+                      className="w-28 h-14 rounded-md"
+                    />
+                  </div>
+                </td>
+                <td className="py-3 px-3 text-center">
+                  <div className="flex justify-center">
+                    <img
+                      src={category.categoryImgUrl}
+                      className="w-28 h-14 rounded-md"
+                    />
+                  </div>
+                </td>
+                <td className="py-3 px-3">
+                  <div className="flex justify-center space-x-2">
+                    <button className="p-1">
+                      <Dialog
+                        trigger={<PencilIcon size={18} onClick={() => setSelectedCategory(category)} />}
+                        width="w-[30%]"
+                        height="h-[55%]"
+                      >
+                        <EditCategoryForm category={selectedCategory} />
+                      </Dialog>
+                    </button>
+                    <button
+                      className="p-1"
+                      onClick={() => deleteHandler(category.id)}
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

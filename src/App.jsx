@@ -6,14 +6,11 @@ import Dealers from "./Pages/Dealer/Dealers";
 import Blogs from "./Pages/Blogs/Blogs";
 import Banner from "./Pages/Banner/Banner";
 import Category from "./Pages/Category/Category";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import BlogView from "./Components/Forms/Blogs/BlogView";
 
 function App() {
-  const queryClient = new QueryClient();
   return (
     <>
-      <QueryClientProvider client={queryClient}>
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Navigate to="/dashboard" replace />} />
@@ -26,7 +23,6 @@ function App() {
             <Route path="/blogview/:id" element={<BlogView />} />
           </Route>
         </Routes>
-      </QueryClientProvider>
     </>
   );
 }

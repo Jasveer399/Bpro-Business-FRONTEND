@@ -1,41 +1,49 @@
-import React from "react";
+import React, { useEffect } from "react";
 import FormHeading from "../../../ui/FormHeading";
 import FormInput from "../../../ui/FormInput";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { addCategoryAsync } from "../../../Redux/Features/categoriesSlice";
+import { updateCategoryAsync } from "../../../Redux/Features/categoriesSlice";
 import Loader from "../../../ui/Loader";
 
-function AddCategoryForm({ closeDialog }) {
+function EditCategoryForm({ closeDialog, category }) {
   const dispatch = useDispatch();
-  const { status } = useSelector((state) => state.categories)
+  const { status } = useSelector((state) => state.categories);
   const {
     formState: { errors },
     handleSubmit,
     register,
+    setValue
   } = useForm();
 
-  const addCategoryHandler = async (data) => {
-    console.log("addCategory: ", data);
+  useEffect(() => {
+    if (category) {
+      setValue('title', category.title)
+      setValue('iconImgUrl', category.iconImgUrl)
+      setValue('categoryImgUrl', category.categoryImgUrl)
+    }
+  }, [category])
+
+  const editCategoryHandler = async (data) => {
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("iconImgUrl", data.iconImgUrl[0]);
     formData.append("categoryImgUrl", data.categoryImgUrl[0]);
 
     try {
-      await dispatch(addCategoryAsync(formData)).unwrap();
-      console.log("Category added successfully");
+      await dispatch(updateCategoryAsync({id: category.id, formData})).unwrap();
+      console.log("Category updated successfully");
       closeDialog();
     } catch (error) {
-      console.error("Failed to add category:", error);
+      console.error("Failed to updating category:", error);
     }
   };
   return (
     <>
-      <FormHeading title="Add Category" closeDialog={closeDialog} />
+      <FormHeading title="Edit Category" closeDialog={closeDialog} />
       <div>
         <form
-          onSubmit={handleSubmit(addCategoryHandler)}
+          onSubmit={handleSubmit(editCategoryHandler)}
           className="px-16 mt-4 space-y-4"
         >
           <FormInput
@@ -67,7 +75,7 @@ function AddCategoryForm({ closeDialog }) {
           />
           <div className="flex justify-center mt-4">
             <button className="bg-blue px-3 rounded-md font-semibold dark:text-white py-1">
-              {status === 'loading' ? <Loader /> : "Submit"}
+              {status === "loading" ? <Loader /> : "Save"}
             </button>
           </div>
         </form>
@@ -76,4 +84,4 @@ function AddCategoryForm({ closeDialog }) {
   );
 }
 
-export default AddCategoryForm;
+export default EditCategoryForm;

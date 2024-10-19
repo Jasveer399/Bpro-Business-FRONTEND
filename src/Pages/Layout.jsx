@@ -7,6 +7,7 @@ import Header from "../ui/Header";
 import { useTheme } from "../Context/ThemeContext";
 import { BsFillPersonVcardFill } from "react-icons/bs";
 import { ImBlogger } from "react-icons/im";
+import { useSelector } from "react-redux";
 
 function Layout() {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ function Layout() {
   const [isSideBarFull, setIsSideBarFull] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const selectedTheme = useSelector((state) => state.theme.theme)
 
   const navItems = [
     { name: "Dashboard", icon: TfiDashboard, link: "/dashboard" },
@@ -60,7 +62,7 @@ function Layout() {
       </button>
 
       <div
-        className={`${
+        className={`shadow-md ${
           isMobileMenuOpen ? "w-[50%]" : isSideBarFull ? "w-[22.3%]" : "w-[4%]"
         } bg-white dark:bg-darkSideBar flex flex-col transform duration-300 ease-in-out
         md:relative md:translate-x-0
@@ -136,7 +138,7 @@ function Layout() {
       </div>
 
       <div className="bg-lightPrimary w-full h-full">
-        <Header />
+        <Header isSideBarFull={isSideBarFull} />
         <Outlet />
       </div>
 

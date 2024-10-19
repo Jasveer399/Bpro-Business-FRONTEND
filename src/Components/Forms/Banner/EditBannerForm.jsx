@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import FormHeading from "../../../ui/FormHeading";
 import FormInput from "../../../ui/FormInput";
 import { useForm } from "react-hook-form";
@@ -6,25 +6,30 @@ import axios from "axios";
 import { addBanner } from "../../../Utils/server";
 import Loader from "../../../ui/Loader";
 import { useDispatch, useSelector } from "react-redux";
-import { addBannerAsync } from "../../../Redux/Features/bannersSlice";
+import { updateBannerAsync } from "../../../Redux/Features/bannersSlice";
 
-function AddBannerForm({ closeDialog }) {
-  const dispatch = useDispatch();
-  const { status } = useSelector((state) => state.banners);
+function EditBannerForm({ closeDialog, banner }) {
+    const dispatch = useDispatch()
+    const { status } = useSelector((state) => state.banners)
   const {
     formState: { errors },
     handleSubmit,
     register,
     watch,
-  } = useForm({
-    defaultValues: {
-      status: "active",
-    },
-  });
+    setValue
+  } = useForm();
 
   const watchStatus = watch("status");
 
-  const addBannerHandler = async (data) => {
+  useEffect(() => {
+    if (banner) {
+      setValue('title', banner.title)
+      setValue('status', banner.status.toLowerCase())
+      setValue('externalUrl', banner.externalUrl)
+    }
+  }, [banner])
+
+  const editBannerHandler = async(data) => {
     console.log("addBannerHandler: ", data);
     const formData = new FormData();
     formData.append("title", data.title);
@@ -33,11 +38,11 @@ function AddBannerForm({ closeDialog }) {
     formData.append("externalUrl", data.externalUrl);
 
     try {
-      await dispatch(addBannerAsync(formData)).unwrap();
-      console.log("Banner added successfully");
+      await dispatch(updateBannerAsync({id: banner.id, formData})).unwrap();
+      console.log("Banner update successfully");
       closeDialog();
     } catch (error) {
-      console.error("Failed to add banner:", error);
+      console.error("Failed to updating banner:", error);
     }
   };
   return (
@@ -45,7 +50,7 @@ function AddBannerForm({ closeDialog }) {
       <FormHeading title="Add Banner" closeDialog={closeDialog} />
       <div>
         <form
-          onSubmit={handleSubmit(addBannerHandler)}
+          onSubmit={handleSubmit(editBannerHandler)}
           className="px-16 mt-4 space-y-4"
         >
           <FormInput
@@ -110,7 +115,7 @@ function AddBannerForm({ closeDialog }) {
           />
           <div className="flex justify-center mt-4">
             <button className="bg-blue px-3 rounded-md font-semibold dark:text-white py-1">
-              {status === "loading" ? <Loader /> : "Submit"}
+              {status === 'loading' ? <Loader /> : "Save"}
             </button>
           </div>
         </form>
@@ -119,4 +124,4 @@ function AddBannerForm({ closeDialog }) {
   );
 }
 
-export default AddBannerForm;
+export default EditBannerForm;
