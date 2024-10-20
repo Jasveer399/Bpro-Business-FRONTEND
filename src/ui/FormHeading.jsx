@@ -1,6 +1,6 @@
 import React from "react";
 import { CgCloseO } from "react-icons/cg";
-import Divider from "./divider";
+import Divider from "./Divider";
 
 function FormHeading({ title, closeDialog }) {
   return (
