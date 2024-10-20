@@ -7,7 +7,7 @@ const LatestArticles = ({ articles }) => {
       <ul className="space-y-4">
         {articles.map((article, index) => (
           <li key={index} className="flex">
-            <div className="w-1 bg-orange-300 mr-4"></div>
+            <div className="w-1 bg-secondary mr-4"></div>
             <div>
               <p className="text-gray-500 text-sm">{article.time}</p>
               <p className="text-gray-800">{article.title}</p>
@@ -15,7 +15,7 @@ const LatestArticles = ({ articles }) => {
           </li>
         ))}
       </ul>
-      <a href="#" className="block mt-4 text-orange-400 hover:underline">Read More...</a>
+      <a href="#" className="block mt-4 text-secondary font-semibold hover:underline">Read More...</a>
     </div>
   );
 };

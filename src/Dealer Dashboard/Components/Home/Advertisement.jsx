@@ -40,7 +40,7 @@ function Advertisement({
   };
 
   return (
-    <div className={`relative max-w-3xl  h-80 overflow-hidden ${className}`}>
+    <div className={`relative max-w-3xl h-80 overflow-hidden ${className}`}>
       <div className="relative h-80">
         {images.map((image, index) => (
           <div

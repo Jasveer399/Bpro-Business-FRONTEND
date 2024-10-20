@@ -1,10 +1,12 @@
 import React from 'react'
 import Navbar from '../../Components/Home/Navbar'
 import Header from '../../Components/Home/Header'
-import Advertisement from "../../Components/Home/Advertisement";
 import PopularSearches from "../../Components/Home/PopularSearches";
 import LocationCard from "../../Components/Home/LocationCard";
 import Footer from "../../Components/Home/Footer";
+import Advertisement from '../../Components/Home/Advertisement'
+import LatestArticles from '../../Components/Home/LatestArticles';
+import ShopsCategory from '../../Components/Home/ShopsCategory'
 
 function Home() {
   const articleData = [
@@ -15,15 +17,15 @@ function Home() {
   ];
   return (
     <>
-      <div>
         <Navbar />
+      <div className='mx-5'>
         <Header />
-        <div className='flex mx-10 mt-10'>
+        <div className='flex mx-5 mt-10'>
           <div className='w-full'>
             <div className='flex gap-5 w-full'>
-              <Advertisement className="w-[50%]" isLeft={true} isButtonShow={true} />
-              <Advertisement className="w-64 rounded-md" isLeft={false} />
-              <Advertisement className="w-64 rounded-md" isLeft={false} />
+              <Advertisement className="w-[54%]" isLeft={true} isButtonShow={true} />
+              <Advertisement className="w-[21%] rounded-md" isLeft={false} />
+              <Advertisement className="w-[20%] rounded-md" isLeft={false} />
             </div>
             <ShopsCategory />
           </div>

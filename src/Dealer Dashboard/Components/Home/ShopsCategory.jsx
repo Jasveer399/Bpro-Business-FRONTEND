@@ -22,7 +22,7 @@ const categories = [
 
 function ShopsCategory() {
   return (
-    <div className="mt-8">
+    <div className="mt-8 mr-5">
       <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
         {categories.map((category) => (
           <ShopsCategoryCard
