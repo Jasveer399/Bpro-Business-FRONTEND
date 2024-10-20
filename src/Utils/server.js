@@ -1,4 +1,5 @@
-export const server = "http://localhost:3000"
+// export const server = "http://localhost:3000"
+export const server = "https://bpro-business-backend.onrender.com"
 
 //  ALl Dealers Route
 export const createDealerAccount = `${server}/api/v1/dealer/createDealerAccount`
