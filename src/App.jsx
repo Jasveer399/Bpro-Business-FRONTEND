@@ -8,23 +8,25 @@ import Banner from "./Pages/Banner/Banner";
 import Category from "./Pages/Category/Category";
 import BlogView from "./Components/Forms/Blogs/BlogView";
 import AdminLogin from "./Pages/Login/AdminLogin";
+import Home from "./Dealer Dashboard/Pages/Home/Home";
 
 function App() {
   return (
     <>
-        <Routes>
-          <Route path="/login" element={<AdminLogin />} />
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/dealers" element={<Dealers />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/banners" element={<Banner />} />
-            <Route path="/categories" element={<Category />} />
-            <Route path="/blogs" element={<Blogs />} />
-            <Route path="/blogview/:id" element={<BlogView />} />
-          </Route>
-        </Routes>
+      <Routes>
+        <Route path="/login" element={<AdminLogin />} />
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dealers" element={<Dealers />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/banners" element={<Banner />} />
+          <Route path="/categories" element={<Category />} />
+          <Route path="/blogs" element={<Blogs />} />
+          <Route path="/blogview/:id" element={<BlogView />} />
+        </Route>
+        <Route path="/home" element={<Home />}  />
+      </Routes>
     </>
   );
 }

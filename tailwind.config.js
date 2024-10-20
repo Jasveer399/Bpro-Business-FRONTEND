@@ -4,6 +4,9 @@ export default {
   darkMode: "class",
   theme: {
     extend: {
+      fontFamily: {
+        montserrat: ['Montserrat', 'sans-serif'],
+      },
       backgroundImage: {
         "brand-color-3":
           "linear-gradient(207.92deg, #0398f2 11.42%, #38b9e7 106.55%)",
@@ -18,6 +21,7 @@ export default {
         darkComponet: "#263240",
         darkSideBar: "#1b232d",
         darkTextGreyColor: "#f4f5f5",
+        primary: "#2E3192"
       },
       keyframes: {
         fadeInDown: {
