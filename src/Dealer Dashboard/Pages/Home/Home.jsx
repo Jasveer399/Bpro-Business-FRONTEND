@@ -1,16 +1,20 @@
 import React from 'react'
 import Navbar from '../../Components/Home/Navbar'
 import Header from '../../Components/Home/Header'
-import Advertisement from '../../Components/Home/Advertisement'
 
 function Home() {
+  const articleData = [
+    { time: '10 hours ago', title: 'Commented on Video posted by black demon.' },
+    { time: '10 hours ago', title: 'Commented on Video posted by black demon.' },
+    { time: '10 hours ago', title: 'Commented on Video posted by black demon.' },
+    { time: '10 hours ago', title: 'Commented on Video posted by black demon.' },
+  ];
   return (
     <>
-    <div>
+      <div>
         <Navbar />
         <Header />
-        <Advertisement/>
-    </div>
+      </div>
     </>
   )
 }
