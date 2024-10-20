@@ -21,7 +21,6 @@ const AdminLogin = () => {
         { username, password },
         { withCredentials: true }
       );
-
       if (res.data.status) {
         localStorage.setItem('accessToken', res.data.accessToken)
         navigate("/dashboard");
@@ -50,12 +49,12 @@ const AdminLogin = () => {
       <div className="bg-gray-900 border border-gray-400 bg-opacity-50 p-8 rounded-lg shadow-xl w-full max-w-md backdrop-blur-sm relative overflow-hidden">
         <div className="bg-[#1a77d2] -z-20 p-2 rounded-full w-48 h-48 absolute -top-28 -right-0 opacity-0 translate-y-[-50px] animate-fadeInDown" />
         <div className="bg-[#1565c0] -z-20 p-2 rounded-full w-48 h-48 absolute -top-12 -right-20 opacity-0 translate-y-[50px] animate-fadeInUp" />
-        <div className="flex items-center justify-center mb-6">
-          <img src="/logo-white.png" className="w-48" />
-        </div>
-        <h2 className="text-3xl font-semibold text-white text-center mb-6">
+        <h2 className="text-5xl font-bold text-white text-center mb-6">
           Sign In
         </h2>
+        <div className="flex items-center justify-center mb-6">
+          <img src="/BproBusiness.png" className="w-48" />
+        </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label
