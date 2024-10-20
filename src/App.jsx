@@ -8,27 +8,30 @@ import Banner from "./Pages/Banner/Banner";
 import Category from "./Pages/Category/Category";
 import BlogView from "./Components/Forms/Blogs/BlogView";
 import AdminLogin from "./Pages/Login/AdminLogin";
-import { ProtectedAdminRoutes, RedirectIfAuthenticated } from "./Utils/ProtectedAmdinRoutes";
+import Home from "./Dealer Dashboard/Pages/Home/Home";
 
 function App() {
   return (
-    <Routes>
-       <Route element={<RedirectIfAuthenticated />}>
-        <Route path="/login" element={<AdminLogin />} />
-      </Route>
-      <Route element={<ProtectedAdminRoutes />}>
-        <Route element={<Layout />}>
-          <Route index element={<Navigate to="/dashboard" replace />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dealers" element={<Dealers />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/banners" element={<Banner />} />
-          <Route path="/categories" element={<Category />} />
-          <Route path="/blogs" element={<Blogs />} />
-          <Route path="/blogview/:id" element={<BlogView />} />
+    <>
+      <Routes>
+        <Route element={<RedirectIfAuthenticated />}>
+          <Route path="/login" element={<AdminLogin />} />
         </Route>
-      </Route>
-    </Routes>
+        <Route element={<ProtectedAdminRoutes />}>
+          <Route element={<Layout />}>
+            <Route index element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dealers" element={<Dealers />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/banners" element={<Banner />} />
+            <Route path="/categories" element={<Category />} />
+            <Route path="/blogs" element={<Blogs />} />
+            <Route path="/blogview/:id" element={<BlogView />} />
+          </Route>
+        </Route>
+        <Route path="/home" element={<Home />} />
+      </Routes>
+    </>
   );
 }
 
