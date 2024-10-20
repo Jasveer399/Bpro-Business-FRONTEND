@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Menu, UserCircle, X } from "lucide-react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { LogOut, Menu, UserCircle, X } from "lucide-react";
 import { PiMoonDuotone, PiSunDimDuotone } from "react-icons/pi";
 import { TfiDashboard } from "react-icons/tfi";
 import Header from "../ui/Header";
@@ -23,7 +23,7 @@ function Layout() {
     { name: "Dashboard", icon: TfiDashboard, link: "/dashboard" },
     { name: "Dealers", icon: BsFillPersonVcardFill, link: "/dealers" },
     // { name: "Users", icon: UserCircle, link: "/users" },
-    { name: "Blogs", icon: ImBlogger , link: "/blogs" },
+    { name: "Blogs", icon: ImBlogger, link: "/blogs" },
     { name: "Banner", icon: UserCircle, link: "/banners" },
     { name: "Category", icon: UserCircle, link: "/categories" },
   ];
@@ -49,26 +49,28 @@ function Layout() {
     toggleTheme(themeMode.toLowerCase());
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    navigate("/login");
+  };
+
   return (
     <div className="w-screen h-screen flex relative">
       {/* Mobile menu toggle button */}
       <button
-        className={`md:hidden fixed top-4 left-2 z-50 text-colorText2 dark:text-colorText ${
-          isMobileMenuOpen ? "hidden" : "block"
-        }`}
+        className={`md:hidden fixed top-4 left-2 z-50 text-colorText2 dark:text-colorText ${isMobileMenuOpen ? "hidden" : "block"
+          }`}
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       >
         {isMobileMenuOpen ? "" : <Menu size={25} />}
       </button>
 
       <div
-        className={`shadow-md ${
-          isMobileMenuOpen ? "w-[50%]" : isSideBarFull ? "w-[22.3%]" : "w-[4%]"
-        } bg-white dark:bg-darkSideBar flex flex-col transform duration-300 ease-in-out
+        className={`shadow-md ${isMobileMenuOpen ? "w-[50%]" : isSideBarFull ? "w-[22.3%]" : "w-[4%]"
+          } bg-white dark:bg-darkSideBar flex flex-col transform duration-300 ease-in-out
         md:relative md:translate-x-0
-        fixed left-0 top-0 h-full z-40 ${
-          isMobileMenuOpen ? "translate-x-0" : "-translate-x-[200%]"
-        }`}
+        fixed left-0 top-0 h-full z-40 ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-[200%]"
+          }`}
       >
         {/* Logo Section */}
         <div className="py-5 px-4 flex items-center gap-2">
@@ -94,18 +96,17 @@ function Layout() {
         </div>
         {/* Navigation Section */}
         <div className="flex flex-col flex-1 px-2.5">
-          <div className="mb-4">
+          <div className="mb-4 flex flex-col justify-between h-full">
             <nav className="space-y-2 mt-5">
               {navItems.map((item, index) => (
                 <div
                   key={index}
                   ref={(el) => (navRefs.current[index] = el)}
                   onClick={() => handleNavClick(item.link, index)}
-                  className={`flex items-center text-sm font-semibold rounded-lg cursor-pointer ${
-                    location.pathname.startsWith(item.link)
-                      ? " bg-[#e5f6fe] dark:bg-[#1a3344] text-[#04a9f5] border border-[#0499f5]"
-                      : "text-neutral-800 dark:text-darkTextGreyColor hover:bg-gray-100 dark:hover:bg-[#343c45]"
-                  } ${isSideBarFull ? "px-3 py-2" : "px-2.5 py-2"}`}
+                  className={`flex items-center text-sm font-semibold rounded-lg cursor-pointer ${location.pathname.startsWith(item.link)
+                    ? " bg-[#e5f6fe] dark:bg-[#1a3344] text-[#04a9f5] border border-[#0499f5]"
+                    : "text-neutral-800 dark:text-darkTextGreyColor hover:bg-gray-100 dark:hover:bg-[#343c45]"
+                    } ${isSideBarFull ? "px-3 py-2" : "px-2.5 py-2"}`}
                 >
                   <item.icon
                     size={isSideBarFull ? 20 : 23}
@@ -115,24 +116,25 @@ function Layout() {
                 </div>
               ))}
             </nav>
+            <LogOut size={30} className="animate-pulse p-1 text-colorText2 dark:text-colorText hover:border hover:border-blue hover:bg-blue/30 rounded-md cursor-pointer" onClick={handleLogout}/>
           </div>
         </div>
         <div className="w-ful px-5 flex flex-col items-start mb-5 gap-5">
           <div className="flex gap-5">
-          <button
-            className="md:hidden flex px-1 w-full bg-[#e5f6fe] dark:bg-[#1a3344] text-[#04a9f5] border border-[#0499f5] rounded-lg"
-            onClick={() => handleThemeToggle("light")}
-          >
-            <PiSunDimDuotone size={23} className="dark:text-gray-300 text-neutral-800 animate-pulse hover:w-6 hover:h-6 transform duration-150 ease-in-out" />
-            Light
-          </button>
-          <button
-            className="md:hidden flex px-1 w-full bg-[#e5f6fe] dark:bg-[#1a3344] text-[#04a9f5] border border-[#0499f5] rounded-lg"
-            onClick={() => handleThemeToggle("dark")}
-          >
-            <PiMoonDuotone size={23} className="dark:text-gray-300 text-neutral-800 hover:w-6 hover:h-6 transform duration-150 ease-in-out" />
-            Dark
-          </button>
+            <button
+              className="md:hidden flex px-1 w-full bg-[#e5f6fe] dark:bg-[#1a3344] text-[#04a9f5] border border-[#0499f5] rounded-lg"
+              onClick={() => handleThemeToggle("light")}
+            >
+              <PiSunDimDuotone size={23} className="dark:text-gray-300 text-neutral-800 animate-pulse hover:w-6 hover:h-6 transform duration-150 ease-in-out" />
+              Light
+            </button>
+            <button
+              className="md:hidden flex px-1 w-full bg-[#e5f6fe] dark:bg-[#1a3344] text-[#04a9f5] border border-[#0499f5] rounded-lg"
+              onClick={() => handleThemeToggle("dark")}
+            >
+              <PiMoonDuotone size={23} className="dark:text-gray-300 text-neutral-800 hover:w-6 hover:h-6 transform duration-150 ease-in-out" />
+              Dark
+            </button>
           </div>
         </div>
       </div>
