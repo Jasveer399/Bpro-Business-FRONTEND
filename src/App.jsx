@@ -9,6 +9,7 @@ import Category from "./Pages/Category/Category";
 import BlogView from "./Components/Forms/Blogs/BlogView";
 import AdminLogin from "./Pages/Login/AdminLogin";
 import Home from "./Dealer Dashboard/Pages/Home/Home";
+import { ProtectedAdminRoutes, RedirectIfAuthenticated } from "./Utils/ProtectedAmdinRoutes";
 
 function App() {
   return (

@@ -21,7 +21,7 @@ function Header() {
                 <MdOutlineHelpOutline size={20} className="text-primary" />
                 <h1 className="font-semibold text-primary">Help?</h1>
             </div>
-            <button className="bg-[#FFB200] py-2 px-4 rounded-lg font-semibold">
+            <button className="bg-secondary py-2 px-4 rounded-lg font-semibold">
                 Sell Product?
             </button>
         </div>

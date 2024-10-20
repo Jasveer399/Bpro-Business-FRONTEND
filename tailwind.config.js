@@ -21,7 +21,8 @@ export default {
         darkComponet: "#263240",
         darkSideBar: "#1b232d",
         darkTextGreyColor: "#f4f5f5",
-        primary: "#2E3192"
+        primary: "#2E3192",
+        secondary: "#FFB200",
       },
       keyframes: {
         fadeInDown: {

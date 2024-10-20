@@ -1,6 +1,7 @@
 import React from 'react'
 import Navbar from '../../Components/Home/Navbar'
 import Header from '../../Components/Home/Header'
+import Advertisement from '../../Components/Home/Advertisement'
 
 function Home() {
   return (
@@ -8,6 +9,7 @@ function Home() {
     <div>
         <Navbar />
         <Header />
+        <Advertisement/>
     </div>
     </>
   )
