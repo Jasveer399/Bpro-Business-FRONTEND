@@ -34,7 +34,7 @@ function AddBlogsForm({ closeDialog }) {
     formData.append('blogContent', data.blogContent);
     formData.append('status', data.status);
 
-    // Append each file to the FormData with the key 'images'
+// Append each file to the FormData with the key 'images'
     imageContainers.forEach(container => {
       if (container.file) {
         formData.append('images', container.file);

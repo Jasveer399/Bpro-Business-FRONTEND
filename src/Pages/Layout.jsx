@@ -137,7 +137,7 @@ function Layout() {
         </div>
       </div>
 
-      <div className="bg-lightPrimary w-full h-full">
+      <div className="bg-lightPrimary w-full h-full custom-scrollbar">
         <Header isSideBarFull={isSideBarFull} />
         <Outlet />
       </div>

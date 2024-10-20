@@ -161,13 +161,14 @@ const blogsSlice = createSlice({
       })
       .addCase(getSingleBlogAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        const index = state.blogs.findIndex(
-          (blog) => blog.id === action.payload.id
-        );
-        if (index !== -1) {
-          state.blogs[index] = action.payload;
+        const fetchedBlog = action.payload;
+        const existingBlogIndex = state.blogs.findIndex(blog => blog.id === fetchedBlog.id);
+        if (existingBlogIndex !== -1) {
+          // Update existing blog
+          state.blogs[existingBlogIndex] = fetchedBlog;
         } else {
-          state.blogs.push(action.payload);
+          // Add new blog to the array
+          state.blogs.push(fetchedBlog);
         }
       })
       .addCase(getSingleBlogAsync.rejected, (state, action) => {

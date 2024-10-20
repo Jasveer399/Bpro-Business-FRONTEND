@@ -15,14 +15,9 @@ const BlogCard = ({ blog }) => {
     <div className="w-full bg-white dark:bg-darkgrey shadow-lg dark:shadow-black border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl dark:hover:shadow-indigo-500/20 group">
       <div className="relative">
         <img
-          src={blog.images[0]?.url || "/api/placeholder/400/300"}
+          src={blog.images[0]?.url}
           alt={blog.name}
           className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
-        />
-        <Chip
-          label={blog.tags}
-          size="small"
-          className="absolute top-2 right-2 bg-indigo-500 text-white"
         />
       </div>
       <div className="p-4 sm:p-6">
@@ -44,7 +39,7 @@ const BlogCard = ({ blog }) => {
         </div>
       </div>
       <div className="px-4 sm:px-6 pb-4 sm:pb-6 pt-0">
-        <button className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex items-center justify-center" onClick={() => navigate(`/blogview/${blog.id}`)}>
+        <button className="w-full bg-blue hover:bg-blue/80 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex items-center justify-center" onClick={() => navigate(`/blogview/${blog.id}`)}>
           Read More
           <ArrowUpRight size={16} className="ml-2" />
         </button>
