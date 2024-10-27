@@ -15,6 +15,7 @@ function AddCategoryForm({ closeDialog }) {
     register,
   } = useForm();
 
+
   const addCategoryHandler = async (data) => {
     console.log("addCategory: ", data);
     const formData = new FormData();

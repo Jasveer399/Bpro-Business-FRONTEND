@@ -5,7 +5,7 @@ const FormInput = React.forwardRef(
     return (
       <div className={width}>
         <div className="relative">
-            <h1 className="text-sm ml-2 mb-px ">{label}</h1>
+            <h1 className="text-sm ml-2 mb-px text-gray-600">{label}</h1>
           <input
             ref={ref}
             readOnly={readOnly}

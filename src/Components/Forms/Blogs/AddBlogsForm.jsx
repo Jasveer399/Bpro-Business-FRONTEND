@@ -78,8 +78,8 @@ function AddBlogsForm({ closeDialog }) {
     <>
       <FormHeading title="Add Blogs" closeDialog={closeDialog} />
       <div>
-        <form onSubmit={handleSubmit(addBannerHandler)} className="px-16 mt-4 space-y-4 text-colorText2">
-          <div className="flex gap-10">
+        <form onSubmit={handleSubmit(addBannerHandler)} className="px-10 mt-4 space-y-4 text-colorText2">
+          <div className="flex gap-5">
             <FormInput
               label="Enter Blog Name"
               type="text"
@@ -97,7 +97,7 @@ function AddBlogsForm({ closeDialog }) {
           </div>
 
           {imageContainers.map((container) => (
-            <div key={container.id} className="w-96 h-48 border-dotted border-2 border-blue rounded-xl flex flex-col justify-center items-center relative">
+            <div key={container.id} className="w-96 h-48 mx-auto border-dotted border-2 border-blue rounded-xl flex flex-col justify-center items-center relative">
               {container.file ? (
                 <>
                   <img
@@ -142,13 +142,15 @@ function AddBlogsForm({ closeDialog }) {
             </div>
           ))}
 
+          <div className="flex justify-center">
           <button
             type="button"
             onClick={addMoreImages}
-            className="mt-2 flex items-center bg-blue text-white px-3 py-1 rounded-md"
+            className="mt-2 flex  justify-center items-center bg-blue dark:text-white font-semibold px-3 py-1 rounded-md"
           >
-            <Plus size={16} className="mr-1" /> Add More Images
+             Add More Images
           </button>
+          </div>
 
           <TextareaInput
             label="Blog Content"
@@ -157,7 +159,7 @@ function AddBlogsForm({ closeDialog }) {
             error={errors.blogContent?.message}
             width="w-full"
           />
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-center mt-4 pb-4">
             <button className="bg-blue px-3 rounded-md font-semibold dark:text-white py-1">{status === 'loading' ? <Loader /> : "Submit"}</button>
           </div>
         </form>

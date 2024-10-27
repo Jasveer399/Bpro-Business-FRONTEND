@@ -22,7 +22,7 @@ function Layout() {
   const navItems = [
     { name: "Dashboard", icon: TfiDashboard, link: "/dashboard" },
     { name: "Dealers", icon: BsFillPersonVcardFill, link: "/dealers" },
-    // { name: "Users", icon: UserCircle, link: "/users" },
+    { name: "Workers", icon: UserCircle, link: "/workers" },
     { name: "Blogs", icon: ImBlogger, link: "/blogs" },
     { name: "Banner", icon: UserCircle, link: "/banners" },
     { name: "Category", icon: UserCircle, link: "/categories" },

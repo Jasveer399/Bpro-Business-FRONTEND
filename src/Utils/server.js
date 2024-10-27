@@ -27,3 +27,9 @@ export const getSingleBlog = `${server}/api/v1/blogs/getSingleBlog`
 // export const updateBlog = `${server}/api/v1/blogs/updateBlog`
 
 export const getAllCategories = `${server}/api/v1/categories/getAllCategories`
+
+// ALl Workers Routes
+export const createWorkerAccount = `${server}/api/v1/worker/createWorkerAccount`
+export const updateWorker = `${server}/api/v1/worker/updateWorker`
+export const getAllWorkers = `${server}/api/v1/worker/getAllWorkers`
+export const deleteWorker = `${server}/api/v1/worker/deleteWorker`

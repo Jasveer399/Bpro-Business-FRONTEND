@@ -4,6 +4,7 @@ import blogsReducer from '../Redux/Features/blogsSlice.js';
 import categoriesReducer from "../Redux/Features/categoriesSlice.js";
 import bannersReducer from "../Redux/Features/bannersSlice.js";
 import dealersReducer from "../Redux/Features/dealersSlice.js";
+import workersReducer from "../Redux/Features/workersSlice.js";
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     categories: categoriesReducer,
     banners: bannersReducer,
     dealers: dealersReducer,
+    workers: workersReducer,
   },
 });
