@@ -1,57 +1,14 @@
 import React from 'react';
-import { Calendar, MessageSquare, ArrowUpRight } from 'lucide-react';
-import { Chip } from '@mui/material';
+import { Calendar, ArrowUpRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const BlogCard = ({ blog }) => {
-
-  const navigate =  useNavigate();
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
-
-  return (
-    <div className="w-full bg-white dark:bg-darkgrey shadow-lg dark:shadow-black border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl dark:hover:shadow-indigo-500/20 group">
-      <div className="relative">
-        <img
-          src={blog.images[0]?.url}
-          alt={blog.name}
-          className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
-        />
-      </div>
-      <div className="p-4 sm:p-6">
-        <h2 className="font-bold text-xl sm:text-2xl text-gray-800 dark:text-gray-100 mb-2 line-clamp-2">
-          {blog.name}
-        </h2>
-        <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
-          {blog.content}
-        </p>
-        <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
-          <div className="flex items-center space-x-2">
-            <Calendar size={16} />
-            <span>{formatDate(blog.createdAt)}</span>
-          </div>
-          {/* <div className="flex items-center space-x-2">
-            <MessageSquare size={16} />
-            <span>0 comments</span>
-          </div> */}
-        </div>
-      </div>
-      <div className="px-4 sm:px-6 pb-4 sm:pb-6 pt-0">
-        <button className="w-full bg-blue hover:bg-blue/80 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex items-center justify-center" onClick={() => navigate(`/blogview/${blog.id}`)}>
-          Read More
-          <ArrowUpRight size={16} className="ml-2" />
-        </button>
-      </div>
-    </div>
-  );
-};
-
 const BlogCardGrid = ({ data }) => {
+  // Check if data exists and is in the correct format
+  const blogs = data?.data ? [data.data] : Array.isArray(data) ? data : [];
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6">
-      {data.map((blog) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5 mx-8">
+      {blogs.map((blog) => (
         <BlogCard key={blog.id} blog={blog} />
       ))}
     </div>
@@ -59,3 +16,48 @@ const BlogCardGrid = ({ data }) => {
 };
 
 export default BlogCardGrid;
+
+const BlogCard = ({ blog }) => {
+  const navigate = useNavigate();
+
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  // Add null check for blog
+  if (!blog) return null;
+
+  return (
+    <div className="bg-white dark:bg-darkComponet dark:text-colorText rounded-lg shadow-md p-4 mb-4">
+      <h2 className="text-xl font-bold mb-2">{blog.name}</h2>
+      
+      {blog.images && blog.images.length > 0 && (
+        <img 
+          src={blog.images[0].url} 
+          alt={blog.name}
+          className="w-full h-48 object-cover rounded-md mb-4"
+        />
+      )}
+      
+      <p className="text-gray-600 mb-4 dark:text-colorText ">{blog.content}</p>
+      
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Calendar className="w-4 h-4" />
+          <span className="text-sm text-gray-500 dark:text-colorText ">
+            {formatDate(blog.createdAt)}
+          </span>
+        </div>
+      </div>
+      
+      <button
+        onClick={() => navigate(`/blogview/${blog.id}`)}
+        className="mt-4 flex items-center gap-2 text-blue-600 hover:text-blue-800"
+      >
+        Read More
+        <ArrowUpRight className="w-4 h-4" />
+      </button>
+    </div>
+  );
+};
