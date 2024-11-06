@@ -35,7 +35,7 @@ const AllWorkers = () => {
       <div className="overflow-x-auto">
         <table className="w-full table-auto">
           <thead>
-            <tr className="text-base text-white uppercase bg-[#565656] border">
+            <tr className="text-base text-white uppercase bg-blue border">
               <th className="py-5 px-3">Worker Name</th>
               <th className="py-5 px-3">Worker ID</th>
               <th className="py-5 px-3">Mobile No.</th>
@@ -60,10 +60,11 @@ const AllWorkers = () => {
                     <Dialog
                       trigger={
                         <button
-                          className=""
+                          className="flex justify-center items-center gap-1 font-semibold text-white bg-[#49B27A] py-2 px-3 text-sm rounded-md"
                           onClick={() => setSelectedWorker(worker)}
                         >
-                          <PencilIcon size={18} />
+                          <PencilIcon size={14} />
+                          <h1>Modify</h1>
                         </button>
                       }
                       width="w-[30%]"
@@ -72,10 +73,11 @@ const AllWorkers = () => {
                       <EditWorkerForm worker={selectedWorker} />
                     </Dialog>
                     <button
-                      className=""
+                      className="flex justify-center items-center gap-1 font-semibold text-white bg-[#FE043C] py-2 px-3 text-sm rounded-md"
                       onClick={() => deleteHandler(worker.id)}
                     >
-                      <Trash2 size={18} />
+                      <Trash2 size={14} />
+                      <h1>Delete</h1>
                     </button>
                   </div>
                 </td>

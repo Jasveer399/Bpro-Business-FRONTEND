@@ -13,7 +13,7 @@ const AllCategories = () => {
   const { categories, status, error } = useSelector(
     (state) => state.categories
   );
-  const [selectedCategory, setSelectedCategory] = useState()
+  const [selectedCategory, setSelectedCategory] = useState();
 
   useEffect(() => {
     if (status === "idle") {
@@ -35,7 +35,7 @@ const AllCategories = () => {
       <div className="overflow-x-auto">
         <table className="w-full table-auto">
           <thead>
-            <tr className="text-base text-white uppercase bg-[#565656] border">
+            <tr className="text-base text-white uppercase bg-blue border">
               <th className="py-5 px-3">Title</th>
               <th className="py-5 px-3">Icon</th>
               <th className="py-5 px-3">Image</th>
@@ -67,20 +67,27 @@ const AllCategories = () => {
                 </td>
                 <td className="py-3 px-3">
                   <div className="flex justify-center space-x-2">
-                    <button className="p-1">
-                      <Dialog
-                        trigger={<PencilIcon size={18} onClick={() => setSelectedCategory(category)} />}
-                        width="w-[30%]"
-                        height="h-[55%]"
-                      >
-                        <EditCategoryForm category={selectedCategory} />
-                      </Dialog>
-                    </button>
+                    <Dialog
+                      trigger={
+                        <button
+                          className="flex justify-center items-center gap-1 font-semibold text-white bg-[#49B27A] py-2 px-3 text-sm rounded-md"
+                          onClick={() => setSelectedCategory(category)}
+                        >
+                          <PencilIcon size={14} />
+                          <h1>Modify</h1>
+                        </button>
+                      }
+                      width="w-[30%]"
+                      height="h-[55%]"
+                    >
+                      <EditCategoryForm category={selectedCategory} />
+                    </Dialog>
                     <button
-                      className="p-1"
+                      className="flex justify-center items-center gap-1 font-semibold text-white bg-[#FE043C] py-2 px-3 text-sm rounded-md"
                       onClick={() => deleteHandler(category.id)}
                     >
-                      <Trash2 size={18} />
+                      <Trash2 size={14} />
+                      <h1>Delete</h1>
                     </button>
                   </div>
                 </td>

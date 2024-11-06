@@ -1,27 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 import FormHeading from "../../../ui/FormHeading";
 import FormInput from "../../../ui/FormInput";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { addCategoryAsync } from "../../../Redux/Features/categoriesSlice";
 import Loader from "../../../ui/Loader";
+import { ImageUp, X } from "lucide-react";
 
 function AddCategoryForm({ closeDialog }) {
   const dispatch = useDispatch();
-  const { status } = useSelector((state) => state.categories)
+  const { status } = useSelector((state) => state.categories);
+  const [iconImg, setIconImg] = useState({ file: null });
+  const [categoryImg, setCategoryImg] = useState({ file: null });
   const {
     formState: { errors },
     handleSubmit,
     register,
   } = useForm();
 
-
   const addCategoryHandler = async (data) => {
     console.log("addCategory: ", data);
     const formData = new FormData();
     formData.append("title", data.title);
-    formData.append("iconImgUrl", data.iconImgUrl[0]);
-    formData.append("categoryImgUrl", data.categoryImgUrl[0]);
+    if (iconImg.file) {
+      formData.append("iconImgUrl", iconImg.file);
+    }
+    if (categoryImg.file) {
+      formData.append("categoryImgUrl", categoryImg.file);
+    }
 
     try {
       await dispatch(addCategoryAsync(formData)).unwrap();
@@ -30,6 +36,24 @@ function AddCategoryForm({ closeDialog }) {
     } catch (error) {
       console.error("Failed to add category:", error);
     }
+  };
+
+  const handleIconUpload = (e) => {
+    const file = e.target.files[0];
+    setIconImg({ file });
+  };
+
+  const removeIcon = () => {
+    setIconImg({ file: null });
+  };
+
+  const handleCategoryImgUpload = (e) => {
+    const file = e.target.files[0];
+    setCategoryImg({ file });
+  };
+
+  const removeCategoryImg = () => {
+    setCategoryImg({ file: null });
   };
   return (
     <>
@@ -48,27 +72,83 @@ function AddCategoryForm({ closeDialog }) {
             error={errors.title?.message}
             width="w-full"
           />
-          <FormInput
-            label="Upload Icon"
-            type="file"
-            {...register("iconImgUrl", {
-              required: "Icon is required",
-            })}
-            error={errors.iconImgUrl?.message}
-            width="w-full"
-          />
-          <FormInput
-            label="Upload Image"
-            type="file"
-            {...register("categoryImgUrl", {
-              required: "Category Image is required",
-            })}
-            error={errors.categoryImgUrl?.message}
-            width="w-full"
-          />
+          <div className="w-40 h-40 mx-auto border-dotted border-2 border-blue rounded-xl flex flex-col justify-center items-center relative">
+            {iconImg.file ? (
+              <>
+                <img
+                  src={URL.createObjectURL(iconImg.file)}
+                  alt="Uploaded preview"
+                  className="w-full h-full object-cover rounded-xl"
+                />
+                <button
+                  type="button"
+                  onClick={removeIcon}
+                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
+                  aria-label="Remove image"
+                >
+                  <X size={16} />
+                </button>
+              </>
+            ) : (
+              <>
+                <p className="text-center mt-4">Upload Icon</p>
+                <ImageUp
+                  size={50}
+                  className="text-blue text-xl font-bold cursor-pointer mb-4"
+                  onClick={() =>
+                    document.getElementById("icon-upload").click()
+                  }
+                />
+                <input
+                  id="icon-upload"
+                  type="file"
+                  onChange={handleIconUpload}
+                  className="hidden"
+                  accept="image/*"
+                />
+              </>
+            )}
+          </div>
+          <div className="w-80 mx-auto border-dotted border-2 border-blue rounded-xl flex flex-col justify-center items-center relative">
+            {categoryImg.file ? (
+              <>
+                <img
+                  src={URL.createObjectURL(categoryImg.file)}
+                  alt="Uploaded preview"
+                  className="w-full h-full object-cover rounded-xl"
+                />
+                <button
+                  type="button"
+                  onClick={removeCategoryImg}
+                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
+                  aria-label="Remove image"
+                >
+                  <X size={16} />
+                </button>
+              </>
+            ) : (
+              <>
+                <p className="text-center mt-4">Upload Category Image</p>
+                <ImageUp
+                  size={50}
+                  className="text-blue text-xl font-bold cursor-pointer mb-4"
+                  onClick={() =>
+                    document.getElementById("category-image-upload").click()
+                  }
+                />
+                <input
+                  id="category-image-upload"
+                  type="file"
+                  onChange={handleCategoryImgUpload}
+                  className="hidden"
+                  accept="image/*"
+                />
+              </>
+            )}
+          </div>
           <div className="flex justify-center mt-4">
-            <button className="bg-blue px-3 rounded-md font-semibold dark:text-white py-1">
-              {status === 'loading' ? <Loader /> : "Submit"}
+            <button className="bg-blue px-3 rounded-md font-semibold mb-4 text-white py-1">
+              {status === "loading" ? <Loader /> : "Submit"}
             </button>
           </div>
         </form>

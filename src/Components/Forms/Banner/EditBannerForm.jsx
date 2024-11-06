@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import FormHeading from "../../../ui/FormHeading";
 import FormInput from "../../../ui/FormInput";
 import { useForm } from "react-hook-form";
@@ -7,10 +7,12 @@ import { addBanner } from "../../../Utils/server";
 import Loader from "../../../ui/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { updateBannerAsync } from "../../../Redux/Features/bannersSlice";
+import { ImageUp, X } from "lucide-react";
 
 function EditBannerForm({ closeDialog, banner }) {
     const dispatch = useDispatch()
     const { status } = useSelector((state) => state.banners)
+    const [imageContainer, setImageContainer] = useState({ file: null });
   const {
     formState: { errors },
     handleSubmit,
@@ -26,6 +28,7 @@ function EditBannerForm({ closeDialog, banner }) {
       setValue('title', banner.title)
       setValue('status', banner.status.toLowerCase())
       setValue('externalUrl', banner.externalUrl)
+      setImageContainer(banner.bannerImgUrl)
     }
   }, [banner])
 
@@ -33,7 +36,13 @@ function EditBannerForm({ closeDialog, banner }) {
     console.log("addBannerHandler: ", data);
     const formData = new FormData();
     formData.append("title", data.title);
-    formData.append("bannerImgUrl", data.bannerImgUrl[0]);
+    // formData.append("bannerImgUrl", data.bannerImgUrl[0]);
+    // console.log("imageContainer", imageContainer);
+    if (imageContainer.file) {
+      formData.append("bannerImgUrl", imageContainer.file);
+    } else {
+      formData.append("bannerImgUrl", banner.bannerImgUrl);
+    }
     formData.append("status", data.status);
     formData.append("externalUrl", data.externalUrl);
 
@@ -44,6 +53,15 @@ function EditBannerForm({ closeDialog, banner }) {
     } catch (error) {
       console.error("Failed to updating banner:", error);
     }
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    setImageContainer({ file });
+  };
+
+  const removeImage = () => {
+    setImageContainer(null)
   };
   return (
     <>
@@ -62,7 +80,7 @@ function EditBannerForm({ closeDialog, banner }) {
             error={errors.title?.message}
             width="w-full"
           />
-          <FormInput
+          {/* <FormInput
             label="Upload Image"
             type="file"
             {...register("bannerImgUrl", {
@@ -70,7 +88,44 @@ function EditBannerForm({ closeDialog, banner }) {
             })}
             error={errors.bannerImgUrl?.message}
             width="w-full"
-          />
+          /> */}
+          <div className="w-80 mx-auto border-dotted border-2 border-blue rounded-xl flex flex-col justify-center items-center relative">
+            {imageContainer ? (
+              <>
+                <img
+                  src={imageContainer.file ? URL.createObjectURL(imageContainer.file) : imageContainer}
+                  alt="Uploaded preview"
+                  className="w-full h-full object-cover rounded-xl"
+                />
+                <button
+                  type="button"
+                  onClick={removeImage}
+                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
+                  aria-label="Remove image"
+                >
+                  <X size={16} />
+                </button>
+              </>
+            ) : (
+              <>
+                <p className="text-center mt-4">Upload Banner Image</p>
+                <ImageUp
+                  size={50}
+                  className="text-blue text-xl font-bold cursor-pointer mb-4"
+                  onClick={() =>
+                    document.getElementById("banner-image-upload").click()
+                  }
+                />
+                <input
+                  id="banner-image-upload"
+                  type="file"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                  accept="image/*"
+                />
+              </>
+            )}
+          </div>
           <div className="flex items-center gap-4 px-2">
             <h1 className="font-semibold">Status: </h1>
             <label
@@ -113,8 +168,8 @@ function EditBannerForm({ closeDialog, banner }) {
             error={errors.externalUrl?.message}
             width="w-full"
           />
-          <div className="flex justify-center mt-4">
-            <button className="bg-blue px-3 rounded-md font-semibold dark:text-white py-1">
+          <div className="flex justify-center mt-4 ">
+            <button className="bg-blue px-3 rounded-md font-semibold text-white py-1 mb-4">
               {status === 'loading' ? <Loader /> : "Save"}
             </button>
           </div>

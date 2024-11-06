@@ -1,21 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { PencilIcon, Trash2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { deleteBannerAsync, fetchBannersAsync } from '../../Redux/Features/bannersSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import Dialog from '../../ui/Dialog';
-import EditBannerForm from '../Forms/Banner/EditBannerForm';
+import React, { useEffect, useState } from "react";
+import { PencilIcon, Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
+import {
+  deleteBannerAsync,
+  fetchBannersAsync,
+} from "../../Redux/Features/bannersSlice";
+import { useDispatch, useSelector } from "react-redux";
+import Dialog from "../../ui/Dialog";
+import EditBannerForm from "../Forms/Banner/EditBannerForm";
 
 const AllBanners = () => {
-  const dispatch = useDispatch()
-  const { banners, status, error } = useSelector((state) => state.banners)
-  const [selectedBanner, setSelectedBanner] = useState()
+  const dispatch = useDispatch();
+  const { banners, status, error } = useSelector((state) => state.banners);
+  const [selectedBanner, setSelectedBanner] = useState();
 
   useEffect(() => {
-    if (status === 'idle') {
-      dispatch(fetchBannersAsync())
+    if (status === "idle") {
+      dispatch(fetchBannersAsync());
     }
-  }, [status, dispatch])
+  }, [status, dispatch]);
 
   const deleteHandler = async (id) => {
     try {
@@ -24,56 +27,83 @@ const AllBanners = () => {
     } catch (error) {
       console.error("Failed to delete banner:", error);
     }
-  }  
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-lg mx-3 dark:bg-darkgrey overflow-hidden">
       <div className="overflow-x-auto">
-      <table className="w-full table-auto">
-        <thead>
-          <tr className="text-base text-white uppercase bg-[#565656] border">
-            <th className="py-5 px-3">Title</th>
-            <th className="py-5 px-3">Image</th>
-            <th className="py-5 px-3">Status</th>
-            <th className="py-5 px-3">External URL</th>
-            <th className="py-5 px-3">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {banners?.map((banner) => (
-            <tr key={banner.id} className="border border-[rgba(0, 0, 0, 0.06)] text-[#565656] dark:text-lightPrimary">
-              <td className="py-3 text-center">{banner.title}</td>
-              <td className="py-3 flex justify-center text-center">
-                <img src={banner.bannerImgUrl} alt={banner.title} className="w-28 h-14 rounded-md" />
-              </td>
-              <td className="py-3 text-center">
-                <span className={`px-2 py-1 rounded-full text-xs font-semibold dark:text-black ${
-                  banner.status === 'Active' ? 'bg-green-200' : 'bg-red-200'
-                }`}>
-                  {banner.status}
-                </span>
-              </td>
-              <td className="py-3 text-center">
-                <Link to={banner.url}  target="_blank" rel="noopener noreferrer">
-                  <div className='text-blue'>{banner.externalUrl}</div>
-                </Link>
-              </td>
-              <td className="py-3">
-                <div className="flex justify-center space-x-2">
-                <Dialog
-                        trigger={<PencilIcon size={18} onClick={() => setSelectedBanner(banner)} />}
-                        width="w-[30%]"
-                        height="h-[55%]"
-                      >
-                        <EditBannerForm banner={selectedBanner} />
-                      </Dialog>
-                  <button className="" onClick={() => deleteHandler(banner.id)}><Trash2 size={18} /></button>
-                </div>
-              </td>
+        <table className="w-full table-auto">
+          <thead>
+            <tr className="text-base text-white uppercase bg-blue border">
+              <th className="py-5 px-3">Title</th>
+              <th className="py-5 px-3">Image</th>
+              <th className="py-5 px-3">Status</th>
+              <th className="py-5 px-3">External URL</th>
+              <th className="py-5 px-3">Action</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {banners?.map((banner) => (
+              <tr
+                key={banner.id}
+                className="border border-[rgba(0, 0, 0, 0.06)] text-[#565656] dark:text-lightPrimary"
+              >
+                <td className="py-3 text-center">{banner.title}</td>
+                <td className="py-3 flex justify-center text-center">
+                  <img
+                    src={banner.bannerImgUrl}
+                    alt={banner.title}
+                    className="w-28 h-14 rounded-md"
+                  />
+                </td>
+                <td className="py-3 text-center">
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-semibold dark:text-black ${
+                      banner.status === "Active" ? "bg-green-200" : "bg-red-200"
+                    }`}
+                  >
+                    {banner.status}
+                  </span>
+                </td>
+                <td className="py-3 text-center">
+                  <Link
+                    to={banner.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <div className="text-blue">{banner.externalUrl}</div>
+                  </Link>
+                </td>
+                <td className="py-3">
+                  <div className="flex justify-center space-x-2">
+                    <Dialog
+                      trigger={
+                        <button
+                          className="flex justify-center items-center gap-1 font-semibold text-white bg-[#49B27A] py-2 px-3 text-sm rounded-md"
+                          onClick={() => setSelectedBanner(banner)}
+                        >
+                          <PencilIcon size={14} />
+                          <h1>Modify</h1>
+                        </button>
+                      }
+                      width="w-[30%]"
+                      height="h-[65%]"
+                    >
+                      <EditBannerForm banner={selectedBanner} />
+                    </Dialog> 
+                    <button
+                      className="flex justify-center items-center gap-1 font-semibold text-white bg-[#FE043C] py-2 px-3 text-sm rounded-md"
+                      onClick={() => deleteHandler(banner.id)}
+                    >
+                      <Trash2 size={14} />
+                      <h1>Delete</h1>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

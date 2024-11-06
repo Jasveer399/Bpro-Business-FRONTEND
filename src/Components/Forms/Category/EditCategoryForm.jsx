@@ -1,14 +1,17 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import FormHeading from "../../../ui/FormHeading";
 import FormInput from "../../../ui/FormInput";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { updateCategoryAsync } from "../../../Redux/Features/categoriesSlice";
 import Loader from "../../../ui/Loader";
+import { ImageUp, X } from "lucide-react";
 
 function EditCategoryForm({ closeDialog, category }) {
   const dispatch = useDispatch();
   const { status } = useSelector((state) => state.categories);
+  const [iconImg, setIconImg] = useState({ file: null });
+  const [categoryImg, setCategoryImg] = useState({ file: null });
   const {
     formState: { errors },
     handleSubmit,
@@ -19,16 +22,26 @@ function EditCategoryForm({ closeDialog, category }) {
   useEffect(() => {
     if (category) {
       setValue('title', category.title)
-      setValue('iconImgUrl', category.iconImgUrl)
-      setValue('categoryImgUrl', category.categoryImgUrl)
+      // setValue('iconImgUrl', category.iconImgUrl)
+      setIconImg(category.iconImgUrl)
+      setCategoryImg(category.categoryImgUrl)
+      // setValue('categoryImgUrl', category.categoryImgUrl)
     }
   }, [category])
 
   const editCategoryHandler = async (data) => {
     const formData = new FormData();
     formData.append("title", data.title);
-    formData.append("iconImgUrl", data.iconImgUrl[0]);
-    formData.append("categoryImgUrl", data.categoryImgUrl[0]);
+    if (iconImg.file) {
+      formData.append("iconImgUrl", iconImg.file);
+    } else {
+      formData.append("iconImgUrl", category.iconImgUrl);
+    }
+    if (categoryImg.file) {
+      formData.append("categoryImgUrl", categoryImg.file);
+    } else {
+      formData.append("categoryImgUrl", category.categoryImgUrl);
+    }
 
     try {
       await dispatch(updateCategoryAsync({id: category.id, formData})).unwrap();
@@ -37,6 +50,24 @@ function EditCategoryForm({ closeDialog, category }) {
     } catch (error) {
       console.error("Failed to updating category:", error);
     }
+  };
+
+  const handleIconUpload = (e) => {
+    const file = e.target.files[0];
+    setIconImg({ file });
+  };
+
+  const removeIcon = () => {
+    setIconImg(null);
+  };
+
+  const handleCategoryImgUpload = (e) => {
+    const file = e.target.files[0];
+    setCategoryImg({ file });
+  };
+
+  const removeCategoryImg = () => {
+    setCategoryImg(null);
   };
   return (
     <>
@@ -55,26 +86,82 @@ function EditCategoryForm({ closeDialog, category }) {
             error={errors.title?.message}
             width="w-full"
           />
-          <FormInput
-            label="Upload Icon"
-            type="file"
-            {...register("iconImgUrl", {
-              required: "Icon is required",
-            })}
-            error={errors.iconImgUrl?.message}
-            width="w-full"
-          />
-          <FormInput
-            label="Upload Image"
-            type="file"
-            {...register("categoryImgUrl", {
-              required: "Category Image is required",
-            })}
-            error={errors.categoryImgUrl?.message}
-            width="w-full"
-          />
+          <div className="w-40 h-40 mx-auto border-dotted border-2 border-blue rounded-xl flex flex-col justify-center items-center relative">
+            {iconImg ? (
+              <>
+                <img
+                  src={iconImg.file ? URL.createObjectURL(iconImg.file): iconImg}
+                  alt="Uploaded preview"
+                  className="w-full h-full object-cover rounded-xl"
+                />
+                <button
+                  type="button"
+                  onClick={removeIcon}
+                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
+                  aria-label="Remove image"
+                >
+                  <X size={16} />
+                </button>
+              </>
+            ) : (
+              <>
+                <p className="text-center mt-4">Upload Icon</p>
+                <ImageUp
+                  size={50}
+                  className="text-blue text-xl font-bold cursor-pointer mb-4"
+                  onClick={() =>
+                    document.getElementById("icon-upload").click()
+                  }
+                />
+                <input
+                  id="icon-upload"
+                  type="file"
+                  onChange={handleIconUpload}
+                  className="hidden"
+                  accept="image/*"
+                />
+              </>
+            )}
+          </div>
+          <div className="w-80 mx-auto border-dotted border-2 border-blue rounded-xl flex flex-col justify-center items-center relative">
+            {categoryImg ? (
+              <>
+                <img
+                  src={categoryImg.file ? URL.createObjectURL(categoryImg.file): categoryImg}
+                  alt="Uploaded preview"
+                  className="w-full h-full object-cover rounded-xl"
+                />
+                <button
+                  type="button"
+                  onClick={removeCategoryImg}
+                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
+                  aria-label="Remove image"
+                >
+                  <X size={16} />
+                </button>
+              </>
+            ) : (
+              <>
+                <p className="text-center mt-4">Upload Category Image</p>
+                <ImageUp
+                  size={50}
+                  className="text-blue text-xl font-bold cursor-pointer mb-4"
+                  onClick={() =>
+                    document.getElementById("category-image-upload").click()
+                  }
+                />
+                <input
+                  id="category-image-upload"
+                  type="file"
+                  onChange={handleCategoryImgUpload}
+                  className="hidden"
+                  accept="image/*"
+                />
+              </>
+            )}
+          </div>
           <div className="flex justify-center mt-4">
-            <button className="bg-blue px-3 rounded-md font-semibold dark:text-white py-1">
+            <button className="bg-blue px-3 rounded-md font-semibold mb-4 text-white py-1">
               {status === "loading" ? <Loader /> : "Save"}
             </button>
           </div>
