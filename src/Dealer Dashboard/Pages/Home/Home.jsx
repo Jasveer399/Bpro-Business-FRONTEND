@@ -1,63 +1,109 @@
-import React from 'react'
-import Navbar from '../../Components/Home/Navbar'
-import Header from '../../Components/Home/Header'
+import React from "react";
+import Navbar from "../../Components/Home/Navbar";
+import Header from "../../Components/Home/Header";
 import PopularSearches from "../../Components/Home/PopularSearches";
 import LocationCard from "../../Components/Home/LocationCard";
 import Footer from "../../Components/Home/Footer";
-import Advertisement from '../../Components/Home/Advertisement'
-import LatestArticles from '../../Components/Home/LatestArticles';
-import ShopsCategory from '../../Components/Home/ShopsCategory'
+import Advertisement from "../../Components/Home/Advertisement";
+import LatestArticles from "../../Components/Home/LatestArticles";
+import ShopsCategory from "../../Components/Home/ShopsCategory";
 
 function Home() {
   const articleData = [
-    { time: '10 hours ago', title: 'Commented on Video posted by black demon.' },
-    { time: '10 hours ago', title: 'Commented on Video posted by black demon.' },
-    { time: '10 hours ago', title: 'Commented on Video posted by black demon.' },
-    { time: '10 hours ago', title: 'Commented on Video posted by black demon.' },
+    {
+      time: "10 hours ago",
+      title: "Commented on Video posted by black demon.",
+    },
+    {
+      time: "10 hours ago",
+      title: "Commented on Video posted by black demon.",
+    },
+    {
+      time: "10 hours ago",
+      title: "Commented on Video posted by black demon.",
+    },
+    {
+      time: "10 hours ago",
+      title: "Commented on Video posted by black demon.",
+    },
   ];
+
   return (
     <>
-        <Navbar />
-      <div className='mx-5'>
+      <Navbar />
+      <div className="mx-2 md:mx-5">
         <Header />
-        <div className='flex mx-5 mt-10'>
-          <div className='w-full'>
-            <div className='flex gap-5 w-full'>
-              <Advertisement className="w-[54%]" isLeft={true} isButtonShow={true} />
-              <Advertisement className="w-[21%] rounded-md" isLeft={false} />
-              <Advertisement className="w-[20%] rounded-md" isLeft={false} />
+        {/* Main content section */}
+        <div className="flex flex-col md:flex-row mt-5 md:mt-10 md:mx-5 gap-5">
+          {/* Left side content */}
+          <div className="w-full md:w-3/4">
+            {/* Advertisement section */}
+            <div className="flex flex-col md:flex-row gap-3 md:gap-5 w-full">
+              <Advertisement
+                className="w-full md:w-[54%] h-auto"
+                isLeft={true}
+                isButtonShow={true}
+              />
+              <div className="flex gap-3 md:gap-5 w-full md:w-[41%]">
+                <Advertisement
+                  className="w-1/2 md:w-1/2 rounded-md"
+                  isLeft={false}
+                />
+                <Advertisement
+                  className="w-1/2 md:w-1/2 rounded-md"
+                  isLeft={false}
+                />
+              </div>
             </div>
             <ShopsCategory />
           </div>
-          <div>
+
+          {/* Right side content */}
+          <div className="w-full md:w-1/4">
             <LatestArticles articles={articleData} />
-            <img src="/SaleBanear.png" className='w-72 h-40 mt-6' alt="" />
+            <img
+              src="/SaleBanear.png"
+              className="w-full md:w-72 h-40 mt-6 object-cover"
+              alt="Sale Banner"
+            />
           </div>
         </div>
-        <div className="my-10">
-          <h1 className="font-montserrat font-extrabold text-2xl mx-5">
+
+        {/* Popular Searches section */}
+        <div className="my-6 md:my-10">
+          <h1 className="font-montserrat font-extrabold text-xl md:text-2xl mx-3 md:mx-5">
             Popular Searches
           </h1>
-          <div className="grid grid-cols-4 m-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 m-2 md:m-4 gap-3 md:gap-5">
             <PopularSearches />
             <PopularSearches />
             <PopularSearches />
             <PopularSearches />
           </div>
           <div className="flex items-center justify-center">
-            <h1 className="border border-[#E7E7E7] inline-flex py-1 px-8 cursor-pointer rounded-md font-semibold">
+            <button className="border border-[#E7E7E7] py-1 px-8 rounded-md font-semibold hover:bg-gray-50 transition-colors">
               Load More...
-            </h1>
+            </button>
           </div>
         </div>
-        <div>
-          <img src="/banner.png" className="w-full" />
+
+        {/* Banner section */}
+        <div className="w-full">
+          <img
+            src="/banner.png"
+            className="w-full object-cover"
+            alt="Main Banner"
+          />
         </div>
-        <div className="my-10">
-          <h1 className="font-montserrat font-extrabold text-2xl mx-5 mb-3">
+
+        {/* Location section */}
+        <div className="my-6 md:my-10">
+          <h1 className="font-montserrat font-extrabold text-xl md:text-2xl mx-3 md:mx-5 mb-3">
             We are available in...
           </h1>
-          <div className="grid grid-cols-8 mx-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 mx-2 md:mx-3 gap-3">
+            <LocationCard />
+            <LocationCard />
             <LocationCard />
             <LocationCard />
             <LocationCard />
@@ -68,6 +114,7 @@ function Home() {
             <LocationCard />
           </div>
         </div>
+
         <Footer />
       </div>
     </>

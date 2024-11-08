@@ -15,7 +15,6 @@ const AddBlogsForm = ({ closeDialog }) => {
   const [imageContainers, setImageContainers] = useState([{ id: 0, file: null }]);
   const [notification, setNotification] = useState(null);
 
-  // Get the status from Redux store
   const { status, error } = useSelector((state) => state.blogs);
   const isSubmitting = status === 'loading';
 

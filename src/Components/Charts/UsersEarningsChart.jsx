@@ -32,6 +32,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 
 const UsersEarningsChart = () => {
+  
   return (
     <div className="dark:bg-darkgrey w-full bg-white  rounded-2xl p-8 text-colorText2 dark:text-colorText shadow-lg dark:shadow-black border border-gray-200 dark:border-gray-600 ">
       <div className="flex justify-between items-center mb-4">
