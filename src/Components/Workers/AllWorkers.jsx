@@ -31,9 +31,9 @@ const AllWorkers = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg mx-3 dark:bg-darkgrey overflow-hidden">
+    <div className="bg-white rounded-xl shadow-lg mx-3 dark:bg-darkgrey overflow-hidden h-[33rem] overflow-y-auto">
       <div className="overflow-x-auto">
-        <table className="w-full table-auto">
+        <table className="w-full h-full">
           <thead>
             <tr className="text-base text-white uppercase bg-blue border">
               <th className="py-5 px-3">Worker Name</th>

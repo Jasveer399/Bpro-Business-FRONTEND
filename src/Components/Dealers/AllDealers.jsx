@@ -30,9 +30,9 @@ const AllDealers = () => {
         <h1 className="text-xl font-bold">DEALERS</h1>
         <h2 className="font-semibold">TOTAL: {dealers?.length || 0}</h2>
       </div>
-      <div className="bg-white rounded-xl shadow-lg mx-3 dark:bg-darkgrey overflow-hidden font-montserrat">
+      <div className="bg-white rounded-xl shadow-lg mx-3 dark:bg-darkgrey overflow-hidden font-montserrat h-[33rem] overflow-y-auto">
         <div className="overflow-x-auto">
-          <table className="w-full table-auto">
+          <table className="w-full h-full">
             <thead>
               <tr className="text-base text-white uppercase bg-blue border">
                 <th className="py-5 px-3">Dealer Name</th>
