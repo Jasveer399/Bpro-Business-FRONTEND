@@ -10,6 +10,7 @@ import AdminLogin from "./Pages/Login/AdminLogin";
 import Home from "./Dealer Dashboard/Pages/Home/Home";
 import { ProtectedAdminRoutes, RedirectIfAuthenticated } from "./Utils/ProtectedAmdinRoutes";
 import Workers from "./Pages/Workers/Workers";
+import SellProduct from "./Pages/Sell Product/SellProduct";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           </Route>
         </Route>
         <Route path="/home" element={<Home />} />
+        <Route path="/sellProduct" element={<SellProduct />} />
       </Routes>
     </>
   );
