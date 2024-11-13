@@ -24,7 +24,7 @@ const Navbar = () => {
           <Link href="/about" className="hover:opacity-80">
             About Us
           </Link>
-          <Link href="/blogs" className="hover:opacity-80">
+          <Link to="/Allblogs" className="hover:opacity-80">
             Blogs
           </Link>
           <Link href="/contact" className="hover:opacity-80">
@@ -62,7 +62,7 @@ const Navbar = () => {
             <Link href="/about" className="hover:opacity-80">
               About Us
             </Link>
-            <Link href="/blogs" className="hover:opacity-80">
+            <Link to="/Allblogs" className="hover:opacity-80">
               Blogs
             </Link>
             <Link href="/contact" className="hover:opacity-80">
