@@ -8,7 +8,11 @@ import Category from "./Pages/Category/Category";
 import BlogView from "./Components/Forms/Blogs/BlogView";
 import AdminLogin from "./Pages/Login/AdminLogin";
 import Home from "./Dealer Dashboard/Pages/Home/Home";
-import { ProtectedAdminRoutes, RedirectIfAuthenticated } from "./Utils/ProtectedAmdinRoutes";
+import Pricing from "./Dealer Dashboard/Pages/Pricing/Pricing";
+import {
+  ProtectedAdminRoutes,
+  RedirectIfAuthenticated,
+} from "./Utils/ProtectedAmdinRoutes";
 import Workers from "./Pages/Workers/Workers";
 
 function App() {
@@ -31,6 +35,7 @@ function App() {
           </Route>
         </Route>
         <Route path="/home" element={<Home />} />
+        <Route path="/pricing" element={<Pricing />} />
       </Routes>
     </>
   );

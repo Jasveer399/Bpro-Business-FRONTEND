@@ -5,7 +5,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        montserrat: ['Montserrat', 'sans-serif'],
+        montserrat: ["Montserrat", "sans-serif"],
+        maven: ['"Maven Pro"', "sans-serif"],
       },
       backgroundImage: {
         "brand-color-3":
