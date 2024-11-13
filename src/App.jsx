@@ -10,6 +10,8 @@ import AdminLogin from "./Pages/Login/AdminLogin";
 import Home from "./Dealer Dashboard/Pages/Home/Home";
 import { ProtectedAdminRoutes, RedirectIfAuthenticated } from "./Utils/ProtectedAmdinRoutes";
 import Workers from "./Pages/Workers/Workers";
+import Allblogs from "./Dealer Dashboard/Pages/Blogs/Blogs";
+import BlogDetails from "./Dealer Dashboard/Pages/Blogs/BlogDetails";
 
 function App() {
   return (
@@ -31,6 +33,8 @@ function App() {
           </Route>
         </Route>
         <Route path="/home" element={<Home />} />
+        <Route path="/Allblogs" element={<Allblogs />} />
+        <Route path="/BlogDetails/:id" element={<BlogDetails />} />
       </Routes>
     </>
   );
