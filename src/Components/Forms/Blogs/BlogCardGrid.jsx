@@ -1,6 +1,7 @@
 import React from 'react';
 import { Calendar, ArrowUpRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import DOMPurify from 'dompurify';
 
 const BlogCardGrid = ({ data }) => {
   // Check if data exists and is in the correct format
@@ -31,17 +32,21 @@ const BlogCard = ({ blog }) => {
   return (
     <div className="bg-white dark:bg-darkComponet dark:text-colorText rounded-lg shadow-md p-4 mb-4">
       <h2 className="text-xl font-bold mb-2">{blog.name}</h2>
-      
+
       {blog.images && blog.images.length > 0 && (
-        <img 
-          src={blog.images[0].url} 
+        <img
+          src={blog.images[0].url}
           alt={blog.name}
           className="w-full h-48 object-cover rounded-md mb-4"
         />
       )}
-      
-      <p className="text-gray-600 mb-4 dark:text-colorText ">{blog.content}</p>
-      
+
+      {/* <p
+        className="text-gray-600 mb-4 dark:text-colorText"
+        dangerouslySetInnerHTML={{
+          __html: DOMPurify.sanitize(blog.content).slice(1, 50),
+        }}
+      /> */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Calendar className="w-4 h-4" />
@@ -50,7 +55,7 @@ const BlogCard = ({ blog }) => {
           </span>
         </div>
       </div>
-      
+
       <button
         onClick={() => navigate(`/blogview/${blog.id}`)}
         className="mt-4 flex items-center gap-2 text-blue-600 hover:text-blue-800"
