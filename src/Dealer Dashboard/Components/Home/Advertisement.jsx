@@ -4,19 +4,21 @@ import { useSelector } from "react-redux";
 import { fetchBannersAsync } from "../../../Redux/Features/bannersSlice";
 import { useDispatch } from "react-redux";
 
-const Advertisement = ({ className, isButtonShow, isLeft }) => {
+const Advertisement = ({ className, isButtonShow, isLeft, banners }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState("right");
 
-  const { banners, status } = useSelector((state) => state.banners);
+  console.log("Banneers: ", banners)
 
-  const dispatch = useDispatch();
+  // const { banners, status } = useSelector((state) => state.banners);
 
-  useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchBannersAsync());
-    }
-  }, [status, dispatch]);
+  // const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   if (status === "idle") {
+  //     dispatch(fetchBannersAsync());
+  //   }
+  // }, [status, dispatch]);
 
   // console.log(banners);
 
@@ -29,13 +31,13 @@ const Advertisement = ({ className, isButtonShow, isLeft }) => {
 
   const nextSlide = () => {
     setDirection("right");
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % banners.length);
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % banners?.length);
   };
 
   const prevSlide = () => {
     setDirection("left");
     setCurrentIndex(
-      (prevIndex) => (prevIndex - 1 + banners.length) % banners.length
+      (prevIndex) => (prevIndex - 1 + banners?.length) % banners?.length
     );
   };
 
@@ -45,8 +47,8 @@ const Advertisement = ({ className, isButtonShow, isLeft }) => {
     >
       <div className="relative h-80">
         {banners
-          .filter((banner) => banner.status === "Active")
-          .map((banner, index) => (
+          ?.filter((banner) => banner.status === "Active")
+          ?.map((banner, index) => (
             <div
               key={banner.id}
               className={`absolute w-full h-full transition-transform duration-500 ease-in-out ${
@@ -72,7 +74,7 @@ const Advertisement = ({ className, isButtonShow, isLeft }) => {
             isLeft ? "left-10" : "right-0"
           }`}
         >
-          {banners.map((_, index) => (
+          {banners?.map((_, index) => (
             <div
               key={index}
               className={`w-2 h-2 rounded-full ${

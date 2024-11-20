@@ -14,12 +14,11 @@ const SelectInput = React.forwardRef(({
     <div className="relative">
       <select
         ref={ref}
-        className={`w-full px-3 py-[7px] bg-white rounded-xl focus:outline-none transition-shadow duration-200 ease-in-out
+        className={`w-full px-3 py-3 bg-white rounded-md focus:outline-none transition-shadow duration-200 ease-in-out
                     ${disabled ? 'opacity-50 cursor-not-allowed' : readOnly ? 'cursor-default' : 'cursor-pointer'}
-                    ${!disabled && !readOnly ? 'shadow-[0_6px_15px_rgba(0,0,0,0.25)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.25)]' : ''}
                     text-gray-600 placeholder-gray-400 text-base appearance-none
                     scrollbar scrollbar-thumb-gray-400 scrollbar-track-gray-100
-                    scrollbar-thumb-rounded-full border-none`}
+                    scrollbar-thumb-rounded-full border border-gray-400`}
         onChange={(e) => {
           if (onChange && !readOnly && !disabled) {
             const selectedOption = options.find(option => option.value === e.target.value);

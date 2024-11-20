@@ -14,7 +14,7 @@ function SellProductForm() {
     control,
   } = useForm();
   const { categories, status } = useSelector((state) => state.categories);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (status === "idle") {
@@ -153,15 +153,24 @@ function SellProductForm() {
                 rows={6}
               />
             </div>
-            <FormInput
-              //   label="Enter Title"
-              type="file"
-              {...register("img", {
-                required: "Image is required",
-              })}
-              error={errors.img?.message}
-              width="w-full"
-            />
+            <div className="flex gap-3">
+              <label htmlFor="img" className="w-full">
+                <input
+                  id="img"
+                  className={`w-full px-3 py-3 bg-white rounded-md focus:outline-none transition-shadow duration-200 ease-in-out
+        text-gray-600 placeholder-gray-400 text-base border border-gray-400`}
+                  type="file"
+                  {...register("img")}
+                  // error={errors.img?.message}
+                />
+              </label>
+              <div
+                className="w-40 bg-secondary rounded-md font-semibold flex justify-center items-center cursor-pointer"
+                onClick={() => document.getElementById("img").click()}
+              >
+                Choose File
+              </div>
+            </div>
             <div className="flex w-full items-center gap-5">
               <div className="w-[50%]">
                 <FormInput

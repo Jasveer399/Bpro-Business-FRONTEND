@@ -6,9 +6,8 @@ const TextareaInput = React.forwardRef(
       <div className="relative">
         <textarea
           ref={ref}
-          className={`w-full px-3 py-[7px] bg-white rounded-xl focus:outline-none transition-shadow duration-200 ease-in-out
-                    shadow-[0_6px_15px_rgba(0,0,0,0.25)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.25)]
-                    text-gray-600 placeholder-gray-400 text-base border-none`}
+          className={`w-full px-3 py-3 bg-white rounded-md focus:outline-none transition-shadow duration-200 ease-in-out
+                      text-gray-600 placeholder-gray-400 text-base border border-gray-400`}
           placeholder={label}
           {...props}
         />

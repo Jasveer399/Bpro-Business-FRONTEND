@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "../../Components/Home/Navbar";
 import Header from "../../Components/Home/Header";
 import PopularSearches from "../../Components/Home/PopularSearches";
@@ -7,8 +7,21 @@ import Footer from "../../Components/Home/Footer";
 import Advertisement from "../../Components/Home/Advertisement";
 import LatestArticles from "../../Components/Home/LatestArticles";
 import ShopsCategory from "../../Components/Home/ShopsCategory";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchBannerCategoryAsync } from "../../../Redux/Features/bannersCategorySlice";
 
 function Home() {
+  const dispatch = useDispatch();
+  const { bannersCategory, status, error } = useSelector(
+    (state) => state.bannersCategory
+  );
+
+  useEffect(() => {
+    if (status === "idle") {
+      dispatch(fetchBannerCategoryAsync());
+    }
+  }, [status, dispatch]);
+
   const articleData = [
     {
       time: "10 hours ago",
@@ -43,15 +56,18 @@ function Home() {
                 className="w-full md:w-[54%] h-auto"
                 isLeft={true}
                 isButtonShow={true}
+                banners={bannersCategory[0]?.Banners}
               />
               <div className="flex gap-3 md:gap-5 w-full md:w-[41%]">
                 <Advertisement
                   className="w-1/2 md:w-1/2 rounded-md"
                   isLeft={false}
+                  banners={bannersCategory[1]?.Banners}
                 />
                 <Advertisement
                   className="w-1/2 md:w-1/2 rounded-md"
                   isLeft={false}
+                  banners={bannersCategory[2]?.Banners}
                 />
               </div>
             </div>
@@ -61,10 +77,11 @@ function Home() {
           {/* Right side content */}
           <div className="w-full md:w-1/4">
             <LatestArticles articles={articleData} />
-            <img
-              src="/SaleBanear.png"
-              className="w-full md:w-72 h-40 mt-6 object-cover"
-              alt="Sale Banner"
+            <Advertisement
+              className="w-full md:w-[100%] h-auto"
+              isLeft={true}
+              isButtonShow={true}
+              banners={bannersCategory[4]?.Banners}
             />
           </div>
         </div>

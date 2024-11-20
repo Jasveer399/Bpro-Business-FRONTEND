@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addBannerAsync } from "../../../Redux/Features/bannersSlice";
 import { ImageUp, X } from "lucide-react";
 
-function AddBannerForm({ closeDialog }) {
+function AddBannerForm({ closeDialog, categoryId }) {
   const dispatch = useDispatch();
   const { status } = useSelector((state) => state.banners);
   const [imageContainer, setImageContainer] = useState({ file: null });
@@ -35,6 +35,7 @@ function AddBannerForm({ closeDialog }) {
     }
     formData.append("status", data.status);
     formData.append("externalUrl", data.externalUrl);
+    formData.append("categoryId", categoryId);
 
     try {
       await dispatch(addBannerAsync(formData)).unwrap();

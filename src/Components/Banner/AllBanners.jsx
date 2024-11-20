@@ -1,24 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { PencilIcon, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
-import {
-  deleteBannerAsync,
-  fetchBannersAsync,
-} from "../../Redux/Features/bannersSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { deleteBannerAsync } from "../../Redux/Features/bannersSlice";
+import { useDispatch } from "react-redux";
 import Dialog from "../../ui/Dialog";
 import EditBannerForm from "../Forms/Banner/EditBannerForm";
 
-const AllBanners = () => {
+const AllBanners = ({ banners, categoryId }) => {
   const dispatch = useDispatch();
-  const { banners, status, error } = useSelector((state) => state.banners);
   const [selectedBanner, setSelectedBanner] = useState();
-
-  useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchBannersAsync());
-    }
-  }, [status, dispatch]);
 
   const deleteHandler = async (id) => {
     try {
@@ -90,7 +80,7 @@ const AllBanners = () => {
                       height="h-[65%]"
                     >
                       <EditBannerForm banner={selectedBanner} />
-                    </Dialog> 
+                    </Dialog>
                     <button
                       className="flex justify-center items-center gap-1 font-semibold text-white bg-[#FE043C] py-2 px-3 text-sm rounded-md"
                       onClick={() => deleteHandler(banner.id)}

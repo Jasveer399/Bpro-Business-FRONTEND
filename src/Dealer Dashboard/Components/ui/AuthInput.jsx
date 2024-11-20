@@ -1,11 +1,10 @@
 import React from "react";
 
-const FormInput = React.forwardRef(
-  ({ label, width="w-[25%]", error, readOnly, ...props }, ref) => {
+const AuthInput = React.forwardRef(
+  ({ label, width, error, readOnly, ...props }, ref) => {
     return (
       <div className={width}>
         <div className="relative">
-            {/* <h1 className="text-sm ml-2 mb-px text-gray-600">{label}</h1> */}
           <input
             ref={ref}
             readOnly={readOnly}
@@ -22,4 +21,4 @@ const FormInput = React.forwardRef(
   }
 );
 
-export default FormInput;
+export default AuthInput;

@@ -1,6 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { addBanner, updateBanner, deleteBanner, getAllBanner } from "../../Utils/server";
+import {
+  addBanner,
+  updateBanner,
+  deleteBanner,
+  getAllBanner,
+  getAllBannerCategory,
+} from "../../Utils/server";
 
 // Thunk for adding a new banner
 export const addBannerAsync = createAsyncThunk(
@@ -116,7 +122,9 @@ const bannersSlice = createSlice({
       })
       .addCase(updateBannerAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        const index = state.banners.findIndex(banner => banner.id === action.payload.id);
+        const index = state.banners.findIndex(
+          (banner) => banner.id === action.payload.id
+        );
         if (index !== -1) {
           state.banners[index] = action.payload;
         }
@@ -131,12 +139,14 @@ const bannersSlice = createSlice({
       })
       .addCase(deleteBannerAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.banners = state.banners.filter(banner => banner.id !== action.payload);
+        state.banners = state.banners.filter(
+          (banner) => banner.id !== action.payload
+        );
       })
       .addCase(deleteBannerAsync.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
-      });
+      })
   },
 });
 
