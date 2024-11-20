@@ -21,6 +21,7 @@ import BannersCategory from "./Pages/Banner/BannersCategory";
 import DealerRegister from "./Dealer Dashboard/Pages/Auth/DealerRegister";
 import DealerLogin from "./Dealer Dashboard/Pages/Auth/DealerLogin";
 import ContactUs from "./Dealer Dashboard/Pages/Contact Us/ContactUs";
+import AboutUs from "./Dealer Dashboard/Pages/About Us/AboutUs";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
         </Route>
         <Route path="/home" element={<Home />} />
         <Route path="/pricing" element={<Pricing />} />
+        <Route path="/about-us" element={<AboutUs />} />
         <Route path="/sellProduct" element={<SellProduct />} />
         <Route path="/Allblogs" element={<Allblogs />} />
         <Route path="/BlogDetails/:id" element={<BlogDetails />} />
