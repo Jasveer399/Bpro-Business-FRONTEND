@@ -29,8 +29,8 @@ function Blogs() {
                     trigger={
                         <button className='bg-blue rounded-md py-1 px-3 flex justify-center font-semibold text-white gap-2'>Add Blogs</button>
                     }
-                    width="w-[40%]"
-                    height="h-[80%]"
+                    width="w-[80%]"
+                    height="h-[98%]"
                 >
                     <AddBlogsForm />
                 </Dialog>

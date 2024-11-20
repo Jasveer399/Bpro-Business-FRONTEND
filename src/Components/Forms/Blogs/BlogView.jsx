@@ -67,10 +67,8 @@ const BlogView = () => {
 
             <Divider className="mb-6" />
 
-            <Typography variant="body1" className="text-lg leading-relaxed mb-8 text-gray-700 dark:text-gray-200">
-                {currentBlog.content}
-            </Typography>
-
+            <Typography variant="body1" className="text-lg leading-relaxed mb-8 text-gray-700 dark:text-gray-200" dangerouslySetInnerHTML={{ __html: currentBlog.content }} />
+            
             <Divider className="mb-6" />
 
             <div className="flex items-center justify-between">

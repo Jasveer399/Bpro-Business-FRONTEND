@@ -7,6 +7,8 @@ import TextareaInput from "../../../ui/TextareaInput";
 import { addBlogAsync } from "../../../Redux/Features/blogsSlice";
 import Loader from "../../../ui/Loader";
 import ChipsInput from "./ChipsInput";
+import { TextAreaEditor } from "../../../ui/TextAreaEditor"
+import { Alert, AlertTitle} from "@mui/material";
 
 
 const AddBlogsForm = ({ closeDialog }) => {
@@ -14,9 +16,11 @@ const AddBlogsForm = ({ closeDialog }) => {
   const [tags, setTags] = useState([]);
   const [imageContainers, setImageContainers] = useState([{ id: 0, file: null }]);
   const [notification, setNotification] = useState(null);
-
+  const [blogContent, setBlogContent] = useState('');
   const { status, error } = useSelector((state) => state.blogs);
   const isSubmitting = status === 'loading';
+
+  console.log("blogContent =>", blogContent);
 
   const {
     register,
@@ -72,7 +76,7 @@ const AddBlogsForm = ({ closeDialog }) => {
     const formData = new FormData();
     formData.append('blogname', data.blogname);
     formData.append('blogtags', JSON.stringify(tags));
-    formData.append('blogContent', data.blogContent);
+    formData.append('blogContent', blogContent);
     formData.append('status', data.status);
 
     // Append each file to FormData
@@ -102,7 +106,7 @@ const AddBlogsForm = ({ closeDialog }) => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-8 bg-white rounded-xl">
+    <div className="w-full mx-auto p-8 bg-white rounded-xl">
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-gray-800">Create New Blog Post</h2>
       </div>
@@ -112,7 +116,7 @@ const AddBlogsForm = ({ closeDialog }) => {
           className={`mb-6 ${notification.type === 'error' ? 'bg-red-50' : 'bg-green-50'}`}
           onClick={() => setNotification(null)}
         >
-          <AlertDescription>{notification.message}</AlertDescription>
+          <h1>{notification.message}</h1>
         </Alert>
       )}
 
@@ -128,8 +132,9 @@ const AddBlogsForm = ({ closeDialog }) => {
             error={errors.blogname?.message}
           />
 
+          <TextAreaEditor onChange={setBlogContent}/>
 
-          <TextareaInput
+          {/* <TextareaInput
             label="Write your blog content here..."
             width="w-full"
             {...register("blogContent", {
@@ -138,7 +143,7 @@ const AddBlogsForm = ({ closeDialog }) => {
             })}
             error={errors.blogContent?.message}
             rows={6}
-          />
+          /> */}
           <ChipsInput
             value={tags}
             onChange={setTags}

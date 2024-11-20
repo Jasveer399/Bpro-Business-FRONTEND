@@ -2,54 +2,67 @@ import React from "react";
 import Navbar from "../../Components/Home/Navbar";
 import Header from "../../Components/Home/Header";
 import Footer from "../../Components/Home/Footer";
+import { GoCheck, GoX } from "react-icons/go";
 
 function Pricing() {
-  const pricingPlans = [
+  const firstPricingPlans = [
     {
-      price: "0.00",
-      title: "Free",
+      duration: "For One Year",
+      package: "Basic Package",
+      listing: "for 5 listings in the package",
+      firstPrice: "71.09",
+      secondPrice: "35.54",
+      premimumFeatures: ["Sticky", "Featured"],
       features: [
-        "Free Ad Posting",
-        "0 Feature Ad",
-        "100% Secure",
-        "Custom Reviews",
-        "24/7 support",
+        "Up to 2 categories",
+        "1 location",
+        "Up to 5 images",
+        "No videos",
       ],
     },
     {
-      price: "19",
-      title: "Premium",
+      duration: "For One Year",
+      package: "Standard Package",
+      listing: "for 15 listings in the package",
+      firstPrice: "118.49",
+      secondPrice: "59.24",
+      premimumFeatures: ["Sticky", "Featured"],
       features: [
-        "Featured Ad Posting",
-        "20 Feature Ad",
-        "100% Secure",
-        "Custom Reviews",
-        "24/7 support",
+        "Up to 3 categories",
+        "Up to 2 location",
+        "Up to 15 images",
+        "1 video",
       ],
     },
     {
-      price: "67",
-      title: "Silver",
+      duration: "For One Year",
+      package: "Premium Package",
+      listing: "for 30 listings in the package",
+      firstPrice: "236.99",
+      secondPrice: "118.49",
+      premimumFeatures: ["Sticky", "Featured"],
       features: [
-        "Featured Ad Posting",
-        "30 Feature Ad",
-        "100% Secure",
-        "Custom Reviews",
-        "24/7 support",
+        "Up to 5 categories",
+        "Up to 4 location",
+        "Up to 30 images",
+        "5 videos",
       ],
     },
     {
-      price: "78",
-      title: "Gold",
+      package: "Ultimate Package",
+      listing: "for 100 listings in the package",
+      firstPrice: "379.20",
+      secondPrice: "189.59",
+      premimumFeatures: ["Sticky", "Featured"],
       features: [
-        "Featured Ad Posting",
-        "50 Feature Ad",
-        "100% Secure",
-        "Custom Reviews",
-        "24/7 support",
+        "Up to 100 categories",
+        "Up to 100 location",
+        "Up to 100 images",
+        "Up to 15 videos",
       ],
     },
   ];
+
   const otherPricingPlans = [
     {
       price: "0",
@@ -77,46 +90,71 @@ function Pricing() {
     <>
       <Navbar />
       <Header />
+      {/* First Pricing Cards */}
       <div className="bg-gray-100 flex items-center mb-5 justify-center p-4 font-maven">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {pricingPlans.map((plan, index) => (
+          {firstPricingPlans.map((plan, index) => (
             <div
               key={index}
-              className="bg-white relative rounded-sm shadow-md p-0 flex flex-col items-center text-center mx-auto w-72"
+              className="bg-white relative rounded-md p-5 flex flex-col items-center text-center mx-auto w-72"
             >
-              {/* Ribbon Title */}
-              <div className="absolute top-4 -left-10 bg-[#6963ff] text-white font-semibold py-1 px-4 transform -rotate-45 shadow-lg w-28 text-sm text-center">
-                {plan.title}
+              {/* Duration */}
+              <div className="mt-3 left-0 text-center text-sm font-medium text-[#605e7e]">
+                {plan.duration}
               </div>
 
-              {/* Price */}
-              <h2 className="text-4xl font-normal text-[#605e7e] p-2 mt-8">
-                ${plan.price}
+              {/* Package */}
+              <div className="left-0 text-center text-xl font-semibold text-black">
+                {plan.package}
+              </div>
+
+              {/* Listing */}
+              <div className="w-32 left-0 text-center text-sm font-medium text-[#605e7e]">
+                {plan.listing}
+              </div>
+
+              {/* First Price */}
+              <h2 className="text-2xl font-bold border-b-8 border-[#777492] text-black mb-3 p-2 mt-2">
+                ${plan.firstPrice}
               </h2>
-              <hr className="w-full border-gray-100 mb-4" />
+
+              {/* Second Price */}
+              <h2 className="text-2xl font-bold border-b-8 border-[#777492] text-black mb-3 p-2 mt-2">
+                ${plan.secondPrice}
+              </h2>
+
+              {/* Premium Features */}
+              <ul className="text-left space-y-2 mb-2">
+                {plan.premimumFeatures.map((feature, i) => (
+                  <li
+                    key={i}
+                    className={`flex items-center space-x-2 font-medium text-md ${
+                      index < 2 ? "text-red-500" : "text-green-500"
+                    }`}
+                  >
+                    {index < 2 ? <GoX /> : <GoCheck />}
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
 
               {/* Features */}
-              <ul className="text-gray-600 space-y-2 mb-4">
-                {plan.features.map((feature, i) => {
-                  const [firstWord, ...remainingWords] = feature.split(" ");
-                  return (
-                    <li key={i} className="text-sm">
-                      <span className="text-black font-medium">
-                        {firstWord}
-                      </span>{" "}
-                      <span>{remainingWords.join(" ")}</span>
-                    </li>
-                  );
-                })}
+              <ul className="text-black font-medium capitalize text-left space-y-2 mb-7">
+                {plan.features.map((feature, i) => (
+                  <li key={i} className="text-sm">
+                    {feature}
+                  </li>
+                ))}
               </ul>
-              <hr className="w-full border-gray-100 mb-4" />
 
               {/* Button */}
               <button
-                className="bg-[#6963ff] text-white mb-3 rounded-sm py-2 px-4 hover:bg-[#5a54f8] transition"
+                className={`${
+                  plan.title === "" ? "bg-[#00e682]" : "bg-[#ff2b88]"
+                } text-white mb-3 rounded-sm py-2 px-5 hover:bg-[#5a54f8] transition border-[#ff2b88]`}
                 style={{ boxShadow: "0 -1px 0px rgba(50, 50, 50, 0.2) inset" }}
               >
-                Purchase Now
+                Select This Plan
               </button>
             </div>
           ))}
