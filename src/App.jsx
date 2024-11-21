@@ -21,6 +21,9 @@ import BannersCategory from "./Pages/Banner/BannersCategory";
 import DealerRegister from "./Dealer Dashboard/Pages/Auth/DealerRegister";
 import DealerLogin from "./Dealer Dashboard/Pages/Auth/DealerLogin";
 import ContactUs from "./Dealer Dashboard/Pages/Contact Us/ContactUs";
+import DealerLayout from "./Dealer Dashboard/Components/Dashboard/DealerLayout";
+import Listing from "./Dealer Dashboard/Pages/Dashboard/Listing";
+import EditDealerProfile from "./Dealer Dashboard/Components/Dashboard/Accounts/EditDealerProfile";
 
 function App() {
   return (
@@ -40,6 +43,13 @@ function App() {
             <Route path="/categories" element={<Category />} />
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/blogview/:id" element={<BlogView />} />
+          </Route>
+        </Route>
+        <Route>
+          <Route element={<DealerLayout />}>
+            <Route index element={<Navigate to="/my-dashboard/listing" replace />} />
+            <Route path="/my-dashboard/listing" element={<Listing />} />
+            <Route path="/my-dashboard/accounts" element={<EditDealerProfile />} />
           </Route>
         </Route>
         <Route path="/home" element={<Home />} />
