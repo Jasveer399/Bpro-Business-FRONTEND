@@ -24,6 +24,8 @@ import ContactUs from "./Dealer Dashboard/Pages/Contact Us/ContactUs";
 import DealerLayout from "./Dealer Dashboard/Components/Dashboard/DealerLayout";
 import Listing from "./Dealer Dashboard/Pages/Dashboard/Listing";
 import EditDealerProfile from "./Dealer Dashboard/Components/Dashboard/Accounts/EditDealerProfile";
+import ProductLisiting from "./Dealer Dashboard/Components/Forms/ProductLisiting";
+import AboutUs from "./Dealer Dashboard/Pages/About Us/AboutUs";
 
 function App() {
   return (
@@ -54,12 +56,14 @@ function App() {
         </Route>
         <Route path="/home" element={<Home />} />
         <Route path="/pricing" element={<Pricing />} />
+        <Route path="/about-us" element={<AboutUs />} />
         <Route path="/sellProduct" element={<SellProduct />} />
         <Route path="/Allblogs" element={<Allblogs />} />
         <Route path="/BlogDetails/:id" element={<BlogDetails />} />
         <Route path="/register" element={<DealerRegister />} />
         <Route path="/login" element={<DealerLogin />} />
         <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="/productLisiting" element={<ProductLisiting />} />
       </Routes>
     </>
   );
