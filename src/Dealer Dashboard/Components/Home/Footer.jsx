@@ -1,74 +1,89 @@
 import React from "react";
 import FooterInput from "../../../ui/FooterInput";
+import { VscWorkspaceTrusted } from "react-icons/vsc";
+import { RiShieldStarLine } from "react-icons/ri";
+import { TfiHeadphoneAlt } from "react-icons/tfi";
 
 function Footer() {
   const footerBoxes = [
     {
-      icon: "/footerIcon3.png",
+      icon: <RiShieldStarLine className="text-4xl text-white mb-3" />,
       title1: "Trusted",
       title2: "Platform",
     },
     {
-      icon: "/footerIcon2.png",
+      icon: <VscWorkspaceTrusted className="text-4xl text-white mb-3" />,
       title1: "Safe &",
       title2: "Secure",
     },
     {
-      icon: "/footerIcon1.png",
+      icon: <TfiHeadphoneAlt className="text-4xl text-white mb-3" />,
       title1: "Quick",
       title2: "Assistance",
     },
   ];
 
   return (
-    <div className="flex flex-wrap gap-8 p-6 bg-gray-100 font-montserrat max-w-6xl mx-auto">
-      {/* First Column */}
-      <div className="flex-1 min-w-[250px] md:max-w-xs">
-        <h3 className="text-2xl md:text-3xl font-semibold mb-2">We Connect</h3>
-        <p className="font-bold text-3xl md:text-4xl mb-2">Buyers & Sellers</p>
-        <p className="text-[#6A6A6A] my-3 text-sm md:text-base leading-relaxed">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
-          since the 1500s.
-        </p>
-      </div>
-
-      {/* Footer Boxes */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6 md:mt-10 w-full max-w-lg mx-auto">
-        {footerBoxes.map((box, index) => (
-          <div
-            key={index}
-            className="flex flex-col items-center justify-center bg-white shadow-md p-4 rounded-md w-full"
-          >
-            <img
-              src={box.icon}
-              className="w-12 md:w-14 mb-2"
-              alt={box.title1}
-            />
-            <h1 className="font-semibold text-sm md:text-base">{box.title1}</h1>
-            <h1 className="font-semibold text-sm md:text-base">{box.title2}</h1>
+    <div className="bg-black text-white w-full py-10 font-montserrat">
+      {/* Footer Container */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Top Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          {/* Left Column */}
+          <div className="text-center lg:text-left">
+            <h3 className="text-3xl font-semibold mb-2">We Connect</h3>
+            <p className="font-bold text-4xl mb-4">Buyers & Sellers</p>
+            <p className="text-gray-400 text-sm leading-relaxed">
+              We offer a platform where you can establish your business with
+              just one click and connect with the whole world to meet the
+              specific needs of every person.
+            </p>
           </div>
-        ))}
-      </div>
 
-      {/* Second and Third Columns */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full mt-8">
-        {/* Second Column */}
-        <div className="flex flex-col items-center">
-          <h3 className="text-lg font-semibold mb-2">Tell Us What You Need</h3>
-          <FooterInput
-            width="w-full max-w-md lg:max-w-lg"
-            placeholder="Enter Your Service Name..."
-          />
+          {/* Middle Column */}
+          <div className="flex justify-center lg:justify-around gap-4 flex-wrap">
+            {footerBoxes.map((box, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center text-center bg-gray-800 p-4 rounded-md shadow-md w-32 sm:w-40"
+              >
+                {box.icon}
+                <h1 className="font-semibold text-sm sm:text-base">
+                  {box.title1}
+                </h1>
+                <h1 className="font-semibold text-sm sm:text-base">
+                  {box.title2}
+                </h1>
+              </div>
+            ))}
+          </div>
+
+          {/* Right Column */}
+          <div className="flex flex-col space-y-6">
+            <div>
+              <h3 className="text-lg font-semibold mb-2">
+                Tell Us What You Need
+              </h3>
+              <FooterInput
+                width="w-full"
+                placeholder="Enter Your Service Name..."
+                className="bg-gray-800 text-white"
+              />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-2">Contact Us</h3>
+              <FooterInput
+                width="w-full"
+                placeholder="Contact Number..."
+                className="bg-gray-800 text-white"
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Third Column */}
-        <div className="flex flex-col items-center">
-          <h3 className="text-lg font-semibold mb-2">Contact Us</h3>
-          <FooterInput
-            width="w-full max-w-md lg:max-w-lg"
-            placeholder="Contact Number..."
-          />
+        {/* Bottom Section */}
+        <div className="mt-10 text-center text-sm text-gray-400">
+          <p>© 2024 Your Company. All rights reserved.</p>
         </div>
       </div>
     </div>
