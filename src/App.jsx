@@ -21,6 +21,7 @@ import BannersCategory from "./Pages/Banner/BannersCategory";
 import DealerRegister from "./Dealer Dashboard/Pages/Auth/DealerRegister";
 import DealerLogin from "./Dealer Dashboard/Pages/Auth/DealerLogin";
 import ContactUs from "./Dealer Dashboard/Pages/Contact Us/ContactUs";
+import ProductLisiting from "./Dealer Dashboard/Components/Forms/ProductLisiting";
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
         <Route path="/register" element={<DealerRegister />} />
         <Route path="/login" element={<DealerLogin />} />
         <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="/productLisiting" element={<ProductLisiting />} />
       </Routes>
     </>
   );
