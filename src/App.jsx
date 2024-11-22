@@ -26,6 +26,7 @@ import Listing from "./Dealer Dashboard/Pages/Dashboard/Listing";
 import EditDealerProfile from "./Dealer Dashboard/Components/Dashboard/Accounts/EditDealerProfile";
 import ProductLisiting from "./Dealer Dashboard/Components/Forms/ProductLisiting";
 import AboutUs from "./Dealer Dashboard/Pages/About Us/AboutUs";
+import Bookmark from "./Dealer Dashboard/Pages/Dashboard/Bookmark";
 
 function App() {
   return (
@@ -49,9 +50,16 @@ function App() {
         </Route>
         <Route>
           <Route element={<DealerLayout />}>
-            <Route index element={<Navigate to="/my-dashboard/listing" replace />} />
+            <Route
+              index
+              element={<Navigate to="/my-dashboard/listing" replace />}
+            />
             <Route path="/my-dashboard/listing" element={<Listing />} />
-            <Route path="/my-dashboard/accounts" element={<EditDealerProfile />} />
+            <Route
+              path="/my-dashboard/accounts"
+              element={<EditDealerProfile />}
+            />
+            <Route path="/my-dashboard/bookmarks" element={<Bookmark />} />
           </Route>
         </Route>
         <Route path="/home" element={<Home />} />
