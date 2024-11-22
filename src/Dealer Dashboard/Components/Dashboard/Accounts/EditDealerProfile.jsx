@@ -16,44 +16,114 @@ function EditDealerProfile() {
     { label: "Option 2", value: "option2" },
     { label: "Option 3", value: "option3" },
   ];
+
   return (
-    <>
-      <div>
-        <div>
-          <img src="auth-img.png" className="w-52 h-52 rounded-full" />
-        </div>
-        <div>
+    <div className="flex h-screen bg-gray-100">
+      {/* Left Section: Image and Account Settings */}
+      <div className="w-full md:w-1/3 bg-white p-6 flex flex-col items-center">
+        {/* Profile Image */}
+        <img
+          src="auth-img.png"
+          alt="Profile"
+          className="w-32 h-32 md:w-64 md:h-64 rounded-full shadow-lg object-cover mb-6"
+        />
+
+        {/* Change Password */}
+        <div className="w-full mb-6">
+          <h2 className="text-lg font-bold text-gray-800 mb-4">
+            Change Password
+          </h2>
           <form>
-            <div className="flex items-center gap-4">
-              <FormInput
-                label="First Name"
-                type="text"
-                {...register("firstName", {
-                  required: "First Name is required",
-                })}
-                error={errors.firstName?.message}
-                width="w-96"
-              />
-              <FormInput
-                label="Last Name"
-                type="text"
-                {...register("lastName", {
-                  required: "Last Name is required",
-                })}
-                error={errors.lastName?.message}
-                width="w-96"
-              />
-            </div>
-            <div className="flex items-center gap-4">
-              <FormInput
-                label="NickName"
-                type="text"
-                {...register("nickname", {
-                  required: "Nick Name is required",
-                })}
-                error={errors.nickname?.message}
-                width="w-96"
-              />
+            <FormInput
+              label="Current Password"
+              type="password"
+              {...register("currentPassword", {
+                required: "Current Password is required",
+              })}
+              error={errors.currentPassword?.message}
+              width="w-full"
+            />
+            <FormInput
+              label="New Password"
+              type="password"
+              {...register("newPassword", {
+                required: "New Password is required",
+                minLength: {
+                  value: 6,
+                  message: "Password must be at least 6 characters long",
+                },
+              })}
+              error={errors.newPassword?.message}
+              width="w-full"
+            />
+            <button
+              type="submit"
+              className="bg-[#EB6752] w-full py-2 mt-4 rounded-md text-white font-semibold hover:bg-[#191A1F] transition-colors duration-300"
+            >
+              Change Password
+            </button>
+          </form>
+        </div>
+
+        {/* Close Your Account */}
+        <div className="w-full">
+          <h2 className="text-lg font-bold text-gray-800 mb-4">
+            Close Your Account
+          </h2>
+          <p className="text-sm text-gray-600 mb-4">
+            Deleting your account will remove all your data permanently. This
+            action cannot be undone.
+          </p>
+          <button
+            type="button"
+            className="bg-red-600 w-full py-2 rounded-md text-white font-semibold hover:bg-red-700 transition-colors duration-300"
+          >
+            Close Your Account
+          </button>
+        </div>
+      </div>
+
+      {/* Right Section: Form */}
+      <div className="w-2/3 bg-white p-8">
+        <h1 className="text-3xl font-bold mb-6 text-gray-800">Edit Profile</h1>
+        <form>
+          {/* Row 1: First Name & Last Name */}
+          <div className="flex items-center gap-6 mb-6">
+            <FormInput
+              label="First Name"
+              type="text"
+              {...register("firstName", {
+                required: "First Name is required",
+              })}
+              error={errors.firstName?.message}
+              width="w-full"
+            />
+            <FormInput
+              label="Last Name"
+              type="text"
+              {...register("lastName", {
+                required: "Last Name is required",
+              })}
+              error={errors.lastName?.message}
+              width="w-full"
+            />
+          </div>
+
+          {/* Row 2: Nickname & Dropdown */}
+          <div className="flex items-center gap-6 mb-6">
+            <FormInput
+              label="Nickname (required)"
+              type="text"
+              {...register("nickname", {
+                required: "Nick Name is required",
+              })}
+              error={errors.nickname?.message}
+              width="w-full"
+            />
+            <div className="w-full">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Display to Public as
+              </label>
               <Controller
                 name="Display to Public as"
                 control={control}
@@ -62,106 +132,112 @@ function EditDealerProfile() {
                   <SelectInput
                     label="Select One Option"
                     options={allOptions}
-                    onChange={(option) => {
-                      field.onChange(option.value);
-                    }}
+                    onChange={(option) => field.onChange(option.value)}
                     error={error?.message}
-                    width="w-96"
+                    width="w-full"
                     value={field.value}
                   />
                 )}
               />
             </div>
-            <div className="flex items-center gap-4">
-              <FormInput
-                label="Phone Number"
-                type="number"
-                {...register("phoneNo", {
-                  required: "Phone Number is required",
-                })}
-                error={errors.phoneNo?.message}
-                width="w-96"
-              />
-              <FormInput
-                label="Whatsapp Number"
-                type="number"
-                {...register("whatsappNo", {
-                  required: "Whatsapp Number is required",
-                })}
-                error={errors.whatsappNo?.message}
-                width="w-96"
-              />
-            </div>
-            <div className="flex items-center gap-4">
-              <TextareaInput
-                label="Biography here..."
-                width="w-96"
-                {...register("biography", {
-                  required: "Biography is required",
-                  minLength: {
-                    value: 10,
-                    message: "Content must be at least 50 characters",
-                  },
-                })}
-                error={errors.biography?.message}
-                rows={6}
-              />
-              <TextareaInput
-                label="Public Address here..."
-                width="w-96"
-                {...register("publicAddress", {
-                  required: "pPublic Address is required",
-                  minLength: {
-                    value: 10,
-                    message: "Content must be at least 50 characters",
-                  },
-                })}
-                error={errors.publicAddress?.message}
-                rows={6}
-              />
-            </div>
-            <div className="flex items-center gap-4">
-              <FormInput
-                label="Facebook Link"
-                type="text"
-                {...register("facebook")}
-                error={errors.facebook?.message}
-                width="w-96"
-              />
-              <FormInput
-                label="Twitter Link"
-                type="text"
-                {...register("twitter")}
-                error={errors.twitter?.message}
-                width="w-96"
-              />
-            </div>
-            <div className="flex items-center gap-4">
-              <FormInput
-                label="Instagram Link"
-                type="text"
-                {...register("instagram")}
-                error={errors.instagram?.message}
-                width="w-96"
-              />
-              <FormInput
-                label="Youtube Link"
-                type="text"
-                {...register("youtube")}
-                error={errors.youtube?.message}
-                width="w-96"
-              />
-            </div>
-              <button
-                type="submit"
-                className="bg-[#EB6752] rounded-md text-white py-2 px-6 hover:bg-[#191A1F] transform duration-300 ease-in-out font-semibold shadow-md"
-              >
-                Update Profile
-              </button>
-          </form>
-        </div>
+          </div>
+
+          {/* Row 3: Phone & WhatsApp */}
+          <div className="flex items-center gap-6 mb-6">
+            <FormInput
+              label="Phone Number"
+              type="number"
+              {...register("phoneNo", {
+                required: "Phone Number is required",
+              })}
+              error={errors.phoneNo?.message}
+              width="w-full"
+            />
+            <FormInput
+              label="WhatsApp Number"
+              type="number"
+              {...register("whatsappNo", {
+                required: "WhatsApp Number is required",
+              })}
+              error={errors.whatsappNo?.message}
+              width="w-full"
+            />
+          </div>
+
+          {/* Row 4: Biography & Public Address */}
+          <div className="flex items-center gap-6 mb-6">
+            <TextareaInput
+              label="Biography here..."
+              {...register("biography", {
+                required: "Biography is required",
+                minLength: {
+                  value: 10,
+                  message: "Content must be at least 50 characters",
+                },
+              })}
+              error={errors.biography?.message}
+              rows={6}
+              width="w-full"
+            />
+            <TextareaInput
+              label="Public Address here..."
+              {...register("publicAddress", {
+                required: "Public Address is required",
+                minLength: {
+                  value: 10,
+                  message: "Content must be at least 50 characters",
+                },
+              })}
+              error={errors.publicAddress?.message}
+              rows={6}
+              width="w-full"
+            />
+          </div>
+
+          {/* Row 5: Social Media Links */}
+          <div className="flex items-center gap-6 mb-6">
+            <FormInput
+              label="Facebook Link"
+              type="text"
+              {...register("facebook")}
+              error={errors.facebook?.message}
+              width="w-full"
+            />
+            <FormInput
+              label="Twitter Link"
+              type="text"
+              {...register("twitter")}
+              error={errors.twitter?.message}
+              width="w-full"
+            />
+          </div>
+
+          <div className="flex items-center gap-6 mb-6">
+            <FormInput
+              label="Instagram Link"
+              type="text"
+              {...register("instagram")}
+              error={errors.instagram?.message}
+              width="w-full"
+            />
+            <FormInput
+              label="YouTube Link"
+              type="text"
+              {...register("youtube")}
+              error={errors.youtube?.message}
+              width="w-full"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="bg-[#EB6752] w-full py-3 rounded-md text-white font-semibold hover:bg-[#191A1F] transition-colors duration-300"
+          >
+            Update Profile
+          </button>
+        </form>
       </div>
-    </>
+    </div>
   );
 }
 
