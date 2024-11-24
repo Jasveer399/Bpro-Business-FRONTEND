@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { X } from 'lucide-react';
 
-const ChipsInput = ({ value = [], onChange, label = "Input Chips", maxChips = 15, error }) => {
+const ChipsInput = ({ value = [], onChange, label = "Input Chips", maxChips = 15, error,className }) => {
   const [chips, setChips] = useState(value);
 
   const handleKeyDown = (e) => {
@@ -24,15 +24,15 @@ const ChipsInput = ({ value = [], onChange, label = "Input Chips", maxChips = 15
   };
 
   return (
-    <div className="w-72">
+    <div className={className}>
       <h1 className="text-sm ml-2 mb-px text-gray-600">{label}</h1>
-      <div className="w-full px-3 py-[7px] bg-white rounded-xl shadow-[0_6px_15px_rgba(0,0,0,0.25)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.25)] min-h-[42px] flex flex-wrap gap-2">
+      <div className="w-full px-3 py-3 bg-white rounded-lg border border-gray-400 min-h-[42px] flex flex-wrap gap-2">
         {chips.map((chip, index) => (
-          <span key={index} className="inline-flex items-center px-2 py-1 rounded-lg text-sm bg-blue-100 text-white bg-darkPrimary">
+          <span key={index} className="inline-flex items-center px-2 py-1 rounded-md text-sm bg-blue-100 text-white bg-gray-400">
             {chip}
             <button
               onClick={() => removeChip(index)}
-              className="ml-1 hover:text-blue-600"
+              className="ml-1 hover:text-black"
             >
               <X size={14} />
             </button>

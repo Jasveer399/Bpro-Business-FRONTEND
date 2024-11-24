@@ -12,6 +12,15 @@ import { MdAlternateEmail } from "react-icons/md";
 import { TextAreaEditor } from '../../../ui/TextAreaEditor';
 import TextareaInput from '../../../ui/TextareaInput';
 import { ImageUp, Plus, X } from 'lucide-react';
+import TimeSelectorHour_Minutes from '../../../ui/TimeSelectorHour_Minutes';
+import TimePicker from '../../../ui/TimePicker';
+import ChipsInput from '../../../Components/Forms/Blogs/ChipsInput';
+import axios from 'axios';
+import { createProduct } from '../../../Utils/server';
+import { useDispatch, useSelector } from 'react-redux';
+import { addProductAsync } from '../../../Redux/Features/productSlice';
+import Snackbars from '../../../ui/Snackbars';
+import Loader from '../../../ui/Loader';
 
 
 
@@ -21,23 +30,122 @@ function ProductLisiting() {
     handleSubmit,
     register,
     control,
+    setValue,
+    reset,
     watch,
   } = useForm({
     defaultValues: {
       status: "active",
+      time: "",
+      dayStartTime: "",
+      dayEndTime: "",
     },
   });
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedDay, setSelectedDay] = useState();
   const [description, setDescription] = useState('');
   const [imageContainers, setImageContainers] = useState([{ id: 0, file: null }]);
+  const [tags, setTags] = useState([]);
+  const [notification, setNotification] = useState(null);
+  const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
+  const dispatch = useDispatch();
+  const { status, error } = useSelector((state) => state.products);
+  const isSubmitting = status === 'loading';
+
   const options = [
     { label: "Hotel & Restaurant", value: "hotel&restaurant" },
     { label: "Grocery", value: "grocery" },
     { label: "Lift & Elevators", value: "lift&elevators", },
   ];
-  const addProductLisitingHandler = async (data) => {
-    console.log("addProductLisitingHandler: ========", data);
+  const addProductLisitingHandler = async (formData) => {
+    try {
+      const formDataToSend = new FormData();
+
+      // Add basic form fields
+      formDataToSend.append('title', formData.title);
+      formDataToSend.append('status', formData.status);
+      formDataToSend.append('date', formData.date);
+      formDataToSend.append('time', formData.time);
+
+      // Add tags
+      tags.forEach((tag, index) => {
+        formDataToSend.append(`tags[${index}]`, tag);
+      });
+
+      // Add selected categories
+      selectedCategories.forEach((category, index) => {
+        formDataToSend.append(`categories[${index}]`, category.value);
+      });
+
+      // Add timing details
+      formDataToSend.append('selectedDay', selectedDay);
+      formDataToSend.append('dayStartTime', formData.dayStartTime);
+      formDataToSend.append('dayEndTime', formData.dayEndTime);
+      formDataToSend.append('customTiming', formData.customTiming);
+
+      // Add pricing details
+      formDataToSend.append('currencySymbol', formData.currencysymbol);
+      formDataToSend.append('insertprice', formData.insertprice);
+      formDataToSend.append('priceOption', formData.priceOption);
+
+      // Add payment methods
+      PaymentOptions.forEach(option => {
+        if (formData[option.value]) {
+          formDataToSend.append(`paymentMethods[]`, option.value);
+        }
+      });
+
+      // Add contact information
+      formDataToSend.append('phone', formData.phone);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('url', formData.url);
+      formDataToSend.append('viewOurSite', formData.viewoursite);
+
+      // Add description and summary
+      formDataToSend.append('description', description);
+      formDataToSend.append('summary', formData.summary);
+
+      // Add images
+      imageContainers.forEach((container, index) => {
+        if (container.file) {
+          formDataToSend.append(`images`, container.file);
+        }
+      });
+
+      // Add address details
+      formDataToSend.append('country', formData.country);
+      formDataToSend.append('addressLine1', formData.addressline1);
+      formDataToSend.append('addressLine2', formData.addressline2);
+      formDataToSend.append('zipCode', formData.zipcode);
+      formDataToSend.append('additionalInfo', formData.additionalinfo);
+
+      const response = await dispatch(addProductAsync(formDataToSend));
+      if (addProductAsync.fulfilled.match(response)) {
+        setSnackbar({
+          open: true,
+          type: "success",
+          text: response.payload.message,
+        });
+        reset(); // Reset form
+        setTags([]); // Reset tags
+        setImageContainers([{ id: 0, file: null }]); // Reset images
+      } else {
+        setSnackbar({
+          open: true,
+          type: "error",
+          text: response.error.message,
+        });
+        throw new Error(resultAction.error.message);
+      }
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        type: "error",
+        text: error.message,
+      });
+    }
+
+
   }
 
   const handleImageUpload = (e, id) => {
@@ -148,6 +256,22 @@ function ProductLisiting() {
       value: "giftsertificate",
     }
   ]
+
+  const StatusOpstions = [
+    {
+      value: "forSale",
+      label: "For Sale"
+    },
+    {
+      value: "forRent",
+      label: "For Rent"
+    },
+    {
+      value: "wanted",
+      label: "Wanted"
+    }
+
+  ]
   return (
     <>
       <Navbar />
@@ -167,24 +291,35 @@ function ProductLisiting() {
               error={errors.title?.message}
               width="w-[90%]"
             />
-            <FormInput
+            <ChipsInput
+              value={tags}
+              onChange={setTags}
               label="Listing Tags"
-              type="text"
-              {...register("listingTags", {
-                required: "Listing Tags is required",
-              })}
-              error={errors.title?.message}
-              width="w-[90%]"
+              className='w-[90%]'
+              maxChips={5}
+              error={errors.tags?.message}
             />
-            <FormInput
-              label="Status"
-              type="text"
-              {...register("status", {
-                required: "Status is required",
-              })}
-              error={errors.title?.message}
-              width="w-[90%]"
-            />
+            <div className='w-[90%]'>
+              <label htmlFor="status">Status</label>
+              <Controller
+                name="status"
+                control={control}
+                rules={{ required: "status is required" }}
+                render={({ field, fieldState: { error } }) => (
+                  <SelectInput
+                    label="Select Status"
+                    options={StatusOpstions}
+                    onChange={(option) => {
+                      field.onChange(option.value);
+                      // handlePartyChange(option);
+                    }}
+                    error={error?.message}
+                    width="w-full"
+                    value={field.value}
+                  />
+                )}
+              />
+            </div>
             <h1 className='text-[17px] font-semibold dark:border-gray-600 px-16 w-full flex flex-col gap-4'>
               Listing expiration date
               <span className='text-sm text-gray-400'>Regular users can not change expiration date. This option is available only for admins.<br /> <br />Set new expiration date and time of the listing.<br />
@@ -198,15 +333,12 @@ function ProductLisiting() {
                   required: "Status is required",
                 })}
                 error={errors.data?.message}
-                width="w-[90%]"
+                width="w-[50%]"
               />
-              {/* <FormInput
-                label="Hour"
-                type="time"
-                {...register("hour")}
-                error={errors.hour?.message}
-                width="w-[90%]"
-              /> */}
+              <TimeSelectorHour_Minutes
+                onChange={(value) => setValue('time', value)}
+                error={errors.time?.message}
+              />
             </div>
             <div className='w-[90%] flex flex-col gap-2'>
               <h1>Categories</h1>
@@ -222,6 +354,7 @@ function ProductLisiting() {
           <div className='w-full border border-gray-400 dark:border-gray-600 pb-4 sm:pb-6 mt-5 text-neutral-700 flex justify-center items-center flex-col gap-8 '>
             <h1 className='text-xl font-bold border-b border-gray-200 dark:border-gray-600 py-4 px-8 w-full'>Extra Details</h1>
             <div className='flex flex-col gap-3 w-[90%]'>
+              <label className='text-lg'>Timeings</label>
               <div className="w-full flex gap-2">
                 {weekDays.map((day, index) => (
                   <div
@@ -237,23 +370,15 @@ function ProductLisiting() {
                 ))}
               </div>
               <div className='w-full flex gap-5 items-centers relative'>
-                <FormInput
+                <TimePicker
                   label=""
-                  type="time"
-                  {...register("dayStartTime", {
-                    required: "Day Start Time is required",
-                  })}
-                  error={errors.title?.message}
-                  width="w-full"
+                  onChange={(value) => setValue('dayStartTime', value)}
+                  error={errors.time?.message}
                 />
-                <FormInput
+                <TimePicker
                   label=""
-                  type="time"
-                  {...register("dayEndTime", {
-                    required: "Day End Time is required",
-                  })}
-                  error={errors.title?.message}
-                  width="w-full"
+                  onChange={(value) => setValue('dayEndTime', value)}
+                  error={errors.time?.message}
                 />
                 <Controller
                   name="customTiming"
@@ -287,9 +412,9 @@ function ProductLisiting() {
                 width="w-[90%]"
               />
               <FormInput
-                label="Inser Price"
+                label="Insert Price"
                 type="number"
-                {...register("inserprice", {
+                {...register("insertprice", {
                   required: "Inser Price is required",
                 })}
                 error={errors.title?.message}
@@ -316,19 +441,22 @@ function ProductLisiting() {
                 />
               </div>
             </div>
-            <div className='grid grid-cols-3 gap-5 w-[90%] mt-5'>
-              {PaymentOptions.map((option, index) => (
-                <div className='flex gap-5 p-1 items-center border border-gray-400 w-full rounded-lg'>
-                  <Checkbox
-                    label=""
-                    type="checkbox"
-                    {...register(`${option.value}`)}
-                    error={errors.title?.message}
-                    width="w-10"
-                  />
-                  <h1>{option.name}</h1>
-                </div>
-              ))}
+            <div className='w-[90%]'>
+              <label className='text-lg'>Payment Options</label>
+              <div className='grid grid-cols-3 gap-5 w-full mt-5'>
+                {PaymentOptions.map((option, index) => (
+                  <div className='flex gap-5 p-1 items-center border border-gray-400 w-full rounded-lg'>
+                    <Checkbox
+                      label=""
+                      type="checkbox"
+                      {...register(`${option.value}`)}
+                      error={errors.title?.message}
+                      width="w-10"
+                    />
+                    <h1>{option.name}</h1>
+                  </div>
+                ))}
+              </div>
             </div>
             <FormInput
               label="Phone"
@@ -369,7 +497,7 @@ function ProductLisiting() {
               </div>
             </div>
             <div className='w-[90%] flex'>
-              <MdAlternateEmail size={49.5} className='border-2 border-y p-3 border-gray-400 rounded-l-md mt-[1.45rem] text-gray-500' />
+              <MdAlternateEmail size={49.7} className='border-2 border-y p-3 border-gray-400 rounded-l-md mt-[1.47rem] text-gray-500' />
               <FormInput
                 label="Email"
                 type="text"
@@ -450,7 +578,7 @@ function ProductLisiting() {
           <div className='w-full border border-gray-400 dark:border-gray-600 pb-4 sm:pb-6 mt-5 text-neutral-700 flex justify-center items-center flex-col gap-16'>
             <h1 className='text-xl font-bold border-b border-gray-200 dark:border-gray-600 py-4 px-8 w-full'>Address</h1>
             <Controller
-              name="customTiming"
+              name="country"
               control={control}
               rules={{ required: "Custom Timing is required" }}
               render={({ field, fieldState: { error } }) => (
@@ -479,9 +607,7 @@ function ProductLisiting() {
             <FormInput
               label="Address line 2"
               type="text"
-              {...register("addressline2", {
-                required: "Day Start Time is required",
-              })}
+              {...register("addressline2")}
               error={errors.addressline2?.message}
               width="w-[90%]"
             />
@@ -498,18 +624,23 @@ function ProductLisiting() {
               label="Additional info..."
               width="w-[90%]"
               {...register("additionalinfo", {
-                required: "Additional info is required",
-                minLength: { value: 10, message: "Content must be at least 50 characters" }
+                minLength: { value: 0, message: "Content must be at least 20 characters" }
               })}
               error={errors.additionalinfo?.message}
               rows={6}
             />
           </div>
-          <button className='w-32 bg-blue border-2 border-white shadow-2xl hover:shadow-inner px-6 py-3 text-lg font-bold rounded-lg text-white mb-10'>
-            save
+          <button disabled={isSubmitting} className='w-32 bg-blue border-2 border-white shadow-2xl hover:shadow-inner px-6 py-3 text-lg font-bold rounded-lg text-white mb-10'>
+            {isSubmitting ? <Loader/> : "Submit"}
           </button>
         </form>
       </div>
+      <Snackbars
+        open={snackbar.open}
+        type={snackbar.type}
+        text={snackbar.text}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
     </>
   )
 }

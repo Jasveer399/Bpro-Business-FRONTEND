@@ -95,6 +95,7 @@ const AddBlogsForm = ({ closeDialog }) => {
         setImageContainers([{ id: 0, file: null }]); // Reset images
         if (closeDialog) closeDialog();
       } else {
+        setNotification({ type: 'error', message: 'Failed to post blog!' });
         throw new Error(resultAction.error.message);
       }
     } catch (err) {
@@ -113,7 +114,7 @@ const AddBlogsForm = ({ closeDialog }) => {
 
       {notification && (
         <Alert
-          className={`mb-6 ${notification.type === 'error' ? 'bg-red-50' : 'bg-green-50'}`}
+          className={`mb-6 ${notification.type === 'error' ? 'bg-red-500' : 'bg-green-500'}`}
           onClick={() => setNotification(null)}
         >
           <h1>{notification.message}</h1>
@@ -150,6 +151,7 @@ const AddBlogsForm = ({ closeDialog }) => {
             label="Blog Tags"
             maxChips={5}
             error={errors.tags?.message}
+            className="w-72"
           />
         </div>
 
