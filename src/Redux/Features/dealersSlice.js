@@ -5,6 +5,7 @@ import {
   getAllDealers,
   createDealerAccount,
   updateDealerAccount,
+  getCurrentDealer,
   dealerLogin,
 } from "../../Utils/server";
 
@@ -18,7 +19,7 @@ export const addDealerAsync = createAsyncThunk(
           "Content-Type": "application/json",
         },
       });
-      return response.data;
+      return response.data.data;
     } catch (error) {
       console.error("Error in addDealerAsync:", error);
       return rejectWithValue(
@@ -69,11 +70,11 @@ export const fetchDealersAsync = createAsyncThunk(
 // Thunk for updating a dealer
 export const updateDealerAsync = createAsyncThunk(
   "dealers/updateDealer",
-  async ({ id, dealerData }, { rejectWithValue }) => {
+  async ({ dealerData }, { rejectWithValue }) => {
     try {
       const response = await axios.put(
         updateDealerAccount,
-        { id, dealerData },
+        { dealerData },
         {
           withCredentials: true,
           headers: {
@@ -81,7 +82,7 @@ export const updateDealerAsync = createAsyncThunk(
           },
         }
       );
-      return response.data;
+      return response.data.data;
     } catch (error) {
       console.error("Error in updateDealerAsync:", error);
       return rejectWithValue(
@@ -100,6 +101,23 @@ export const deleteDealerAsync = createAsyncThunk(
       return id;
     } catch (error) {
       console.error("Error in deleteDealerAsync:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
+export const fetchCurrentDealerAsync = createAsyncThunk(
+  "dealers/fetchCurrentDealer",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(getCurrentDealer, {
+        withCredentials: true,
+      });
+      return response.data.data;
+    } catch (error) {
+      console.error("Error fetching current dealer:", error);
       return rejectWithValue(
         error.response ? error.response.data : error.message
       );
@@ -183,6 +201,19 @@ const dealersSlice = createSlice({
       .addCase(deleteDealerAsync.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
+      })
+      // ... existing cases ...
+      .addCase(fetchCurrentDealerAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchCurrentDealerAsync.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.currentDealer = action.payload;
+      })
+      .addCase(fetchCurrentDealerAsync.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+        state.currentDealer = null;
       });
   },
 });

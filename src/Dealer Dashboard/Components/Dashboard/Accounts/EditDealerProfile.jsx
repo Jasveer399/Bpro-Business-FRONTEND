@@ -1,15 +1,30 @@
-import React from "react";
+import React, { useEffect } from "react";
 import FormInput from "../../../../ui/FormInput";
 import { Controller, useForm } from "react-hook-form";
 import SelectInput from "../../../../ui/SelectInput";
 import TextareaInput from "../../../../ui/TextareaInput";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCurrentDealerAsync } from "../../../../Redux/Features/dealersSlice";
 
 function EditDealerProfile() {
   const {
     register,
     formState: { errors },
     control,
+    setValue
   } = useForm();
+  const dispatch = useDispatch();
+  const currentDealer = useSelector(state => state.dealers.currentDealer);
+
+  useEffect(() => {
+    dispatch(fetchCurrentDealerAsync());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (currentDealer) {
+      console.log("Current dealer: ", currentDealer)
+    }
+  }, [currentDealer])
 
   const allOptions = [
     { label: "Option 1", value: "option1" },
@@ -18,17 +33,16 @@ function EditDealerProfile() {
   ];
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div>
+      <div className="flex h-screen bg-gray-100">
       {/* Left Section: Image and Account Settings */}
       <div className="w-full md:w-1/3 bg-white p-6 flex flex-col items-center">
-        {/* Profile Image */}
         <img
           src="auth-img.png"
           alt="Profile"
           className="w-32 h-32 md:w-64 md:h-64 rounded-full shadow-lg object-cover mb-6"
         />
 
-        {/* Change Password */}
         <div className="w-full mb-6">
           <h2 className="text-lg font-bold text-gray-800 mb-4">
             Change Password
@@ -237,6 +251,7 @@ function EditDealerProfile() {
           </button>
         </form>
       </div>
+    </div>
     </div>
   );
 }
