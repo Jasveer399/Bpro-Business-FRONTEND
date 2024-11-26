@@ -1,6 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { createWorkerAccount, deleteWorker, getAllWorkers, updateWorker } from "../../Utils/server";
+import {
+  createWorkerAccount,
+  deleteWorker,
+  getAllWorkers,
+  getWorkerIdAndName,
+  updateWorker,
+} from "../../Utils/server";
 
 // Thunk for adding a new worker
 export const addWorkerAsync = createAsyncThunk(
@@ -28,7 +34,9 @@ export const fetchWorkersAsync = createAsyncThunk(
   "workers/fetchWorkers",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(getAllWorkers, { withCredentials: true });
+      const response = await axios.get(getAllWorkers, {
+        withCredentials: true,
+      });
       return response.data.data;
     } catch (error) {
       console.error("Error in fetchWorkersAsync:", error);
@@ -44,16 +52,37 @@ export const updateWorkerAsync = createAsyncThunk(
   "workers/updateWorker",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-        console.log("on update worker: ", id, data)
-      const response = await axios.put(updateWorker, { id, data }, {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      console.log("on update worker: ", id, data);
+      const response = await axios.put(
+        updateWorker,
+        { id, data },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       return response.data.data;
     } catch (error) {
       console.error("Error in updateWorkerAsync:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
+export const fetchWorkerIdAndNameAsync = createAsyncThunk(
+  "workers/fetchWorkerIdAndName",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(getWorkerIdAndName, {
+        withCredentials: true,
+      });
+      return response.data.data;
+    } catch (error) {
+      console.error("Error in fetchWorkerIdAndNameAsync:", error);
       return rejectWithValue(
         error.response ? error.response.data : error.message
       );
@@ -117,7 +146,9 @@ const workersSlice = createSlice({
       })
       .addCase(updateWorkerAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        const index = state.workers.findIndex(worker => worker.id === action.payload.id);
+        const index = state.workers.findIndex(
+          (worker) => worker.id === action.payload.id
+        );
         if (index !== -1) {
           state.workers[index] = action.payload;
         }
@@ -132,9 +163,23 @@ const workersSlice = createSlice({
       })
       .addCase(deleteWorkerAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.workers = state.workers.filter(worker => worker.id !== action.payload);
+        state.workers = state.workers.filter(
+          (worker) => worker.id !== action.payload
+        );
       })
       .addCase(deleteWorkerAsync.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      // Fetch WorkerIdAndName cases
+      .addCase(fetchWorkerIdAndNameAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchWorkerIdAndNameAsync.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.workers = action.payload;
+      })
+      .addCase(fetchWorkerIdAndNameAsync.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });
