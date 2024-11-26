@@ -90,21 +90,21 @@ function EditDealerProfile() {
           {/* Row 1: First Name & Last Name */}
           <div className="flex items-center gap-6 mb-6">
             <FormInput
-              label="First Name"
+              label="Full Name"
               type="text"
-              {...register("firstName", {
-                required: "First Name is required",
+              {...register("fullName", {
+                required: "Full Name is required",
               })}
-              error={errors.firstName?.message}
+              error={errors.fullName?.message}
               width="w-full"
             />
             <FormInput
-              label="Last Name"
-              type="text"
-              {...register("lastName", {
-                required: "Last Name is required",
+              label="Email"
+              type="email"
+              {...register("email", {
+                required: "Email is required",
               })}
-              error={errors.lastName?.message}
+              error={errors.email?.message}
               width="w-full"
             />
           </div>
@@ -125,7 +125,7 @@ function EditDealerProfile() {
                 Display to Public as
               </label>
               <Controller
-                name="Display to Public as"
+                name="displayToPublic"
                 control={control}
                 rules={{ required: "Category is required" }}
                 render={({ field, fieldState: { error } }) => (
@@ -145,12 +145,12 @@ function EditDealerProfile() {
           {/* Row 3: Phone & WhatsApp */}
           <div className="flex items-center gap-6 mb-6">
             <FormInput
-              label="Phone Number"
+              label="Mobile Number"
               type="number"
-              {...register("phoneNo", {
-                required: "Phone Number is required",
+              {...register("mobileNo", {
+                required: "Mobile Number is required",
               })}
-              error={errors.phoneNo?.message}
+              error={errors.mobileNo?.message}
               width="w-full"
             />
             <FormInput
@@ -168,27 +168,27 @@ function EditDealerProfile() {
           <div className="flex items-center gap-6 mb-6">
             <TextareaInput
               label="Biography here..."
-              {...register("biography", {
+              {...register("bio", {
                 required: "Biography is required",
                 minLength: {
                   value: 10,
                   message: "Content must be at least 50 characters",
                 },
               })}
-              error={errors.biography?.message}
+              error={errors.bio?.message}
               rows={6}
               width="w-full"
             />
             <TextareaInput
               label="Public Address here..."
-              {...register("publicAddress", {
+              {...register("address", {
                 required: "Public Address is required",
                 minLength: {
                   value: 10,
                   message: "Content must be at least 50 characters",
                 },
               })}
-              error={errors.publicAddress?.message}
+              error={errors.address?.message}
               rows={6}
               width="w-full"
             />
@@ -216,7 +216,7 @@ function EditDealerProfile() {
             <FormInput
               label="Instagram Link"
               type="text"
-              {...register("instagram")}
+              {...register("insta")}
               error={errors.instagram?.message}
               width="w-full"
             />
