@@ -5,6 +5,7 @@ import {
   getAllDealers,
   createDealerAccount,
   updateDealerAccount,
+  dealerLogin,
 } from "../../Utils/server";
 
 // Thunk for adding a new dealer
@@ -13,6 +14,26 @@ export const addDealerAsync = createAsyncThunk(
   async (dealerData, { rejectWithValue }) => {
     try {
       const response = await axios.post(createDealerAccount, dealerData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error in addDealerAsync:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
+// Thunk for Login a new dealer
+export const loginDealerAsync = createAsyncThunk(
+  "dealers/loginDealer",
+  async (dealerData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(dealerLogin, dealerData, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -105,6 +126,18 @@ const dealersSlice = createSlice({
         state.dealers.push(action.payload);
       })
       .addCase(addDealerAsync.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      // Login Dealer cases
+      .addCase(loginDealerAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(loginDealerAsync.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.dealers.push(action.payload);
+      })
+      .addCase(loginDealerAsync.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       })

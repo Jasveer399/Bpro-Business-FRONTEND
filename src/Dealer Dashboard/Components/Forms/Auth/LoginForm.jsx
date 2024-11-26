@@ -1,13 +1,46 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import AuthInput from "../../ui/AuthInput";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { loginDealerAsync } from "../../../../Redux/Features/dealersSlice";
+import { storeAccessToken } from "../../../../Utils/Helper";
+import Snackbars from "../../../../ui/Snackbars";
+import Loader from "../../../../ui/Loader";
 
 function LoginForm() {
   const {
     register,
+    handleSubmit,
     formState: { errors },
   } = useForm();
+  const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
+  const { status, dealers } = useSelector((state) => state.dealers);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const loginDealer = async (data) => {
+    const res = await dispatch(loginDealerAsync(data));
+    if (loginDealerAsync.fulfilled.match(res) || res.payload.success) {
+      storeAccessToken(res.payload.data.accessToken);
+      setSnackbar({
+        open: true,
+        type: "success",
+        text: res.payload.message,
+      });
+      setTimeout(() => {
+        navigate("/my-dashboard/listing");
+      }, 500);
+    }
+    else {
+      setSnackbar({
+        open: true,
+        type: "error",
+        text: res.payload.message,
+      });
+    }
+
+  };
   return (
     <>
       <div>
@@ -19,7 +52,7 @@ function LoginForm() {
           Sign in with this accoss the following sites.
         </p>
       </div>
-      <div className="space-y-6">
+      <form onSubmit={handleSubmit(loginDealer)} className="space-y-6">
         <AuthInput
           label="Email"
           type="email"
@@ -43,13 +76,13 @@ function LoginForm() {
             type="submit"
             className="bg-[#EB6752] rounded-md text-white py-2 px-6 hover:bg-[#191A1F] transform duration-300 ease-in-out font-semibold shadow-md"
           >
-            Sign In
+            {status === "loading" ? <Loader /> : "Sign In"}
           </button>
         </div>
         <div className="flex justify-center">
           <p>
             <Link
-            //   to="/register"
+              //   to="/register"
               className="font-semibold text-[#EB6752] cursor-pointer hover:underline"
             >
               Forgot Password
@@ -63,7 +96,13 @@ function LoginForm() {
             </Link>
           </p>
         </div>
-      </div>
+      </form>
+      <Snackbars
+        open={snackbar.open}
+        type={snackbar.type}
+        text={snackbar.text}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
     </>
   );
 }

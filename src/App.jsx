@@ -27,6 +27,7 @@ import EditDealerProfile from "./Dealer Dashboard/Components/Dashboard/Accounts/
 import ProductLisiting from "./Dealer Dashboard/Components/Forms/ProductLisiting";
 import AboutUs from "./Dealer Dashboard/Pages/About Us/AboutUs";
 import Bookmark from "./Dealer Dashboard/Pages/Dashboard/Bookmark";
+import { ProtectedDealerRoutes, RedirectIfDealerAuthenticated } from "./Utils/ProtectedDealerRoutes";
 
 function App() {
   return (
@@ -48,7 +49,7 @@ function App() {
             <Route path="/blogview/:id" element={<BlogView />} />
           </Route>
         </Route>
-        <Route>
+        <Route element={<ProtectedDealerRoutes />}>
           <Route element={<DealerLayout />}>
             <Route
               index
@@ -62,14 +63,16 @@ function App() {
             <Route path="/my-dashboard/bookmarks" element={<Bookmark />} />
           </Route>
         </Route>
+        <Route element={<RedirectIfDealerAuthenticated />}>
+          <Route path="/register" element={<DealerRegister />} />
+          <Route path="/login" element={<DealerLogin />} />
+        </Route>
         <Route path="/home" element={<Home />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/sellProduct" element={<SellProduct />} />
         <Route path="/Allblogs" element={<Allblogs />} />
         <Route path="/BlogDetails/:id" element={<BlogDetails />} />
-        <Route path="/register" element={<DealerRegister />} />
-        <Route path="/login" element={<DealerLogin />} />
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/productLisiting" element={<ProductLisiting />} />
       </Routes>

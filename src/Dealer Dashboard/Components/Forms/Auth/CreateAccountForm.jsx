@@ -6,6 +6,7 @@ import SelectInput from "../../../../ui/SelectInput";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchWorkerIdAndNameAsync } from "../../../../Redux/Features/workersSlice";
 import { addDealerAsync } from "../../../../Redux/Features/dealersSlice";
+import Loader from "../../../../ui/Loader";
 
 function CreateAccountForm() {
   const {
@@ -26,9 +27,9 @@ function CreateAccountForm() {
 
   const registerDealer = async (data) => {
     const res = await dispatch(addDealerAsync(data));
-    
+
     if (addDealerAsync.fulfilled.match(res)) {
-      navigate("my-dashboard/listing")
+      navigate("/login")
     }
   };
 
@@ -92,7 +93,7 @@ function CreateAccountForm() {
             type="submit"
             className="bg-[#EB6752] rounded-md text-white py-2 px-6 hover:bg-[#191A1F] transform duration-300 ease-in-out font-semibold shadow-md"
           >
-            Sign In
+            {status === "loading" ? <Loader /> : "Sign Up"}
           </button>
         </div>
         <div className="flex justify-center">
