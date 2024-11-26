@@ -6,6 +6,7 @@ export const createDealerAccount = `${server}/api/v1/dealer/createDealerAccount`
 export const updateDealerAccount = `${server}/api/v1/dealer/updateDealerAccount`;
 export const getAllDealers = `${server}/api/v1/dealer/getAllDealers`;
 export const deleteDealer = `${server}/api/v1/dealer/deleteDealer`;
+export const getCurrentDealer = `${server}/api/v1/dealer/getCurrentDealer`;
 
 // ALl Banners Route
 export const addBanner = `${server}/api/v1/banners/addBanner`;

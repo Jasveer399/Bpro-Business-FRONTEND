@@ -29,7 +29,7 @@ function DealerLayout() {
   ];
 
   return (
-    <div className="h-screen w-screen">
+    <div className="h-screen w-screen relative">
       <Navbar />
       <Header />
       <div className="flex">
@@ -77,7 +77,7 @@ function DealerLayout() {
         </div>
 
         {/* Content Area */}
-        <div className="w-full">
+        <div className="w-full h-full">
           <Outlet />
         </div>
       </div>

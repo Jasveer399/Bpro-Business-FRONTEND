@@ -119,7 +119,7 @@ function Layout() {
             <LogOut size={30} className="animate-pulse p-1 text-colorText2 dark:text-colorText hover:border hover:border-blue hover:bg-blue/30 rounded-md cursor-pointer" onClick={handleLogout}/>
           </div>
         </div>
-        <div className="w-ful px-5 flex flex-col items-start mb-5 gap-5">
+        <div className="w-full px-5 flex flex-col items-start mb-5 gap-5">
           <div className="flex gap-5">
             <button
               className="md:hidden flex px-1 w-full bg-[#e5f6fe] dark:bg-[#1a3344] text-[#04a9f5] border border-[#0499f5] rounded-lg"
