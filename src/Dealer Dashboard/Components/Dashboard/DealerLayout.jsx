@@ -1,13 +1,16 @@
 import React from "react";
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import Navbar from "../Home/Navbar";
 import Header from "../Home/Header";
 import { MdOutlineBookmarks, MdOutlineManageAccounts } from "react-icons/md";
 import { PiDiamondsFour } from "react-icons/pi";
 import { TbMessages } from "react-icons/tb";
 import { IoAddCircleOutline } from "react-icons/io5";
+import { LogOut } from "lucide-react";
+import { removeDealerAccessToken } from "../../../Utils/Helper";
 
 function DealerLayout() {
+  const navigate = useNavigate();
   const navItems = [
     { name: "Listing", icon: PiDiamondsFour, link: "/my-dashboard/listing" },
     {
@@ -27,6 +30,11 @@ function DealerLayout() {
       link: "/my-dashboard/bookmarks",
     },
   ];
+
+  const logout = () => {
+    removeDealerAccessToken();
+    navigate("/login", { replace: true });
+  };
 
   return (
     <div className="h-screen w-screen relative">
@@ -74,6 +82,10 @@ function DealerLayout() {
               </NavLink>
             ))}
           </div>
+          <button className="absolute w-44 bottom-10 left-16 flex gap-2 items-center text-primary hover:bg-neutral-200 px-2 py-1 rounded-md" onClick={logout}>
+            <LogOut size={20}/>
+            Logout
+          </button>
         </div>
 
         {/* Content Area */}
