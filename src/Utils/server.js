@@ -33,6 +33,7 @@ export const createWorkerAccount = `${server}/api/v1/worker/createWorkerAccount`
 export const updateWorker = `${server}/api/v1/worker/updateWorker`;
 export const getAllWorkers = `${server}/api/v1/worker/getAllWorkers`;
 export const deleteWorker = `${server}/api/v1/worker/deleteWorker`;
+export const getWorkerIdAndName = `${server}/api/v1/worker/getWorkerIdAndName`;
 
 //All Product Routes
 export const createProduct = `${server}/api/v1/product/createProduct`;

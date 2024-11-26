@@ -1,6 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { deleteDealer, getAllDealers, createDealerAccount, updateDealerAccount } from "../../Utils/server";
+import {
+  deleteDealer,
+  getAllDealers,
+  createDealerAccount,
+  updateDealerAccount,
+} from "../../Utils/server";
 
 // Thunk for adding a new dealer
 export const addDealerAsync = createAsyncThunk(
@@ -8,7 +13,6 @@ export const addDealerAsync = createAsyncThunk(
   async (dealerData, { rejectWithValue }) => {
     try {
       const response = await axios.post(createDealerAccount, dealerData, {
-        withCredentials: true,
         headers: {
           "Content-Type": "application/json",
         },
@@ -28,7 +32,9 @@ export const fetchDealersAsync = createAsyncThunk(
   "dealers/fetchDealers",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(getAllDealers, { withCredentials: true });
+      const response = await axios.get(getAllDealers, {
+        withCredentials: true,
+      });
       return response.data.data;
     } catch (error) {
       console.error("Error in fetchDealersAsync:", error);
@@ -44,12 +50,16 @@ export const updateDealerAsync = createAsyncThunk(
   "dealers/updateDealer",
   async ({ id, dealerData }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(updateDealerAccount, { id, dealerData }, {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.put(
+        updateDealerAccount,
+        { id, dealerData },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       return response.data;
     } catch (error) {
       console.error("Error in updateDealerAsync:", error);
@@ -116,7 +126,9 @@ const dealersSlice = createSlice({
       })
       .addCase(updateDealerAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        const index = state.dealers.findIndex(dealer => dealer.id === action.payload.id);
+        const index = state.dealers.findIndex(
+          (dealer) => dealer.id === action.payload.id
+        );
         if (index !== -1) {
           state.dealers[index] = action.payload;
         }
@@ -131,7 +143,9 @@ const dealersSlice = createSlice({
       })
       .addCase(deleteDealerAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.dealers = state.dealers.filter(dealer => dealer.id !== action.payload);
+        state.dealers = state.dealers.filter(
+          (dealer) => dealer.id !== action.payload
+        );
       })
       .addCase(deleteDealerAsync.rejected, (state, action) => {
         state.status = "failed";
