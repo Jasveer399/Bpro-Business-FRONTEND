@@ -9,6 +9,7 @@ import LatestArticles from "../../Components/Home/LatestArticles";
 import ShopsCategory from "../../Components/Home/ShopsCategory";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBannerCategoryAsync } from "../../../Redux/Features/bannersCategorySlice";
+import { fetchProductsAsync } from "../../../Redux/Features/productSlice";
 
 function Home() {
   const dispatch = useDispatch();
@@ -16,11 +17,21 @@ function Home() {
     (state) => state.bannersCategory
   );
 
+  // Fetch products from the listings
+  const { data: products, status: productStatus } = useSelector(
+    (state) => state.products
+  );
+
   useEffect(() => {
+    // Fetch banners and products if not already loaded
     if (status === "idle") {
       dispatch(fetchBannerCategoryAsync());
     }
-  }, [status, dispatch]);
+
+    if (productStatus === "idle") {
+      dispatch(fetchProductsAsync({ page: 1, limit: 8 }));
+    }
+  }, [status, productStatus, dispatch]);
 
   const articleData = [
     {
@@ -40,6 +51,18 @@ function Home() {
       title: "Commented on Video posted by black demon.",
     },
   ];
+
+  const handleLoadMore = () => {
+    const nextPage = products.currentPage + 1;
+    if (nextPage <= products.totalPages) {
+      dispatch(
+        fetchProductsAsync({
+          page: nextPage,
+          limit: 8,
+        })
+      );
+    }
+  };
 
   return (
     <>
@@ -92,16 +115,20 @@ function Home() {
             Popular Searches
           </h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 m-2 md:m-4 gap-3 md:gap-5">
-            <PopularSearches />
-            <PopularSearches />
-            <PopularSearches />
-            <PopularSearches />
+            {products?.data?.map((product) => (
+              <PopularSearches key={product.id} product={product} />
+            ))}
           </div>
-          <div className="flex items-center justify-center">
-            <button className="border border-[#E7E7E7] py-1 px-8 rounded-md font-semibold hover:bg-gray-50 transition-colors">
-              Load More...
-            </button>
-          </div>
+          {products?.data?.length >= 8 && (
+            <div className="flex items-center justify-center">
+              <button
+                onClick={handleLoadMore}
+                className="border border-[#E7E7E7] py-1 px-8 rounded-md font-semibold hover:bg-gray-50 transition-colors"
+              >
+                Load More...
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Banner section */}
@@ -139,3 +166,26 @@ function Home() {
 }
 
 export default Home;
+
+{
+  /* <div className="my-6 md:my-10">
+  <h1 className="font-montserrat font-extrabold text-xl md:text-2xl mx-3 md:mx-5">
+    Popular Searches
+  </h1>
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 m-2 md:m-4 gap-3 md:gap-5">
+    {products?.data?.map((product) => (
+      <PopularSearches key={product.id} product={product} />
+    ))}
+  </div>
+  {products?.data?.length >= 8 && (
+    <div className="flex items-center justify-center">
+      <button
+        onClick={handleLoadMore}
+        className="border border-[#E7E7E7] py-1 px-8 rounded-md font-semibold hover:bg-gray-50 transition-colors"
+      >
+        Load More...
+      </button>
+    </div>
+  )}
+</div>; */
+}
