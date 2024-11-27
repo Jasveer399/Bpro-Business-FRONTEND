@@ -70,18 +70,15 @@ export const fetchDealersAsync = createAsyncThunk(
 // Thunk for updating a dealer
 export const updateDealerAsync = createAsyncThunk(
   "dealers/updateDealer",
-  async ({ dealerData }, { rejectWithValue }) => {
+  async ( dealerData, { rejectWithValue }) => {
     try {
-      const response = await axios.put(
-        updateDealerAccount,
-        { dealerData },
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      console.log("dealerData", dealerData);
+      const response = await axios.put(updateDealerAccount, dealerData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          "Content-Type": "application/json",
+        },
+      });
       return response.data.data;
     } catch (error) {
       console.error("Error in updateDealerAsync:", error);
@@ -113,7 +110,9 @@ export const fetchCurrentDealerAsync = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(getCurrentDealer, {
-        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
       });
       return response.data.data;
     } catch (error) {
