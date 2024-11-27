@@ -22,7 +22,7 @@ function DealerLayout() {
     {
       name: "Add New Listing",
       icon: IoAddCircleOutline,
-      link: "/productLisiting",
+      link: "/product-lisiting",
     },
     {
       name: "Bookmarks",
