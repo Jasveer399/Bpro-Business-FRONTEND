@@ -1,11 +1,10 @@
-const storeAccessToken = (token) => {
-  localStorage.setItem("accessToken", token);
+const storeDealerAccessToken = (token) => {
+  localStorage.setItem("dealerAccessToken", token);
 };
-
-const removeAccessToken = () => {
-  localStorage.removeItem("accessToken");
+const removeDealerAccessToken = () => {
+  localStorage.removeItem("dealerAccessToken");
 };
+const getDealerAccessToken = () => localStorage.getItem("dealerAccessToken");
 
-const getAccessToken = () => localStorage.getItem("accessToken");
 
-export { storeAccessToken, removeAccessToken, getAccessToken };
+export { storeDealerAccessToken, removeDealerAccessToken, getDealerAccessToken };

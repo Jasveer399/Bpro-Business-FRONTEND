@@ -4,7 +4,7 @@ import AuthInput from "../../ui/AuthInput";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginDealerAsync } from "../../../../Redux/Features/dealersSlice";
-import { storeAccessToken } from "../../../../Utils/Helper";
+import { storeDealerAccessToken } from "../../../../Utils/Helper";
 import Snackbars from "../../../../ui/Snackbars";
 import Loader from "../../../../ui/Loader";
 
@@ -22,7 +22,7 @@ function LoginForm() {
   const loginDealer = async (data) => {
     const res = await dispatch(loginDealerAsync(data));
     if (loginDealerAsync.fulfilled.match(res) || res.payload.success) {
-      storeAccessToken(res.payload.data.accessToken);
+      storeDealerAccessToken(res.payload.data.accessToken);
       setSnackbar({
         open: true,
         type: "success",

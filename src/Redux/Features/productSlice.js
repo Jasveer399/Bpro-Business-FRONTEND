@@ -24,9 +24,21 @@ export const addProductAsync = createAsyncThunk(
 
 export const fetchProductsAsync = createAsyncThunk(
   "products/fetchProducts",
-  async (_, { rejectWithValue }) => {
+  async (
+    { page = 1, limit = 8, search = "", category = "", adminView = false } = {},
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await axios.get(getProducts);
+      const response = await axios.get(getProducts, {
+        params: {
+          page,
+          limit,
+          search,
+          category,
+          adminView,
+        },
+        withCredentials: true,
+      });
       return response.data;
     } catch (error) {
       console.error("Error in fetchProductsAsync:", error);
@@ -37,14 +49,64 @@ export const fetchProductsAsync = createAsyncThunk(
   }
 );
 
+export const updateProductAsync = createAsyncThunk(
+  "products/updateProduct",
+  async ({ productId, productData }, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(
+        `${getProducts}/${productId}`,
+        productData,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error in updateProductAsync:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
+export const deleteProductAsync = createAsyncThunk(
+  "products/deleteProduct",
+  async (productId, { rejectWithValue }) => {
+    try {
+      await axios.delete(`${getProducts}/${productId}`, {
+        withCredentials: true,
+      });
+      return productId;
+    } catch (error) {
+      console.error("Error in deleteProductAsync:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
 const productSlice = createSlice({
   name: "products",
   initialState: {
+    data: null,
     products: [],
     status: "idle",
     error: null,
+    currentPage: 1,
+    totalPages: 0,
+    totalProducts: 0,
   },
-  reducers: {},
+  reducers: {
+    resetProductStatus: (state) => {
+      state.status = "idle";
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(addProductAsync.pending, (state) => {
@@ -52,7 +114,9 @@ const productSlice = createSlice({
       })
       .addCase(addProductAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.products.push(action.payload);
+        if (state.data && state.data.data) {
+          state.data.data.push(action.payload);
+        }
       })
       .addCase(addProductAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -63,14 +127,68 @@ const productSlice = createSlice({
       })
       .addCase(fetchProductsAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
+        state.data = action.payload;
         state.products = action.payload;
+        state.currentPage = action.payload.page || 1;
+        state.totalPages = action.payload.totalPages || 1;
+        state.totalProducts = action.payload.total || 0;
       })
       .addCase(fetchProductsAsync.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       })
-      .addDefaultCase((state, action) => {});
+      // Update Product Cases
+      .addCase(updateProductAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(updateProductAsync.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        // Update product in both data and products arrays
+        const updatedProduct = action.payload;
+
+        // Update in data.data if exists
+        if (state.data && state.data.data) {
+          const dataIndex = state.data.data.findIndex(
+            (p) => p.id === updatedProduct.id
+          );
+          if (dataIndex !== -1) {
+            state.data.data[dataIndex] = updatedProduct;
+          }
+        }
+
+        // Update in products array
+        const productIndex = state.products.findIndex(
+          (p) => p.id === updatedProduct.id
+        );
+        if (productIndex !== -1) {
+          state.products[productIndex] = updatedProduct;
+        }
+      })
+      .addCase(updateProductAsync.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+
+      // Delete Product Cases
+      .addCase(deleteProductAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(deleteProductAsync.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        // Remove product from both data and products arrays
+        if (state.data && state.data.data) {
+          state.data.data = state.data.data.filter(
+            (p) => p.id !== action.payload
+          );
+        }
+        state.products = state.products.filter((p) => p.id !== action.payload);
+      })
+      .addCase(deleteProductAsync.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      });
   },
 });
 
+export const { resetProductStatus } = productSlice.actions;
 export default productSlice.reducer;
