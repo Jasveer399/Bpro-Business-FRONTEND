@@ -2,6 +2,7 @@ import React from "react";
 import LocationSelector from "./LocationSelector";
 import SearchBar from "./SearchBar";
 import { MdOutlineHelpOutline } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 function Header() {
   return (
@@ -29,9 +30,9 @@ function Header() {
             <MdOutlineHelpOutline size={20} className="text-primary" />
             <h1 className="font-semibold text-primary">Help?</h1>
           </div>
-          <button className="bg-secondary py-2 px-4 rounded-lg font-semibold">
+          <Link to="/product-listing" className="bg-secondary py-2 px-4 rounded-lg font-semibold">
             Sell Product?
-          </button>
+          </Link>
         </div>
 
         {/* Mobile buttons */}
@@ -40,9 +41,9 @@ function Header() {
             <MdOutlineHelpOutline size={20} className="text-primary" />
             <h1 className="font-semibold text-primary">Help?</h1>
           </div>
-          <button className="bg-secondary py-2 px-4 rounded-lg font-semibold text-sm">
+          <Link to="/product-listing" className="bg-secondary py-2 px-4 rounded-lg font-semibold text-sm">
             Sell Product?
-          </button>
+          </Link>
         </div>
       </div>
     </>

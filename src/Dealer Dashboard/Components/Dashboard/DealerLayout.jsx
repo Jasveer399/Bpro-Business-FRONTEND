@@ -82,8 +82,11 @@ function DealerLayout() {
               </NavLink>
             ))}
           </div>
-          <button className="absolute w-44 bottom-10 left-16 flex gap-2 items-center text-primary hover:bg-neutral-200 px-2 py-1 rounded-md" onClick={logout}>
-            <LogOut size={20}/>
+          <button
+            className="absolute w-44 bottom-10 left-16 flex gap-2 items-center text-primary hover:bg-neutral-200 px-2 py-1 rounded-md"
+            onClick={logout}
+          >
+            <LogOut size={20} />
             Logout
           </button>
         </div>

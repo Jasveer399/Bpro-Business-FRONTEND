@@ -21,16 +21,16 @@ const Navbar = () => {
           <FaLinkedinIn size={20} className="cursor-pointer hover:opacity-80" />
         </div>
         <div className="flex items-center gap-4 lg:gap-8">
-          <Link href="/about" className="hover:opacity-80">
+          <Link to="/about-us" className="hover:opacity-80">
             About Us
           </Link>
           <Link to="/Allblogs" className="hover:opacity-80">
             Blogs
           </Link>
-          <Link href="/contact" className="hover:opacity-80">
+          <Link to="/contact-us" className="hover:opacity-80">
             Contact Us
           </Link>
-          <Link href="/auth" className="hover:opacity-80">
+          <Link to="/login" className="hover:opacity-80">
             Register/Login
           </Link>
           <div className="flex items-center gap-1 cursor-pointer hover:opacity-80">
