@@ -35,6 +35,7 @@ function App() {
       <Routes>
         <Route element={<RedirectIfAuthenticated />}>
           <Route path="/admin-login" element={<AdminLogin />} />
+          
         </Route>
         <Route element={<ProtectedAdminRoutes />}>
           <Route element={<Layout />}>
