@@ -8,7 +8,7 @@ const Advertisement = ({ className, isButtonShow, isLeft, banners }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState("right");
 
-  console.log("Banneers: ", banners)
+  // console.log("Banneers: ", banners)
 
   // const { banners, status } = useSelector((state) => state.banners);
 
