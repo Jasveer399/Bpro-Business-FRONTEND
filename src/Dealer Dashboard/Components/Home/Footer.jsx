@@ -3,6 +3,7 @@ import FooterInput from "../../../ui/FooterInput";
 import { VscWorkspaceTrusted } from "react-icons/vsc";
 import { RiShieldStarLine } from "react-icons/ri";
 import { TfiHeadphoneAlt } from "react-icons/tfi";
+import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
 
 function Footer() {
   const footerBoxes = [
@@ -82,8 +83,21 @@ function Footer() {
         </div>
 
         {/* Bottom Section */}
-        <div className="mt-10 text-center text-sm text-gray-400">
-          <p>© 2024 Your Company. All rights reserved.</p>
+        <div className="border-t border-gray-400 flex justify-between items-center pt-5 mt-10">
+          <div className="text-sm text-gray-400">
+            <p>© Copyright 2023. All rights reserved.</p>
+          </div>
+          <div className="flex gap-5">
+            <a href="https://www.facebook.com/bproindia" target="_blank" className="hover:bg-[#EB6752] p-1 rounded-md cursor-pointer transform duration-100 ease-in-out">
+              <FaFacebookF size={20} />
+            </a>
+            <a href="https://www.youtube.com/@bproindia" target="_blank" className="hover:bg-[#EB6752] p-1 rounded-md cursor-pointer transform duration-100 ease-in-out">
+              <FaYoutube size={20} />
+            </a>
+            <a href="https://www.instagram.com/bproindia/" target="_blank" className="hover:bg-[#EB6752] p-1 rounded-md cursor-pointer transform duration-100 ease-in-out">
+              <FaInstagram size={20} />
+            </a>
+          </div>
         </div>
       </div>
     </div>

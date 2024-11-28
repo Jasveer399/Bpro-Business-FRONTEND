@@ -175,12 +175,15 @@ function ProductLisiting() {
   return (
     <>
       <Navbar />
+      <div className="mx-3">
+        <Header />
+      </div>
       <img
         src="header-banner.jpg"
         alt="productLisiting"
         className="w-full h-72 object-cover relative"
       />
-      <h1 className="flex flex-col md:text-6xl text-4xl font-semibold text-white absolute top-40 md:left-20 left-5 gap-4">
+      <h1 className="flex flex-col md:text-6xl text-4xl font-semibold text-white absolute top-56 md:left-20 left-5 gap-4">
         Product Lisiting{" "}
         <span className="text-xl">Home | Product Lisiting</span>
       </h1>

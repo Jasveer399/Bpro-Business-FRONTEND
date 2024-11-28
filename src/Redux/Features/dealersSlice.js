@@ -7,7 +7,9 @@ import {
   updateDealerAccount,
   getCurrentDealer,
   dealerLogin,
+  changePassword,
 } from "../../Utils/server";
+import { getDealerAccessToken } from "../../Utils/Helper";
 
 // Thunk for adding a new dealer
 export const addDealerAsync = createAsyncThunk(
@@ -75,11 +77,11 @@ export const updateDealerAsync = createAsyncThunk(
       console.log("dealerData", dealerData);
       const response = await axios.put(updateDealerAccount, dealerData, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          Authorization: `Bearer ${getDealerAccessToken()}`,
           "Content-Type": "application/json",
         },
       });
-      return response.data.data;
+      return response.data;
     } catch (error) {
       console.error("Error in updateDealerAsync:", error);
       return rejectWithValue(
@@ -111,12 +113,32 @@ export const fetchCurrentDealerAsync = createAsyncThunk(
     try {
       const response = await axios.get(getCurrentDealer, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          Authorization: `Bearer ${getDealerAccessToken()}`,
         },
       });
       return response.data.data;
     } catch (error) {
       console.error("Error fetching current dealer:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
+export const changePasswordAsync = createAsyncThunk(
+  "dealers/changePassword",
+  async (passwordData, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(changePassword, passwordData, {
+        headers: {
+          Authorization: `Bearer ${getDealerAccessToken()}`,
+          "Content-Type": "application/json",
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error in changePasswordAsync:", error);
       return rejectWithValue(
         error.response ? error.response.data : error.message
       );
@@ -201,7 +223,7 @@ const dealersSlice = createSlice({
         state.status = "failed";
         state.error = action.payload;
       })
-      // ... existing cases ...
+      // ... fetch current dealer ...
       .addCase(fetchCurrentDealerAsync.pending, (state) => {
         state.status = "loading";
       })
@@ -213,6 +235,19 @@ const dealersSlice = createSlice({
         state.status = "failed";
         state.error = action.payload;
         state.currentDealer = null;
+      })
+      // ... change dealer password...
+      .addCase(changePasswordAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(changePasswordAsync.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.changePass = action.payload;
+      })
+      .addCase(changePasswordAsync.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+        state.changePass = null;
       });
   },
 });

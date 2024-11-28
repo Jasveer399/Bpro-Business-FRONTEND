@@ -12,11 +12,15 @@ function ContactUs() {
     <>
       <Navbar />
       <div className="bg-[#f7f7f7]">
-        <div className="mx-4 md:mx-8 lg:mx-16">
+        <div className="">
+          <div className="mx-3">
           <Header />
+          </div>
+          <img src="header-banner.jpg" alt="productLisiting" className='w-full h-72 object-cover relative' />
+      <h1 className='flex flex-col md:text-6xl text-4xl font-semibold text-white absolute top-56 md:left-20 left-5 gap-4'>Contact Us <span className='text-xl'>Home | Contact Us</span></h1>
 
           {/* Get In Touch Section */}
-          <div className="flex flex-col items-center text-center mt-10 px-4">
+          <div className="flex flex-col items-center text-center mt-24 px-4">
             <h2 className="uppercase font-semibold text-[#EB6752] text-lg md:text-xl mb-2">
               Get In Touch
             </h2>
@@ -54,7 +58,7 @@ function ContactUs() {
           </div>
 
           {/* Contact Form Section */}
-          <div className="px-4 md:px-8 lg:px-16">
+          <div>
             <ContactForm />
           </div>
         </div>

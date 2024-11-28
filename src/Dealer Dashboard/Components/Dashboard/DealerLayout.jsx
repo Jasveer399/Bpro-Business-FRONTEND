@@ -40,7 +40,7 @@ function DealerLayout() {
     <div className="h-screen w-screen relative">
       <Navbar />
       <Header />
-      <div className="flex">
+      <div className="flex w-full">
         {/* Sidebar */}
         <div className="w-[22%] h-full">
           {/* Profile Section */}
