@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { createProduct, getProducts } from "../../Utils/server";
+import { getDealerAccessToken } from "../../Utils/Helper";
 
 export const addProductAsync = createAsyncThunk(
   "products/addProduct",
@@ -9,6 +10,7 @@ export const addProductAsync = createAsyncThunk(
       const response = await axios.post(createProduct, productData, {
         withCredentials: true,
         headers: {
+          Authorization: `Bearer ${getDealerAccessToken()}`,
           "Content-Type": "multipart/form-data",
         },
       });
@@ -38,6 +40,9 @@ export const fetchProductsAsync = createAsyncThunk(
           adminView,
         },
         withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${getDealerAccessToken()}`,
+        },
       });
       return response.data;
     } catch (error) {

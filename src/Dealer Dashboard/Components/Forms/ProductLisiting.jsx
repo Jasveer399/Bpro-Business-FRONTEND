@@ -172,105 +172,6 @@ function ProductLisiting() {
     });
   };
 
-  const priceOptions = [
-    {
-      value: "fixed",
-      label: "Fixed",
-    },
-    {
-      value: "negotiable",
-      label: "Negotiable",
-    },
-    {
-      value: "oncall",
-      label: "On Call",
-    },
-  ];
-
-  const CustomTiming = [
-    {
-      value: "dayoff",
-      label: "Day Off",
-    },
-    {
-      value: "open24hours",
-      label: "Open 24 Hours",
-    },
-  ];
-
-  const weekDays = [
-    {
-      monday: "Monday",
-    },
-    {
-      tuesday: "Tuesday",
-    },
-    {
-      wednesday: "Wednesday",
-    },
-    {
-      thursday: "Thursday",
-    },
-    {
-      friday: "Friday",
-    },
-    {
-      saturday: "Saturday",
-    },
-    {
-      sunday: "Sunday",
-    },
-  ];
-
-  const PaymentOptions = [
-    {
-      name: "American Express",
-      value: "americanexpress",
-    },
-    {
-      name: "Cash",
-      value: "cash",
-    },
-    {
-      name: "Cheque",
-      value: "cheque",
-    },
-    {
-      name: "Discover",
-      value: "discover",
-    },
-    {
-      name: "Interact",
-      value: "interact",
-    },
-    {
-      name: "Master Card",
-      value: "mastercard",
-    },
-    {
-      name: "Visa",
-      value: "visa",
-    },
-    {
-      name: "Gift Sertificate",
-      value: "giftsertificate",
-    },
-  ];
-
-  const StatusOpstions = [
-    {
-      value: "forSale",
-      label: "For Sale",
-    },
-    {
-      value: "forRent",
-      label: "For Rent",
-    },
-    {
-      value: "wanted",
-      label: "Wanted",
-    },
-  ];
   return (
     <>
       <Navbar />
@@ -630,7 +531,7 @@ function ProductLisiting() {
               render={({ field, fieldState: { error } }) => (
                 <SelectInput
                   label="Country"
-                  options={CustomTiming}
+                  options={stateOptions}
                   onChange={(option) => {
                     field.onChange(option.value);
                     // handlePartyChange(option);
