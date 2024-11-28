@@ -7,7 +7,7 @@ export const fetchBannerCategoryAsync = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const res = await axios.get(`${getAllBannerCategory}`, { withCredentials: true });
-      console.log("Res: ", res);
+      // console.log("Res: ", res);
       return res.data.data
     } catch (error) {
       console.error("Error in fetch banner category async", error);
