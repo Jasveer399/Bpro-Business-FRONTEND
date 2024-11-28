@@ -24,7 +24,7 @@ import ContactUs from "./Dealer Dashboard/Pages/Contact Us/ContactUs";
 import DealerLayout from "./Dealer Dashboard/Components/Dashboard/DealerLayout";
 import Listing from "./Dealer Dashboard/Pages/Dashboard/Listing";
 import EditDealerProfile from "./Dealer Dashboard/Components/Dashboard/Accounts/EditDealerProfile";
-import { ProductLisiting } from "./Dealer Dashboard/Components/Forms/ProductLisiting";
+import ProductLisiting  from "./Dealer Dashboard/Components/Forms/ProductLisiting";
 import AboutUs from "./Dealer Dashboard/Pages/About Us/AboutUs";
 import Bookmark from "./Dealer Dashboard/Pages/Dashboard/Bookmark";
 import { ProtectedDealerRoutes, RedirectIfDealerAuthenticated } from "./Utils/ProtectedDealerRoutes";
