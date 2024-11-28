@@ -3,6 +3,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductsAsync } from "../../../../Redux/Features/productSlice";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
+import { FaRupeeSign } from "react-icons/fa";
 
 
 function YourListing() {
@@ -51,8 +52,8 @@ function YourListing() {
                       <p className="font-semibold">
                         {listing.title}
                       </p>
-                      <p className="text-[#ef5d50] font-semibold text-lg">
-                        {`${listing.currencySymbol}${listing.insertPrice}`}
+                      <p className="text-[#ef5d50] font-semibold text-lg flex items-center">
+                        <FaRupeeSign size={15}/>{`${listing.insertPrice}`}
                       </p>
                     </div>
                   </td>

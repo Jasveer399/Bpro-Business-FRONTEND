@@ -6,21 +6,18 @@ import FormInput from "../../../ui/FormInput";
 import SelectInput from "../../../ui/SelectInput";
 import { MultiSelect } from "react-multi-select-component";
 import { Checkbox } from "@mui/material";
-import { FaArrowUpRightFromSquare } from "react-icons/fa6";
-import { TbView360 } from "react-icons/tb";
-import { MdAlternateEmail } from "react-icons/md";
 import { TextAreaEditor } from "../../../ui/TextAreaEditor";
 import TextareaInput from "../../../ui/TextareaInput";
 import { ImageUp, Plus, X } from "lucide-react";
 import TimeSelectorHour_Minutes from "../../../ui/TimeSelectorHour_Minutes";
 import TimePicker from "../../../ui/TimePicker";
 import ChipsInput from "../../../Components/Forms/Blogs/ChipsInput";
-import axios from "axios";
-import { createProduct } from "../../../Utils/server";
 import { useDispatch, useSelector } from "react-redux";
 import { addProductAsync } from "../../../Redux/Features/productSlice";
 import Snackbars from "../../../ui/Snackbars";
 import Loader from "../../../ui/Loader";
+import { CustomTiming, PaymentOptions, priceOptions, StatusOpstions, weekDays } from "../../../Utils/options";
+import { FaRupeeSign } from "react-icons/fa";
 
 function ProductLisiting() {
   const {
@@ -84,7 +81,7 @@ function ProductLisiting() {
       formDataToSend.append("customTiming", formData.customTiming);
 
       // Add pricing details
-      formDataToSend.append("currencySymbol", formData.currencysymbol);
+      // formDataToSend.append("currencySymbol", formData.currencysymbol);
       formDataToSend.append("insertprice", formData.insertprice);
       formDataToSend.append("priceOption", formData.priceOption);
 
@@ -96,10 +93,10 @@ function ProductLisiting() {
       });
 
       // Add contact information
-      formDataToSend.append("phone", formData.phone);
-      formDataToSend.append("email", formData.email);
-      formDataToSend.append("url", formData.url);
-      formDataToSend.append("viewOurSite", formData.viewoursite);
+      // formDataToSend.append("phone", formData.phone);
+      // formDataToSend.append("email", formData.email);
+      // formDataToSend.append("url", formData.url);
+      // formDataToSend.append("viewOurSite", formData.viewoursite);
 
       // Add description and summary
       formDataToSend.append("description", description);
@@ -113,11 +110,11 @@ function ProductLisiting() {
       });
 
       // Add address details
-      formDataToSend.append("country", formData.country);
-      formDataToSend.append("addressLine1", formData.addressline1);
-      formDataToSend.append("addressLine2", formData.addressline2);
-      formDataToSend.append("zipCode", formData.zipcode);
-      formDataToSend.append("additionalInfo", formData.additionalinfo);
+      // formDataToSend.append("country", formData.country);
+      // formDataToSend.append("addressLine1", formData.addressline1);
+      // formDataToSend.append("addressLine2", formData.addressline2);
+      // formDataToSend.append("zipCode", formData.zipcode);
+      // formDataToSend.append("additionalInfo", formData.additionalinfo);
 
       const response = await dispatch(addProductAsync(formDataToSend));
       if (addProductAsync.fulfilled.match(response)) {
@@ -283,11 +280,10 @@ function ProductLisiting() {
                 {weekDays.map((day, index) => (
                   <div
                     key={index}
-                    className={`text-lg border ${
-                      selectedDay === Object.values(day)[0]
+                    className={`text-lg border ${selectedDay === Object.values(day)[0]
                         ? "bg-blue text-white"
                         : "border-gray-500"
-                    } py-1 px-5 w-32 rounded-lg flex items-center justify-center`}
+                      } py-1 px-5 w-32 rounded-lg flex items-center justify-center`}
                     onClick={() => setSelectedDay(Object.values(day)[0])}
                   >
                     {Object.values(day)[0]}
@@ -327,7 +323,7 @@ function ProductLisiting() {
             </div>
             <div className="w-[90%] flex gap-5 items-centers relative mt-10">
               <h1 className="text-lg absolute -top-8">Price</h1>
-              <FormInput
+              {/* <FormInput
                 label="Currency Symbol"
                 type="text"
                 {...register("currencysymbol", {
@@ -335,16 +331,23 @@ function ProductLisiting() {
                 })}
                 error={errors.title?.message}
                 width="w-[90%]"
-              />
-              <FormInput
-                label="Insert Price"
-                type="number"
-                {...register("insertprice", {
-                  required: "Inser Price is required",
-                })}
-                error={errors.title?.message}
-                width="w-[90%]"
-              />
+              /> */}
+              <div className="w-full flex">
+                <FaRupeeSign
+                  size={50}
+                  className="border-2 border-y p-4 border-gray-400 rounded-l-md mt-[1.46rem] text-gray-500"
+                />
+                <FormInput
+                  label="Insert Price"
+                  type="number"
+                  {...register("insertprice", {
+                    required: "Inser Price is required",
+                  })}
+                  error={errors.title?.message}
+                  width="w-[90%]"
+                  className="border-l-0 rounded-r rounded-l-none"
+                />
+              </div>
               <div className="mt-[1.45rem] w-full">
                 <Controller
                   name="priceOption"
@@ -382,66 +385,6 @@ function ProductLisiting() {
                   </div>
                 ))}
               </div>
-            </div>
-            <FormInput
-              label="Phone"
-              type="tel"
-              {...register("phone", {
-                required: "Phone No. is required",
-              })}
-              error={errors.title?.message}
-              width="w-[90%]"
-            />
-
-            <div className="flex gap-10 w-[90%]">
-              <div className="w-full flex">
-                <FaArrowUpRightFromSquare
-                  size={50}
-                  className="border-2 border-y p-4 border-gray-400 rounded-l-md mt-[1.46rem] text-gray-500"
-                />
-                <FormInput
-                  label="Url"
-                  type="text"
-                  {...register("url", {
-                    required: "Url is required",
-                  })}
-                  error={errors.title?.message}
-                  width="w-[90%]"
-                  className="border-l-0 rounded-r rounded-l-none"
-                />
-              </div>
-              <div className="w-full flex">
-                <TbView360
-                  size={50}
-                  className="border-2 border-y p-3 border-gray-400 rounded-l-md mt-[1.46rem] text-gray-500"
-                />
-                <FormInput
-                  label="View Our Site"
-                  type="text"
-                  {...register("viewoursite", {
-                    required: "View Our Site is required",
-                  })}
-                  error={errors.title?.message}
-                  width="w-[90%]"
-                  className="border-l-0 rounded-r rounded-l-none"
-                />
-              </div>
-            </div>
-            <div className="w-[90%] flex">
-              <MdAlternateEmail
-                size={49.7}
-                className="border-2 border-y p-3 border-gray-400 rounded-l-md mt-[1.47rem] text-gray-500"
-              />
-              <FormInput
-                label="Email"
-                type="text"
-                {...register("email", {
-                  required: "Email is required",
-                })}
-                error={errors.title?.message}
-                width="w-full"
-                className="border-l-0 rounded-r rounded-l-none"
-              />
             </div>
             <div className="w-[90%]">
               <TextAreaEditor onChange={setDescription} />
@@ -520,7 +463,7 @@ function ProductLisiting() {
               )}
             </div>
           </div>
-          <div className="w-full border border-gray-400 dark:border-gray-600 pb-4 sm:pb-6 mt-5 text-neutral-700 flex justify-center items-center flex-col gap-16">
+          {/* <div className="w-full border border-gray-400 dark:border-gray-600 pb-4 sm:pb-6 mt-5 text-neutral-700 flex justify-center items-center flex-col gap-16">
             <h1 className="text-xl font-bold border-b border-gray-200 dark:border-gray-600 py-4 px-8 w-full">
               Address
             </h1>
@@ -579,7 +522,7 @@ function ProductLisiting() {
               error={errors.additionalinfo?.message}
               rows={6}
             />
-          </div>
+          </div> */}
           <button
             disabled={isSubmitting}
             className="w-32 bg-blue border-2 border-white shadow-2xl hover:shadow-inner px-6 py-3 text-lg font-bold rounded-lg text-white mb-10"

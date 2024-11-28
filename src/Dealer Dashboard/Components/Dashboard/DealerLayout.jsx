@@ -37,7 +37,7 @@ function DealerLayout() {
   };
 
   return (
-    <div className="h-screen w-screen relative">
+    <div className="h-screen w-full relative">
       <Navbar />
       <Header />
       <div className="flex w-full">
