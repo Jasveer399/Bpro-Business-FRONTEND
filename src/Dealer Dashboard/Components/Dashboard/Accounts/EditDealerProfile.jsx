@@ -4,7 +4,8 @@ import { Controller, useForm } from "react-hook-form";
 import SelectInput from "../../../../ui/SelectInput";
 import TextareaInput from "../../../../ui/TextareaInput";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCurrentDealerAsync, updateDealerAsync } from "../../../../Redux/Features/dealersSlice";
+import { changePasswordAsync, fetchCurrentDealerAsync, updateDealerAsync } from "../../../../Redux/Features/dealersSlice";
+import Snackbars from "../../../../ui/Snackbars";
 
 function EditDealerProfile() {
   const {
@@ -12,11 +13,13 @@ function EditDealerProfile() {
     formState: { errors },
     control,
     setValue,
-    handleSubmit
+    handleSubmit,
+    reset
   } = useForm();
   const dispatch = useDispatch();
   const {currentDealer, status} = useSelector((state) => state.dealers);
   const [displayToPublicOptions, setDisplayToPublicOptions] = useState([]);
+  const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
 
   console.log("status", status);
 
@@ -47,12 +50,46 @@ function EditDealerProfile() {
   }, [currentDealer]);
 
   const editProfileHandler = async(data) => {
-    console.log("data", data);
     try {
-      await dispatch(updateDealerAsync(data)).unwrap();
-      console.log("Profile Edited Successfully");
+      const response = await dispatch(updateDealerAsync(data)).unwrap();
+      console.log("Profile Edited Successfully", response);
+      if (response.success) {
+        setSnackbar({
+          open: true,
+          type: "success",
+          text: response.message,
+        });
+      }
     } catch (error) {
       console.error("Failed to edit profile:", error);
+      setSnackbar({
+        open: true,
+        type: "error",
+        text: error.message,
+      });
+    }
+  }
+
+  const changePasswordHandler = async(data) => {
+    try {
+      const response = await dispatch(changePasswordAsync(data)).unwrap();
+      console.log("response", response);
+      if (response.success) {
+        setSnackbar({
+          open: true,
+          type: "success",
+          text: response.message,
+        });
+        setValue("currentPassword", "");
+        setValue("newPassword", "");
+      }
+    } catch (error) {
+      console.error("Failed to change password:", error);
+      setSnackbar({
+        open: true,
+        type: "error",
+        text: error.message,
+      });
     }
   }
 
@@ -71,7 +108,7 @@ function EditDealerProfile() {
             <h2 className="text-lg font-bold text-gray-800 mb-4">
               Change Password
             </h2>
-            <form>
+            <form onSubmit={handleSubmit(changePasswordHandler)}>
               <FormInput
                 label="Current Password"
                 type="password"
@@ -278,6 +315,12 @@ function EditDealerProfile() {
           </form>
         </div>
       </div>
+      <Snackbars
+        open={snackbar.open}
+        type={snackbar.type}
+        text={snackbar.text}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
     </div>
   );
 }

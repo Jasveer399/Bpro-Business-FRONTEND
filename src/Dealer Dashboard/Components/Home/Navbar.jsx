@@ -3,6 +3,7 @@ import { FaFacebookF, FaLinkedinIn } from "react-icons/fa";
 import { GrInstagram } from "react-icons/gr";
 import { Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { getDealerAccessToken } from "../../../Utils/Helper";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,6 +11,8 @@ const Navbar = () => {
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  const token = getDealerAccessToken();
 
   return (
     <div className="bg-primary text-white font-montserrat">
@@ -21,6 +24,9 @@ const Navbar = () => {
           <FaLinkedinIn size={20} className="cursor-pointer hover:opacity-80" />
         </div>
         <div className="flex items-center gap-4 lg:gap-8">
+          <Link to="/home" className="hover:opacity-80">
+            Home
+          </Link>
           <Link to="/about-us" className="hover:opacity-80">
             About Us
           </Link>
@@ -30,9 +36,15 @@ const Navbar = () => {
           <Link to="/contact-us" className="hover:opacity-80">
             Contact Us
           </Link>
-          <Link to="/login" className="hover:opacity-80">
-            Register/Login
-          </Link>
+          {token ? (
+            <Link to="/my-dashboard/listing" className="hover:opacity-80">
+              Dashboard
+            </Link>
+          ) : (
+            <Link to="/login" className="hover:opacity-80">
+              Register/Login
+            </Link>
+          )}
           <div className="flex items-center gap-1 cursor-pointer hover:opacity-80">
             <img src="/eng.png" alt="Language" className="w-5 h-5" />
             <span>ENG</span>
@@ -68,7 +80,7 @@ const Navbar = () => {
             <Link href="/contact" className="hover:opacity-80">
               Contact Us
             </Link>
-            <Link href="/auth" className="hover:opacity-80">
+            <Link href="/login" className="hover:opacity-80">
               Register/Login
             </Link>
             <div className="flex items-center gap-1 cursor-pointer hover:opacity-80">

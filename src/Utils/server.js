@@ -1,5 +1,5 @@
-// export const server = "http://localhost:3000"
-export const server = "https://bpro-business-backend.onrender.com"
+export const server = "http://localhost:3000"
+// export const server = "https://bpro-business-backend.onrender.com"
 
 //  ALl Dealers Route
 export const createDealerAccount = `${server}/api/v1/dealer/createDealerAccount`;
@@ -8,6 +8,7 @@ export const getAllDealers = `${server}/api/v1/dealer/getAllDealers`;
 export const deleteDealer = `${server}/api/v1/dealer/deleteDealer`;
 export const getCurrentDealer = `${server}/api/v1/dealer/getCurrentDealer`;
 export const dealerLogin = `${server}/api/v1/dealer/dealerLogin`;
+export const changePassword = `${server}/api/v1/dealer/changePassword`;
 
 // ALl Banners Route
 export const addBanner = `${server}/api/v1/banners/addBanner`;

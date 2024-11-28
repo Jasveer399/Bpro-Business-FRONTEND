@@ -15,7 +15,7 @@ function ContactForm() {
 
   return (
     <div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-white shadow-lg rounded-lg p-8 max-w-5xl mx-auto mt-10 mb-20">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-white shadow-lg rounded-lg p-8 max-w-[75rem] mx-auto mt-10 mb-20">
         {/* Contact Form */}
         <div>
           <h2 className="text-2xl font-bold mb-6 text-gray-800">
@@ -88,7 +88,7 @@ function ContactForm() {
         </div>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-6 bg-white shadow-lg rounded-lg p-6 mx-auto mt-8">
+      <div className="flex flex-wrap justify-center gap-6 bg-white shadow-lg rounded-lg px-6 py-8 mx-auto mt-8">
         {[
           { image: contactPageImage1, link: "https://thestyledesign.com/" },
           { image: contactPageImage2, link: "https://chattertots.co.in/" },
@@ -105,7 +105,7 @@ function ContactForm() {
             <img
               src={item.image}
               alt={`Contact Page ${index + 1}`}
-              className="w-32 sm:w-40 lg:w-64 h-auto object-contain"
+              className="w-36 sm:w-40 lg:w-80 h-auto object-contain"
             />
           </a>
         ))}
