@@ -15,12 +15,12 @@ import { ImageUp, Plus, X } from 'lucide-react';
 import TimeSelectorHour_Minutes from '../../../ui/TimeSelectorHour_Minutes';
 import TimePicker from '../../../ui/TimePicker';
 import ChipsInput from '../../../Components/Forms/Blogs/ChipsInput';
-import axios from 'axios';
-import { createProduct } from '../../../Utils/server';
 import { useDispatch, useSelector } from 'react-redux';
 import { addProductAsync } from '../../../Redux/Features/productSlice';
 import Snackbars from '../../../ui/Snackbars';
 import Loader from '../../../ui/Loader';
+import { stateOptions } from '../../../Utils/tags';
+import { CustomTiming, PaymentOptions, priceOptions, StatusOpstions, weekDays } from '../../../Utils/options';
 
 
 
@@ -172,106 +172,6 @@ function ProductLisiting() {
     });
   };
 
-  const priceOptions = [
-    {
-      value: "fixed",
-      label: "Fixed"
-    },
-    {
-      value: "negotiable",
-      label: "Negotiable"
-    },
-    {
-      value: "oncall",
-      label: "On Call"
-    }
-  ]
-
-  const CustomTiming = [
-    {
-      value: "dayoff",
-      label: "Day Off"
-    },
-    {
-      value: "open24hours",
-      label: "Open 24 Hours"
-    }
-  ]
-
-  const weekDays = [
-    {
-      monday: "Monday",
-    },
-    {
-      tuesday: "Tuesday",
-    },
-    {
-      wednesday: "Wednesday",
-    },
-    {
-      thursday: "Thursday",
-    },
-    {
-      friday: "Friday",
-    },
-    {
-      saturday: "Saturday",
-    },
-    {
-      sunday: "Sunday",
-    },
-  ]
-
-  const PaymentOptions = [
-    {
-      name: "American Express",
-      value: "americanexpress",
-    },
-    {
-      name: "Cash",
-      value: "cash",
-    },
-    {
-      name: "Cheque",
-      value: "cheque",
-    },
-    {
-      name: "Discover",
-      value: "discover",
-    },
-    {
-      name: "Interact",
-      value: "interact",
-    },
-    {
-      name: "Master Card",
-      value: "mastercard",
-    },
-    {
-      name: "Visa",
-      value: "visa",
-    },
-    {
-      name: "Gift Sertificate",
-      value: "giftsertificate",
-    }
-  ]
-
-  const StatusOpstions = [
-    {
-      value: "forSale",
-      label: "For Sale"
-    },
-    {
-      value: "forRent",
-      label: "For Rent"
-    },
-    {
-      value: "wanted",
-      label: "Wanted"
-    }
-
-  ]
   return (
     <>
       <Navbar />
@@ -584,7 +484,7 @@ function ProductLisiting() {
               render={({ field, fieldState: { error } }) => (
                 <SelectInput
                   label="Country"
-                  options={CustomTiming}
+                  options={stateOptions}
                   onChange={(option) => {
                     field.onChange(option.value);
                     // handlePartyChange(option);
@@ -631,7 +531,7 @@ function ProductLisiting() {
             />
           </div>
           <button disabled={isSubmitting} className='w-32 bg-blue border-2 border-white shadow-2xl hover:shadow-inner px-6 py-3 text-lg font-bold rounded-lg text-white mb-10'>
-            {isSubmitting ? <Loader/> : "Submit"}
+            {isSubmitting ? <Loader /> : "Submit"}
           </button>
         </form>
       </div>
@@ -645,4 +545,4 @@ function ProductLisiting() {
   )
 }
 
-export default ProductLisiting
+export { ProductLisiting }

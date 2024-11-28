@@ -24,10 +24,11 @@ import ContactUs from "./Dealer Dashboard/Pages/Contact Us/ContactUs";
 import DealerLayout from "./Dealer Dashboard/Components/Dashboard/DealerLayout";
 import Listing from "./Dealer Dashboard/Pages/Dashboard/Listing";
 import EditDealerProfile from "./Dealer Dashboard/Components/Dashboard/Accounts/EditDealerProfile";
-import ProductLisiting from "./Dealer Dashboard/Components/Forms/ProductLisiting";
+import { ProductLisiting } from "./Dealer Dashboard/Components/Forms/ProductLisiting";
 import AboutUs from "./Dealer Dashboard/Pages/About Us/AboutUs";
 import Bookmark from "./Dealer Dashboard/Pages/Dashboard/Bookmark";
 import { ProtectedDealerRoutes, RedirectIfDealerAuthenticated } from "./Utils/ProtectedDealerRoutes";
+import ProductDetail from "./Dealer Dashboard/Components/Dashboard/Listing/ProductDetail";
 
 function App() {
   return (
@@ -35,7 +36,7 @@ function App() {
       <Routes>
         <Route element={<RedirectIfAuthenticated />}>
           <Route path="/admin-login" element={<AdminLogin />} />
-          
+
         </Route>
         <Route element={<ProtectedAdminRoutes />}>
           <Route element={<Layout />}>
@@ -63,6 +64,8 @@ function App() {
             />
             <Route path="/my-dashboard/bookmarks" element={<Bookmark />} />
           </Route>
+          <Route path="/my-dashboard/ProductDetail" element={<ProductDetail />} />
+          <Route path="/product-listing" element={<ProductLisiting />} />
         </Route>
         <Route element={<RedirectIfDealerAuthenticated />}>
           <Route path="/register" element={<DealerRegister />} />
@@ -75,7 +78,6 @@ function App() {
         <Route path="/Allblogs" element={<Allblogs />} />
         <Route path="/BlogDetails/:id" element={<BlogDetails />} />
         <Route path="/contact-us" element={<ContactUs />} />
-        <Route path="/product-listing" element={<ProductLisiting />} />
       </Routes>
     </>
   );
