@@ -38,7 +38,7 @@ function YourListing() {
             </tr>
           </thead>
           <tbody>
-            {products.data?.map((listing, index) => {
+            {products?.map((listing, index) => {
               const timeLeft = calculateTimeLeft(listing.expiryDate);
               const expiryColorClass = getExpiryColor(timeLeft.daysLeft);
 
