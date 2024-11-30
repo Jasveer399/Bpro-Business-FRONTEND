@@ -9,6 +9,8 @@ import { FiTrendingUp } from "react-icons/fi";
 import { RiAdminLine } from "react-icons/ri";
 import { HiOutlineLockClosed, HiOutlineChartSquareBar } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
+import ConfirmationDialog from "../../../../ui/ConfirmationDialog";
+import Snackbars from "../../../../ui/Snackbars";
 
 function YourListing() {
   const { status, error, products } = useSelector((state) => state.products);
@@ -51,7 +53,7 @@ function YourListing() {
                   <td className="py-3 flex justify-center gap-2">
                     <div>
                       <img
-                        src={listing.images[0]}
+                        src={listing.images && listing.images.length > 0 ? listing.images[0] : '/box.png'}
                         alt={listing.title}
                         className="w-16 h-16 rounded-md"
                       />
@@ -96,7 +98,7 @@ function YourListing() {
                         )}
                       </button>
                       {activeDropdown === listing.id && (
-                        <ConfigureDialog product={listing} />
+                        <ConfigureDialog status={status} setActiveDropdown={setActiveDropdown} product={listing} />
                       )}
                     </div>
                   </td>
@@ -140,20 +142,25 @@ const getExpiryColor = (daysLeft) => {
   return "bg-green-50 text-green-600";
 };
 
-const ConfigureDialog = ({ product }) => {
+const ConfigureDialog = ({ status, product }) => {
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [idToDelete, setIdToDelete] = useState(null);
+  const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const navigate = useNavigate()
   const dispatch = useDispatch();
 
   const handleProductDelete = async (productId) => {
     const response = await dispatch(deleteProductAsync(productId));
     if (deleteProductAsync.fulfilled.match(response)) {
+      console.log("Product Delete Response ==============>", response);
+      console.log("Product Deleted Successfully", deleteProductAsync.fulfilled.match(response));
       setSnackbar({
         open: true,
         type: "success",
         text: response.payload.message,
       });
       setTimeout(() => {
-        navigate(-1);
+        setIsDeleteDialogOpen(false);
       }, 500);
     } else {
       setSnackbar({
@@ -161,7 +168,7 @@ const ConfigureDialog = ({ product }) => {
         type: "error",
         text: response.error.message,
       });
-      throw new Error(resultAction.error.message);
+      throw new Error(response.error.message);
     }
   }
   const options = [
@@ -173,24 +180,44 @@ const ConfigureDialog = ({ product }) => {
     { label: "Publish/Private", icon: <HiOutlineLockClosed /> },
     { label: "Note To Admin", icon: <RiAdminLine /> },
     {
-      label: "Delete", icon: <AiOutlineDelete />, onclick: () => {
-        handleProductDelete(product.id);
+      label: "Delete", icon: <AiOutlineDelete />, onClick: () => {
+        console.log("Delete clicked");
+        setIsDeleteDialogOpen(true);
+        // setActiveDropdown(false);
+        setIdToDelete(product.id)
       }
     },
   ];
 
   return (
-    <div className="bg-white text-black rounded-lg z-[999] p-px absolute top-8 left-3 w-40 shadow-lg">
-      {options.map((option, index) => (
-        <div
-          key={index}
-          className="flex items-center gap-2 px-2 text-sm py-1 cursor-pointer hover:bg-gray-200 rounded-md"
-          onClick={option.onClick}
-        >
-          {option.icon}
-          <span>{option.label}</span>
-        </div>
-      ))}</div>
+    <>
+      <div className="bg-white text-black rounded-lg z-10 p-px absolute top-8 left-3 w-40 shadow-lg">
+        {options.map((option, index) => (
+          <div
+            key={index}
+            className="flex items-center gap-2 px-2 text-sm py-1 cursor-pointer hover:bg-gray-200 rounded-md"
+            onClick={option.onClick}
+          >
+            {option.icon}
+            <span>{option.label}</span>
+          </div>
+        ))}</div>
+
+      <ConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={() => handleProductDelete(idToDelete)}
+        title="Confirm Action"
+        message="Are you sure you want to delete this Product."
+        isLoading={status === "loading"}
+      />
+      <Snackbars
+        open={snackbar.open}
+        type={snackbar.type}
+        text={snackbar.text}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
+    </>
   );
 };
 
