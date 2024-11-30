@@ -1,7 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { createProduct, editProduct, getProducts } from "../../Utils/server";
+import {
+  createProduct,
+  deleteProduct,
+  editProduct,
+  getProducts,
+} from "../../Utils/server";
 import { getDealerAccessToken } from "../../Utils/Helper";
+import { referenceLineClasses } from "@mui/x-charts";
 
 export const addProductAsync = createAsyncThunk(
   "products/addProduct",
@@ -85,10 +91,12 @@ export const deleteProductAsync = createAsyncThunk(
   "products/deleteProduct",
   async (productId, { rejectWithValue }) => {
     try {
-      await axios.delete(`${getProducts}/${productId}`, {
-        withCredentials: true,
+      const response = await axios.delete(`${deleteProduct}/${productId}`, {
+        headers: {
+          Authorization: `Bearer ${getDealerAccessToken()}`,
+        },
       });
-      return productId;
+      return response.data;
     } catch (error) {
       console.error("Error in deleteProductAsync:", error);
       return rejectWithValue(
@@ -127,9 +135,11 @@ const productSlice = createSlice({
       })
       .addCase(addProductAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        if (state.data && state.data.data) {
-          state.data.data.push(action.payload);
+        console.log("action.payload.data --------------", action.payload.data);
+        if (state.products) {
+          state.products.push(action.payload.data);
         }
+        console.log("state.products --------------", state.products);
       })
       .addCase(addProductAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -189,12 +199,16 @@ const productSlice = createSlice({
       .addCase(deleteProductAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
         // Remove product from both data and products arrays
+
+        console.log("action.payload ==================>", action.payload);
         if (state.data && state.data.data) {
           state.data.data = state.data.data.filter(
-            (p) => p.id !== action.payload
+            (p) => p.id !== action.payload.data.id
           );
         }
-        state.products = state.products.filter((p) => p.id !== action.payload);
+        state.products = state.products.filter(
+          (p) => p.id !== action.payload.data.id
+        );
       })
       .addCase(deleteProductAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -203,5 +217,5 @@ const productSlice = createSlice({
   },
 });
 
-export const { resetProductStatus,setProduct } = productSlice.actions;
+export const { resetProductStatus, setProduct } = productSlice.actions;
 export default productSlice.reducer;

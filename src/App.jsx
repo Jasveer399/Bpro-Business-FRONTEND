@@ -68,14 +68,8 @@ function App() {
             />
             <Route path="/my-dashboard/bookmarks" element={<Bookmark />} />
           </Route>
-          <Route
-            path="/my-dashboard/product-detail"
-            element={<ProductDetail />}
-          />
-          <Route
-            path="/my-dashboard/edit-product-detail/:id"
-            element={<EditProductLisiting />}
-          />
+          <Route path="/my-dashboard/product-detail/:id" element={<ProductDetail />} />
+          <Route path="/my-dashboard/edit-product-detail/:id" element={<EditProductLisiting />} />
           <Route path="/product-listing" element={<ProductLisiting />} />
         </Route>
         <Route element={<RedirectIfDealerAuthenticated />}>

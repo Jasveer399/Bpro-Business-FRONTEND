@@ -21,6 +21,13 @@ import { IoIosMailOpen } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategoriesAsync } from "../../../../Redux/Features/categoriesSlice";
 import Loader from "../../../../ui/Loader";
+import {
+  fetchProductsAsync,
+  setProduct,
+} from "../../../../Redux/Features/productSlice";
+import { useParams } from "react-router-dom";
+import { fetchCurrentDealerAsync } from "../../../../Redux/Features/dealersSlice";
+import { current } from "@reduxjs/toolkit";
 
 function ProductDetail() {
   const {
@@ -30,9 +37,40 @@ function ProductDetail() {
   } = useForm();
   const dispatch = useDispatch();
 
+  const { id } = useParams();
+  const {
+    product,
+    status: productStatus,
+    error,
+  } = useSelector((state) => state.products);
+
   const { categories, status } = useSelector((state) => state.categories);
 
-  console.log("categories", categories);
+  const { currentDealer, status: currentDealerStatus } = useSelector(
+    (state) => state.dealers
+  );
+
+  useEffect(() => {
+    if (currentDealerStatus === "idle") {
+      dispatch(fetchCurrentDealerAsync());
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (currentDealer) {
+      console.log("Current dealer: ", currentDealer);
+    }
+  }, [currentDealer]);
+
+  useEffect(() => {
+    if (status === "idle") {
+      dispatch(fetchProductsAsync());
+    }
+  }, []);
+
+  useEffect(() => {
+    dispatch(setProduct(id));
+  }, [status, dispatch]);
 
   useEffect(() => {
     if (status === "idle") {
@@ -52,18 +90,18 @@ function ProductDetail() {
         <div className="w-[60%] border border-gray-500 rounded-md bg-white p-6">
           <div className="flex gap-2 text-gray-500">
             <h1 className="flex items-center gap-1">
-              <ClockIcon size={14} /> January 16, 2023 |{" "}
+              <ClockIcon size={14} /> {product?.createdAt?.split("T")[0]} |{" "}
             </h1>
             <h1 className="flex items-center gap-1">
               <EyeIcon size={14} /> Views: 75 |{" "}
             </h1>
             <h1 className="flex items-center gap-1">
-              <Bookmark size={14} /> Id: 11017
+              <Bookmark size={14} /> Id: {product?.id?.slice(0, 5)}
             </h1>
           </div>
-          <h1 className="text-3xl font-semibold mt-1">Title</h1>
+          <h1 className="text-3xl font-semibold mt-1">{product?.title}</h1>
           <div className=" my-6">
-            <img src="/mumbai.png" className="rounded-lg" />
+            <img src={product?.images[0]} className="rounded-lg" />
           </div>
           <div>
             <h2 className="font-bold text-2xl mb-3">Contact Information</h2>
@@ -71,7 +109,13 @@ function ProductDetail() {
               <table className="w-full">
                 <tr className="text-lg border-b border-gray-400">
                   <th className="w-44 text-left pb-3">Price:</th>
-                  <td className="pb-3">On Call</td>
+                  <td className="pb-3">
+                    {product?.priceOption === "oncall"
+                      ? "On Call"
+                      : product?.priceOption === "fixed"
+                      ? `₹ ${product?.insertPrice.toFixed(2)} (Fixed)`
+                      : `₹ ${product?.insertPrice.toFixed(2)} (Negotiable)`}
+                  </td>
                 </tr>
                 <tr className="text-lg border-b border-gray-400">
                   <th className="w-44 text-left pt-5 pb-3">Categories:</th>
@@ -79,16 +123,36 @@ function ProductDetail() {
                 </tr>
                 <tr className="text-lg border-b border-gray-400">
                   <th className="w-44 text-left pt-5 pb-3">Phone:</th>
-                  <td className="pt-5 pb-3">8585858585</td>
+                  <td className="pt-5 pb-3">{currentDealer?.mobileNo}</td>
                 </tr>
                 <tr className="text-lg border-b border-gray-400">
                   <th className="w-44 text-left pt-5 pb-3">Address:</th>
-                  <td className="pt-5 pb-3">Uttrakhand</td>
+                  <td className="pt-5 pb-3">
+                    {currentDealer?.streetNo}, {currentDealer?.areaName},{" "}
+                    {currentDealer?.city}, {currentDealer?.state},{" "}
+                    {currentDealer?.pincode}
+                  </td>
                 </tr>
-                <tr className="text-lg border-b border-gray-400">
-                  <th className="w-44 text-left pt-5 pb-3">Listing Tags:</th>
-                  <td className="pt-5 pb-3">tag1 tag2</td>
-                </tr>
+                {product?.tags.length > 0 && (
+                  <tr className="text-lg border-b border-gray-400">
+                    <th className="w-44 text-left pt-5 pb-3">Listing Tags:</th>
+                    <td className="pt-5 pb-3">
+                      {product?.tags.map((tag) => tag + "  ")}
+                    </td>
+                  </tr>
+                )}
+                {currentDealer?.website && (
+                  <tr className="text-lg border-b border-gray-400">
+                    <th className="w-44 text-left pt-5 pb-3">Website:</th>
+                    <td className="pt-5 pb-3">{currentDealer?.website}</td>
+                  </tr>
+                )}
+                {currentDealer?.email && (
+                  <tr className="text-lg border-b border-gray-400">
+                    <th className="w-44 text-left pt-5 pb-3">Email:</th>
+                    <td className="pt-5 pb-3">{currentDealer?.email}</td>
+                  </tr>
+                )}
               </table>
             </div>
           </div>
@@ -192,39 +256,57 @@ function ProductDetail() {
         <div className="w-[25%]">
           <div className="bg-white border border-gray-400 flex items-center gap-4 px-4 py-6 rounded-lg">
             <AiOutlineTags className="text-5xl" />
-            <h1 className="text-5xl font-bold text-[#EB6752]">On Call</h1>
+            <h1
+              className={`${
+                product?.priceOption === "oncall" ? "text-5xl" : "text-3xl"
+              } font-bold text-[#EB6752]`}
+            >
+              {product?.priceOption === "oncall"
+                ? "On Call"
+                : product?.priceOption === "fixed"
+                ? `₹ ${product?.insertPrice.toFixed(2)} (Fixed)`
+                : `₹ ${product?.insertPrice.toFixed(2)} (Negotiable)`}
+            </h1>
           </div>
           <div className="text-center bg-white border border-gray-400 mt-5 rounded-lg px-4 py-6 flex flex-col justify-center items-center">
             <img src="/mumbai.png" className="w-48 h-48 rounded-full" />
-            <h1 className="text-xl mt-3 font-bold">bpro@india</h1>
+            <h1 className="text-xl mt-3 font-bold">
+              {currentDealer?.username}
+            </h1>
             <p className="text-gray-500 text-sm mb-3">
-              Member since Dec 18, 2023
+              Member since {currentDealer?.created_at?.split("T")[0]}
             </p>
             <p className="font-semibold underline cursor-pointer text-[#4C7BE3] mb-3">
               View All Ads
             </p>
             <div className="flex gap-5 my-3">
-              <a
-                href="https://www.facebook.com/bproindia"
-                target="_blank"
-                className="hover:bg-[#EB6752] p-3 rounded-md cursor-pointer transform duration-100 ease-in-out border border-gray-400 hover:border-[#EB6752]"
-              >
-                <FaFacebookF size={20} />
-              </a>
-              <a
-                href="https://www.youtube.com/@bproindia"
-                target="_blank"
-                className="hover:bg-[#EB6752] p-3 rounded-md cursor-pointer transform duration-100 ease-in-out border border-gray-400 hover:border-[#EB6752]"
-              >
-                <FaYoutube size={20} />
-              </a>
-              <a
-                href="https://www.instagram.com/bproindia/"
-                target="_blank"
-                className="hover:bg-[#EB6752] p-3 rounded-md cursor-pointer transform duration-100 ease-in-out border border-gray-400 hover:border-[#EB6752]"
-              >
-                <FaInstagram size={20} />
-              </a>
+              {currentDealer?.facebook && (
+                <a
+                  href={currentDealer?.facebook}
+                  target="_blank"
+                  className="hover:bg-[#EB6752] p-3 rounded-md cursor-pointer transform duration-100 ease-in-out border border-gray-400 hover:border-[#EB6752]"
+                >
+                  <FaFacebookF size={20} />
+                </a>
+              )}
+              {currentDealer?.youtube && (
+                <a
+                  href={currentDealer?.youtube}
+                  target="_blank"
+                  className="hover:bg-[#EB6752] p-3 rounded-md cursor-pointer transform duration-100 ease-in-out border border-gray-400 hover:border-[#EB6752]"
+                >
+                  <FaYoutube size={20} />
+                </a>
+              )}
+              {currentDealer?.insta && (
+                <a
+                  href={currentDealer?.insta}
+                  target="_blank"
+                  className="hover:bg-[#EB6752] p-3 rounded-md cursor-pointer transform duration-100 ease-in-out border border-gray-400 hover:border-[#EB6752]"
+                >
+                  <FaInstagram size={20} />
+                </a>
+              )}
             </div>
             <div className="flex justify-center w-full gap-4 mb-4">
               <button className="w-[50%] border border-gray-400 text-gray-600 font-semibold py-2 rounded-md">
@@ -234,32 +316,49 @@ function ProductDetail() {
                 Send Offer
               </button>
             </div>
-            <div className="flex w-full bg-[#4C7BE3] text-white h-full rounded-lg shadow-md mb-4">
-              <div className="w-[20%] bg-[#4171d9] flex items-center justify-center rounded-l-lg">
-                <FaPhoneAlt className="text-3xl " />
+            {currentDealer?.mobileNo && (
+              <div className="flex w-full bg-[#4C7BE3] text-white h-full rounded-lg shadow-md mb-4">
+                <div className="w-[20%] bg-[#4171d9] flex items-center justify-center rounded-l-lg">
+                  <FaPhoneAlt className="text-3xl " />
+                </div>
+                <a
+                  className="w-[80%] py-2"
+                  href={`tel:+91${currentDealer?.mobileNo}`}
+                >
+                  <small>Click To Show Number</small>
+                  <h1 className="font-bold text-2xl">
+                    +91 {currentDealer?.mobileNo}
+                  </h1>
+                </a>
               </div>
-              <div className="w-[80%] py-2">
-                <small>Click To Show Number</small>
-                <h1 className="font-bold text-2xl">+91 1234567890</h1>
+            )}
+            {currentDealer?.whatsappNo && (
+              <div className="flex w-full bg-[#73ce42] text-white h-full rounded-lg shadow-md mb-4">
+                <div className="w-[20%] bg-[#64bf33] flex items-center justify-center rounded-l-lg">
+                  <FaWhatsapp className="text-3xl " />
+                </div>
+                <a
+                  className="w-[80%] py-2"
+                  href={`https://wa.me/+91${currentDealer?.whatsappNo}`}
+                >
+                  <small>Click To Show Number</small>
+                  <h1 className="font-bold text-2xl">
+                    +91 {currentDealer?.whatsappNo}
+                  </h1>
+                </a>
               </div>
-            </div>
-            <div className="flex w-full bg-[#73ce42] text-white h-full rounded-lg shadow-md mb-4">
-              <div className="w-[20%] bg-[#64bf33] flex items-center justify-center rounded-l-lg">
-                <FaWhatsapp className="text-3xl " />
-              </div>
-              <div className="w-[80%] py-2">
-                <small>Click To Show Number</small>
-                <h1 className="font-bold text-2xl">+91 1234567890</h1>
-              </div>
-            </div>
-            <div className="flex w-full bg-[#ef5d50] text-white h-full rounded-lg shadow-md">
+            )}
+            <a
+              className="flex w-full bg-[#ef5d50] text-white h-full rounded-lg shadow-md"
+              href={`mailto:${currentDealer?.email}`}
+            >
               <div className="w-[20%] bg-[#ce4538] flex items-center justify-center rounded-l-lg">
                 <IoIosMailOpen className="text-3xl " />
               </div>
               <div className="w-[80%] py-5">
                 <h1 className="font-bold text-2xl">Send Email</h1>
               </div>
-            </div>
+            </a>
           </div>
           <div className="bg-white border border-gray-400 gap-4 px-4 py-6 rounded-lg mt-5">
             <h2 className="font-bold text-2xl">CATEGORIES</h2>

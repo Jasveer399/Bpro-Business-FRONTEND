@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProductsAsync } from "../../../../Redux/Features/productSlice";
+import { deleteProductAsync, fetchProductsAsync } from "../../../../Redux/Features/productSlice";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 import { FaRupeeSign } from "react-icons/fa";
 import { AiOutlineEdit, AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
@@ -8,6 +8,9 @@ import { BiBarChart } from "react-icons/bi";
 import { FiTrendingUp } from "react-icons/fi";
 import { RiAdminLine } from "react-icons/ri";
 import { HiOutlineLockClosed, HiOutlineChartSquareBar } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
+import ConfirmationDialog from "../../../../ui/ConfirmationDialog";
+import Snackbars from "../../../../ui/Snackbars";
 
 function YourListing() {
   const { status, error, products } = useSelector((state) => state.products);
@@ -50,7 +53,7 @@ function YourListing() {
                   <td className="py-3 flex justify-center gap-2">
                     <div>
                       <img
-                        src={listing.images[0]}
+                        src={listing.images && listing.images.length > 0 ? listing.images[0] : '/box.png'}
                         alt={listing.title}
                         className="w-16 h-16 rounded-md"
                       />
@@ -72,11 +75,10 @@ function YourListing() {
                   </td>
                   <td className="py-3 text-center">
                     <span
-                      className={`px-2 py-1 rounded-full text-xs font-semibold dark:text-black ${
-                        listing.status === "active"
-                          ? "bg-green-200"
-                          : "bg-red-200"
-                      }`}
+                      className={`px-2 py-1 rounded-full text-xs font-semibold dark:text-black ${listing.status === "active"
+                        ? "bg-green-200"
+                        : "bg-red-200"
+                        }`}
                     >
                       {listing.status}
                     </span>
@@ -96,7 +98,7 @@ function YourListing() {
                         )}
                       </button>
                       {activeDropdown === listing.id && (
-                        <ConfigureDialog onClose={() => toggleDropdown(null)} />
+                        <ConfigureDialog status={status} setActiveDropdown={setActiveDropdown} product={listing} />
                       )}
                     </div>
                   </td>
@@ -140,31 +142,82 @@ const getExpiryColor = (daysLeft) => {
   return "bg-green-50 text-green-600";
 };
 
-const ConfigureDialog = ({ onClose }) => {
+const ConfigureDialog = ({ status, product }) => {
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [idToDelete, setIdToDelete] = useState(null);
+  const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
+  const navigate = useNavigate()
+  const dispatch = useDispatch();
+
+  const handleProductDelete = async (productId) => {
+    const response = await dispatch(deleteProductAsync(productId));
+    if (deleteProductAsync.fulfilled.match(response)) {
+      console.log("Product Delete Response ==============>", response);
+      console.log("Product Deleted Successfully", deleteProductAsync.fulfilled.match(response));
+      setSnackbar({
+        open: true,
+        type: "success",
+        text: response.payload.message,
+      });
+      setTimeout(() => {
+        setIsDeleteDialogOpen(false);
+      }, 500);
+    } else {
+      setSnackbar({
+        open: true,
+        type: "error",
+        text: response.error.message,
+      });
+      throw new Error(response.error.message);
+    }
+  }
   const options = [
-    { label: "Edit Listing", icon: <AiOutlineEdit /> },
+    { label: "Edit Listing", icon: <AiOutlineEdit />, onClick: () => navigate(`/my-dashboard/edit-product-detail/${product.id}`) },
     { label: "Upgrade", icon: <BiBarChart /> },
     { label: "BumpUp To Top", icon: <FiTrendingUp /> },
     { label: "Performance", icon: <HiOutlineChartSquareBar /> },
-    { label: "Preview", icon: <AiOutlineEye /> },
+    { label: "Preview", icon: <AiOutlineEye />, onClick: () => navigate(`/my-dashboard/product-detail/${product.id}`) },
     { label: "Publish/Private", icon: <HiOutlineLockClosed /> },
     { label: "Note To Admin", icon: <RiAdminLine /> },
-    { label: "Delete", icon: <AiOutlineDelete /> },
+    {
+      label: "Delete", icon: <AiOutlineDelete />, onClick: () => {
+        console.log("Delete clicked");
+        setIsDeleteDialogOpen(true);
+        // setActiveDropdown(false);
+        setIdToDelete(product.id)
+      }
+    },
   ];
 
   return (
-    <div className="bg-white text-black rounded-lg p-4 z-[999] absolute top-8 left-0 shadow-md">
-      {options.map((option, index) => (
-        <div
-          key={index}
-          className="flex items-center gap-2 py-2 px-3 cursor-pointer hover:bg-gray-200 rounded-md"
-          onClick={() => console.log(option.label)}
-        >
-          {option.icon}
-          <span>{option.label}</span>
-        </div>
-      ))}
-    </div>
+    <>
+      <div className="bg-white text-black rounded-lg z-10 p-px absolute top-8 left-3 w-40 shadow-lg">
+        {options.map((option, index) => (
+          <div
+            key={index}
+            className="flex items-center gap-2 px-2 text-sm py-1 cursor-pointer hover:bg-gray-200 rounded-md"
+            onClick={option.onClick}
+          >
+            {option.icon}
+            <span>{option.label}</span>
+          </div>
+        ))}</div>
+
+      <ConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={() => handleProductDelete(idToDelete)}
+        title="Confirm Action"
+        message="Are you sure you want to delete this Product."
+        isLoading={status === "loading"}
+      />
+      <Snackbars
+        open={snackbar.open}
+        type={snackbar.type}
+        text={snackbar.text}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
+    </>
   );
 };
 

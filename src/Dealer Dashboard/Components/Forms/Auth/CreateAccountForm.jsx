@@ -44,13 +44,35 @@ function CreateAccountForm() {
       </div>
       <form onSubmit={handleSubmit(registerDealer)} className="space-y-6">
         <AuthInput
-          label="Name"
+          label="Username"
           type="text"
-          {...register("fullName", {
-            required: "Name is required",
+          {...register("username", {
+            required: "Username is required",
           })}
           error={errors.name?.message}
           width="w-96"
+        />
+        <AuthInput
+          label="Mobile Number"
+          type="tel"
+          {...register("mobileNo", {
+            required: "Mobile Number is required",
+            pattern: {
+              value: /^\d{10}$/,
+              message: "Mobile Number must be exactly 10 digits"
+            },
+            validate: (value) => {
+              const cleanedValue = value.replace(/\D/g, '');
+              return cleanedValue.length === 10 || "Mobile Number must be 10 digits"
+            }
+          })}
+          error={errors.mobileNo?.message}
+          width="w-96"
+          maxLength={10}
+          onChange={(e) => {
+            // Only allow digits
+            e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+          }}
         />
         <AuthInput
           label="Email"
