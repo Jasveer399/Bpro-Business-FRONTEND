@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { createProduct, editProduct, getProducts } from "../../Utils/server";
 import { getDealerAccessToken } from "../../Utils/Helper";
+import { referenceLineClasses } from "@mui/x-charts";
 
 export const addProductAsync = createAsyncThunk(
   "products/addProduct",
@@ -119,6 +120,9 @@ const productSlice = createSlice({
       state.product =
         state.products.find((p) => p.id === action.payload) || null;
     },
+    referenceProduct: (state, action) => {
+      state.product = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -203,5 +207,5 @@ const productSlice = createSlice({
   },
 });
 
-export const { resetProductStatus,setProduct } = productSlice.actions;
+export const { resetProductStatus, setProduct } = productSlice.actions;
 export default productSlice.reducer;

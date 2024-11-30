@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProductsAsync } from "../../../../Redux/Features/productSlice";
+import { deleteProductAsync, fetchProductsAsync } from "../../../../Redux/Features/productSlice";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 import { FaRupeeSign } from "react-icons/fa";
 import { AiOutlineEdit, AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
@@ -8,6 +8,7 @@ import { BiBarChart } from "react-icons/bi";
 import { FiTrendingUp } from "react-icons/fi";
 import { RiAdminLine } from "react-icons/ri";
 import { HiOutlineLockClosed, HiOutlineChartSquareBar } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
 
 function YourListing() {
   const { status, error, products } = useSelector((state) => state.products);
@@ -72,11 +73,10 @@ function YourListing() {
                   </td>
                   <td className="py-3 text-center">
                     <span
-                      className={`px-2 py-1 rounded-full text-xs font-semibold dark:text-black ${
-                        listing.status === "active"
-                          ? "bg-green-200"
-                          : "bg-red-200"
-                      }`}
+                      className={`px-2 py-1 rounded-full text-xs font-semibold dark:text-black ${listing.status === "active"
+                        ? "bg-green-200"
+                        : "bg-red-200"
+                        }`}
                     >
                       {listing.status}
                     </span>
@@ -96,7 +96,7 @@ function YourListing() {
                         )}
                       </button>
                       {activeDropdown === listing.id && (
-                        <ConfigureDialog onClose={() => toggleDropdown(null)} />
+                        <ConfigureDialog product={listing} />
                       )}
                     </div>
                   </td>
@@ -140,31 +140,57 @@ const getExpiryColor = (daysLeft) => {
   return "bg-green-50 text-green-600";
 };
 
-const ConfigureDialog = ({ onClose }) => {
+const ConfigureDialog = ({ product }) => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch();
+
+  const handleProductDelete = async (productId) => {
+    const response = await dispatch(deleteProductAsync(productId));
+    if (deleteProductAsync.fulfilled.match(response)) {
+      setSnackbar({
+        open: true,
+        type: "success",
+        text: response.payload.message,
+      });
+      setTimeout(() => {
+        navigate(-1);
+      }, 500);
+    } else {
+      setSnackbar({
+        open: true,
+        type: "error",
+        text: response.error.message,
+      });
+      throw new Error(resultAction.error.message);
+    }
+  }
   const options = [
-    { label: "Edit Listing", icon: <AiOutlineEdit /> },
+    { label: "Edit Listing", icon: <AiOutlineEdit />, onClick: () => navigate(`/my-dashboard/edit-product-detail/${product.id}`) },
     { label: "Upgrade", icon: <BiBarChart /> },
     { label: "BumpUp To Top", icon: <FiTrendingUp /> },
     { label: "Performance", icon: <HiOutlineChartSquareBar /> },
-    { label: "Preview", icon: <AiOutlineEye /> },
+    { label: "Preview", icon: <AiOutlineEye />, onClick: () => navigate(`/my-dashboard/product-detail/${product.id}`) },
     { label: "Publish/Private", icon: <HiOutlineLockClosed /> },
     { label: "Note To Admin", icon: <RiAdminLine /> },
-    { label: "Delete", icon: <AiOutlineDelete /> },
+    {
+      label: "Delete", icon: <AiOutlineDelete />, onclick: () => {
+        handleProductDelete(product.id);
+      }
+    },
   ];
 
   return (
-    <div className="bg-white text-black rounded-lg p-4 z-[999] absolute top-8 left-0 shadow-md">
+    <div className="bg-white text-black rounded-lg z-[999] p-px absolute top-8 left-3 w-40 shadow-lg">
       {options.map((option, index) => (
         <div
           key={index}
-          className="flex items-center gap-2 py-2 px-3 cursor-pointer hover:bg-gray-200 rounded-md"
-          onClick={() => console.log(option.label)}
+          className="flex items-center gap-2 px-2 text-sm py-1 cursor-pointer hover:bg-gray-200 rounded-md"
+          onClick={option.onClick}
         >
           {option.icon}
           <span>{option.label}</span>
         </div>
-      ))}
-    </div>
+      ))}</div>
   );
 };
 
