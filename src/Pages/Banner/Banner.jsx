@@ -16,7 +16,7 @@ function Banner() {
       dispatch(fetchBannerCategoryAsync());
     }
   })
-
+  
   useEffect(() => {
     dispatch(setCurrentBannerCategory(id));
   }, [status, dispatch]);
