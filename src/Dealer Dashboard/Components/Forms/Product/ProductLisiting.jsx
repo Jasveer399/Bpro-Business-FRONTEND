@@ -18,6 +18,7 @@ import Snackbars from "../../../../ui/Snackbars";
 import Loader from "../../../../ui/Loader";
 import { CustomTiming, PaymentOptions, priceOptions, StatusOpstions, weekDays } from "../../../../Utils/options";
 import { FaRupeeSign } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 function ProductLisiting() {
   const {
@@ -43,9 +44,9 @@ function ProductLisiting() {
     { id: 0, file: null },
   ]);
   const [tags, setTags] = useState([]);
-  const [notification, setNotification] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { status, error } = useSelector((state) => state.products);
   const isSubmitting = status === "loading";
 
@@ -123,9 +124,7 @@ function ProductLisiting() {
           type: "success",
           text: response.payload.message,
         });
-        reset(); // Reset form
-        setTags([]); // Reset tags
-        setImageContainers([{ id: 0, file: null }]); // Reset images
+        setTimeout(() => navigate(-1), 500);
       } else {
         setSnackbar({
           open: true,
