@@ -41,4 +41,6 @@ export const getWorkerIdAndName = `${server}/api/v1/worker/getWorkerIdAndName`;
 //All Product Routes
 export const createProduct = `${server}/api/v1/product/createProduct`;
 export const getProducts = `${server}/api/v1/product/getProducts`;
+export const editProduct = `${server}/api/v1/product/editProduct`;
+export const deleteProduct = `${server}/api/v1/product/deleteProduct`;
 

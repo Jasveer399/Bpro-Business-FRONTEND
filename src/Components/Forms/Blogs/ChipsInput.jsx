@@ -1,8 +1,19 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { X } from 'lucide-react';
 
-const ChipsInput = ({ value = [], onChange, label = "Input Chips", maxChips = 15, error,className }) => {
+const ChipsInput = ({
+  value = [],
+  onChange,
+  label = "Input Chips",
+  maxChips = 15,
+  error,
+  className }) => {
   const [chips, setChips] = useState(value);
+
+  useEffect(() => {
+    setChips(value);
+  }, [value]);
+
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' || e.key === 'Tab' || e.key === ',') {

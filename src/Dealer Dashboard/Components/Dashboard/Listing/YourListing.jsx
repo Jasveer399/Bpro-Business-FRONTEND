@@ -4,11 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProductsAsync } from "../../../../Redux/Features/productSlice";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 import { FaRupeeSign } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 
 function YourListing() {
   const { status, error, products } = useSelector((state) => state.products);
   const [isConfigure, setIsConfigure] = useState(false);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -31,7 +33,7 @@ function YourListing() {
             </tr>
           </thead>
           <tbody>
-            {products.data?.map((listing, index) => {
+            {products?.map((listing, index) => {
               const timeLeft = calculateTimeLeft(listing.expiryDate);
               const expiryColorClass = getExpiryColor(timeLeft.daysLeft);
 
@@ -53,7 +55,7 @@ function YourListing() {
                         {listing.title}
                       </p>
                       <p className="text-[#ef5d50] font-semibold text-lg flex items-center">
-                        <FaRupeeSign size={15}/>{`${listing.insertPrice}`}
+                        <FaRupeeSign size={15} />{`${listing.insertPrice}`}
                       </p>
                     </div>
                   </td>
@@ -73,7 +75,7 @@ function YourListing() {
                   <td className="py-3 text-center">L{index + 1}</td>
                   <td className="py-3">
                     <div className="flex justify-center space-x-2 relative">
-                      <button className="flex justify-center items-center gap-1 text-[#0967d2] bg-[#eaeff5] py-1 px-4 text-sm rounded-md" onClick={() => setIsConfigure(!isConfigure)}>
+                      <button className="flex justify-center items-center gap-1 text-[#0967d2] bg-[#eaeff5] py-1 px-4 text-sm rounded-md" onClick={() => navigate(`/my-dashboard/editproduct-detail/${listing.id}`)}>
                         <h1>Configure</h1>
                         {isConfigure ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
                       </button>

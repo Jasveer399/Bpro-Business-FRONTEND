@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { createProduct, getProducts } from "../../Utils/server";
+import { createProduct, editProduct, getProducts } from "../../Utils/server";
 import { getDealerAccessToken } from "../../Utils/Helper";
 
 export const addProductAsync = createAsyncThunk(
@@ -54,23 +54,26 @@ export const fetchProductsAsync = createAsyncThunk(
   }
 );
 
-export const updateProductAsync = createAsyncThunk(
-  "products/updateProduct",
+export const editProductAsync = createAsyncThunk(
+  "products/editProductAsync",
   async ({ productId, productData }, { rejectWithValue }) => {
     try {
+      console.log("productData", productData);
+      console.log("productId", productId);
       const response = await axios.put(
-        `${getProducts}/${productId}`,
+        `${editProduct}/${productId}`,
         productData,
         {
           withCredentials: true,
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${getDealerAccessToken()}`,
           },
         }
       );
       return response.data;
     } catch (error) {
-      console.error("Error in updateProductAsync:", error);
+      console.error("Error in editProductAsync:", error);
       return rejectWithValue(
         error.response ? error.response.data : error.message
       );
@@ -100,6 +103,7 @@ const productSlice = createSlice({
   initialState: {
     data: null,
     products: [],
+    product: null,
     status: "idle",
     error: null,
     currentPage: 1,
@@ -110,6 +114,10 @@ const productSlice = createSlice({
     resetProductStatus: (state) => {
       state.status = "idle";
       state.error = null;
+    },
+    setProduct: (state, action) => {
+      state.product =
+        state.products.find((p) => p.id === action.payload) || null;
     },
   },
   extraReducers: (builder) => {
@@ -133,7 +141,7 @@ const productSlice = createSlice({
       .addCase(fetchProductsAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.data = action.payload;
-        state.products = action.payload;
+        state.products = action.payload.data || action.payload || [];
         state.currentPage = action.payload.page || 1;
         state.totalPages = action.payload.totalPages || 1;
         state.totalProducts = action.payload.total || 0;
@@ -143,10 +151,10 @@ const productSlice = createSlice({
         state.error = action.payload;
       })
       // Update Product Cases
-      .addCase(updateProductAsync.pending, (state) => {
+      .addCase(editProductAsync.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(updateProductAsync.fulfilled, (state, action) => {
+      .addCase(editProductAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
         // Update product in both data and products arrays
         const updatedProduct = action.payload;
@@ -169,7 +177,7 @@ const productSlice = createSlice({
           state.products[productIndex] = updatedProduct;
         }
       })
-      .addCase(updateProductAsync.rejected, (state, action) => {
+      .addCase(editProductAsync.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       })
@@ -195,5 +203,5 @@ const productSlice = createSlice({
   },
 });
 
-export const { resetProductStatus } = productSlice.actions;
+export const { resetProductStatus,setProduct } = productSlice.actions;
 export default productSlice.reducer;
