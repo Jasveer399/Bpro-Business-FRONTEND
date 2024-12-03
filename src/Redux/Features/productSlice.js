@@ -135,11 +135,9 @@ const productSlice = createSlice({
       })
       .addCase(addProductAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        console.log("action.payload.data --------------", action.payload.data);
         if (state.products) {
           state.products.push(action.payload.data);
         }
-        console.log("state.products --------------", state.products);
       })
       .addCase(addProductAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -199,8 +197,6 @@ const productSlice = createSlice({
       .addCase(deleteProductAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
         // Remove product from both data and products arrays
-
-        console.log("action.payload ==================>", action.payload);
         if (state.data && state.data.data) {
           state.data.data = state.data.data.filter(
             (p) => p.id !== action.payload.data.id

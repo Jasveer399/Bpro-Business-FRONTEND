@@ -70,7 +70,6 @@ function CreateAccountForm() {
           width="w-96"
           maxLength={10}
           onChange={(e) => {
-            // Only allow digits
             e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
           }}
         />
