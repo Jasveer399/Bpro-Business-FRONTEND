@@ -21,8 +21,6 @@ function EditDealerProfile() {
   const [displayToPublicOptions, setDisplayToPublicOptions] = useState([]);
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
 
-  console.log("status", status);
-
   useEffect(() => {
     dispatch(fetchCurrentDealerAsync());
   }, [dispatch]);

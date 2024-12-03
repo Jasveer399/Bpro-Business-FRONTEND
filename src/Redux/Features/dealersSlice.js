@@ -8,6 +8,7 @@ import {
   getCurrentDealer,
   dealerLogin,
   changePassword,
+  approveDealer,
 } from "../../Utils/server";
 import { getDealerAccessToken } from "../../Utils/Helper";
 
@@ -25,7 +26,7 @@ export const addDealerAsync = createAsyncThunk(
     } catch (error) {
       console.error("Error in addDealerAsync:", error);
       return rejectWithValue(
-        error.response ? error.response.data : error.message
+        error.response ? error.response.data.message : error.message
       );
     }
   }
@@ -72,13 +73,13 @@ export const fetchDealersAsync = createAsyncThunk(
 // Thunk for updating a dealer
 export const updateDealerAsync = createAsyncThunk(
   "dealers/updateDealer",
-  async ( dealerData, { rejectWithValue }) => {
+  async (dealerData, { rejectWithValue }) => {
     try {
       console.log("dealerData", dealerData);
       const response = await axios.put(updateDealerAccount, dealerData, {
         headers: {
           Authorization: `Bearer ${getDealerAccessToken()}`,
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
       });
       return response.data;
@@ -146,14 +147,42 @@ export const changePasswordAsync = createAsyncThunk(
   }
 );
 
+export const approveDealerAsync = createAsyncThunk(
+  "dealers/approveDealer",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(
+        approveDealer,
+        { id },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error in approving Dealer:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
 const dealersSlice = createSlice({
   name: "dealers",
   initialState: {
     dealers: [],
+    dealer: null,
     status: "idle",
     error: null,
   },
-  reducers: {},
+  reducers: {
+    setDealer: (state, action) => {
+      state.dealer = state.dealers.find((d) => d.id === action.payload) || null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Add Dealer cases
@@ -248,8 +277,22 @@ const dealersSlice = createSlice({
         state.status = "failed";
         state.error = action.payload;
         state.changePass = null;
+      })
+      // ... approve dealer...
+      .addCase(approveDealerAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(approveDealerAsync.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        console.log("action.payload.id", action.payload);
+        state.dealers.find((d) => d.id === action.payload.data.id).verified = true;
+      })
+      .addCase(approveDealerAsync.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
       });
   },
 });
 
+export const { setDealer } = dealersSlice.actions;
 export default dealersSlice.reducer;

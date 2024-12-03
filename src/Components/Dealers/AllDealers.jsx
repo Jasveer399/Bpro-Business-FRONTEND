@@ -52,7 +52,7 @@ const AllDealers = () => {
                   <td className="py-5 text-center">{dealer.fullName}</td>
                   <td className="py-5 text-center">{dealer.businessName}</td>
                   <td className="py-5 text-center">{dealer.agentId}</td>
-                  <td className="py-5 text-center">{dealer.businessAddress}</td>
+                  <td className="py-5 text-center">{dealer.city}, {dealer.state}</td>
                   <td className="py-5 text-center">
                     <span
                       className={`px-2 py-1 rounded-full font-semibold text-[#49B27A]`}
@@ -61,12 +61,19 @@ const AllDealers = () => {
                     </span>
                   </td>
                   <td className="py-5 flex justify-center gap-4">
-                    <div className="bg-[#49B27A] text-white text-sm py-2 px-3 rounded-md font-semibold cursor-pointer">
+                    <Link to={`/dealers/view-profile/${dealer.id}`} className="bg-[#49B27A] text-white text-sm py-2 px-3 rounded-md font-semibold cursor-pointer">
                       VIEW PROFILE
-                    </div>
-                    <div className="bg-[#FE043C] text-white text-sm py-2 px-3 rounded-md font-semibold cursor-pointer">
+                    </Link>
+                    {dealer.verified ? (
+                      <div className="bg-[#FE043C] text-white text-sm py-2 px-3 rounded-md font-semibold cursor-pointer">
                       SUSPEND
                     </div>
+                    ) : (
+                      <div className="bg-secondary text-white text-sm py-2 px-3 rounded-md font-semibold cursor-pointer">
+                      PENDING
+                    </div>
+                    )}
+                    
                   </td>
                 </tr>
               ))}
