@@ -13,6 +13,7 @@ function LoginForm() {
     register,
     handleSubmit,
     formState: { errors },
+    getValues
   } = useForm();
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const { status, dealers } = useSelector((state) => state.dealers);
@@ -21,6 +22,7 @@ function LoginForm() {
 
   const loginDealer = async (data) => {
     const res = await dispatch(loginDealerAsync(data));
+    console.log("res", res);
     if (loginDealerAsync.fulfilled.match(res) || res.payload.success) {
       storeDealerAccessToken(res.payload.data.accessToken);
       setSnackbar({
@@ -31,15 +33,21 @@ function LoginForm() {
       setTimeout(() => {
         navigate("/my-dashboard/listing");
       }, 500);
-    }
-    else {
+    } else {
+      if (
+        res.payload.message ===
+        "Please complete your profile first. Redirecting...."
+      ) {
+        setTimeout(() => {
+          navigate("/editProfile", { state: { data: {email: getValues("email")} } });
+        }, 500);
+      }
       setSnackbar({
         open: true,
         type: "error",
         text: res.payload.message,
       });
     }
-
   };
   return (
     <>

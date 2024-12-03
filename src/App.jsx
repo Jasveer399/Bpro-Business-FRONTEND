@@ -34,6 +34,8 @@ import {
 } from "./Utils/ProtectedDealerRoutes";
 import ProductDetail from "./Dealer Dashboard/Components/Dashboard/Listing/ProductDetail";
 import EditProductLisiting from "./Dealer Dashboard/Components/Forms/Product/EditProductLisiting";
+import DealerProfile from "./Components/Dealers/DealerProfile";
+import Thankyou from "./Dealer Dashboard/Pages/Edit Profile/Thankyou";
 
 function App() {
   return (
@@ -47,6 +49,7 @@ function App() {
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/dealers" element={<Dealers />} />
+            <Route path="/dealers/view-profile/:id" element={<DealerProfile />} />
             <Route path="/workers" element={<Workers />} />
             <Route path="/banners" element={<BannersCategory />} />
             <Route path="/banners/:id" element={<Banner />} />
@@ -84,6 +87,7 @@ function App() {
         <Route path="/BlogDetails/:id" element={<BlogDetails />} />
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/editProfile" element={<EditProfile />} />
+        <Route path="/thankyou" element={<Thankyou />} />
       </Routes>
     </>
   );

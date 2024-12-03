@@ -3,21 +3,24 @@ import Navbar from "../../Components/Home/Navbar";
 import Header from "../../Components/Home/Header";
 import { Controller, useForm } from "react-hook-form";
 import FormInput from "../../../ui/FormInput";
-import { MultiSelect } from "react-multi-select-component";
 import { ImageUp, Plus, X } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { addProductAsync } from "../../../Redux/Features/productSlice";
 import Snackbars from "../../../ui/Snackbars";
 import Loader from "../../../ui/Loader";
 import SelectInput from "../../../ui/SelectInput";
+import { businessTypesOptions } from "../../../Utils/options";
+import { updateDealerAsync } from "../../../Redux/Features/dealersSlice";
+import { replace, useLocation, useNavigate } from "react-router-dom";
 
 function EditProfile() {
+  const navigate = useNavigate();
   const {
     formState: { errors },
     handleSubmit,
     register,
     reset,
     control,
+    setValue,
   } = useForm({
     defaultValues: {
       status: "active",
@@ -26,6 +29,13 @@ function EditProfile() {
       dayEndTime: "",
     },
   });
+  const location = useLocation();
+  const { status: dealerStatus } = useSelector((state) => state.dealers);
+
+  if (location?.state?.data) {
+    setValue("email", location?.state?.data?.email);
+    setValue("mobileNo", location?.state?.data?.mobileNo);
+  }
   const [selectedBusinessType, setSelectedBusinessType] = useState([]);
   const [imageContainers, setImageContainers] = useState([
     { id: 0, file: null },
@@ -41,15 +51,6 @@ function EditProfile() {
   const { status, error } = useSelector((state) => state.products);
   const isSubmitting = status === "loading";
 
-  const businessTypesOptions = [
-    { value: "retail", label: "Retail" },
-    { value: "wholesale", label: "Wholesale" },
-    { value: "distributor", label: "Distributor" },
-    { value: "service", label: "Service" },
-    { value: "manufacturing", label: "Manufacturing" },
-    { value: "others", label: "Others" },
-  ];
-
   const editProfileHandler = async (formData) => {
     try {
       const formDataToSend = new FormData();
@@ -61,13 +62,10 @@ function EditProfile() {
       formDataToSend.append("businessName", formData.businessName);
       formDataToSend.append("website", formData.website);
 
-      // Add selected business types
-      selectedBusinessType.forEach((businessType, index) => {
-        formDataToSend.append(`businessType[${index}]`, businessType.value);
-      });
+      formDataToSend.append("businessType", formData.businessType);
 
       // Add tax info
-      formDataToSend.append("gstNo", gstNo);
+      formDataToSend.append("gstNo", formData.gstNo);
       formDataToSend.append("vatNo", formData.vatNo);
 
       // Business Address
@@ -78,6 +76,8 @@ function EditProfile() {
       formDataToSend.append("country", formData.country);
       formDataToSend.append("pincode", formData.pincode);
 
+      console.log("imagesContainers", imageContainers);
+
       // Add images
       imageContainers.forEach((container, index) => {
         if (container.file) {
@@ -86,10 +86,10 @@ function EditProfile() {
       });
 
       // Add Aadhaar card images
-      const adhaarFrontContainer = imageContainers.find(
+      const adhaarFrontContainer = aadharImageContainers.find(
         (container) => container.id === "front"
       );
-      const adhaarBackContainer = imageContainers.find(
+      const adhaarBackContainer = aadharImageContainers.find(
         (container) => container.id === "back"
       );
 
@@ -101,13 +101,18 @@ function EditProfile() {
         formDataToSend.append("adhaarBackUrl", adhaarBackContainer.file);
       }
 
-      const response = await dispatch(addProductAsync(formDataToSend));
-      if (addProductAsync.fulfilled.match(response)) {
+      const response = await dispatch(updateDealerAsync(formDataToSend));
+      if (updateDealerAsync.fulfilled.match(response)) {
         setSnackbar({
           open: true,
           type: "success",
-          text: response.payload.message,
+          text: "Profile Updated Successfully !!",
         });
+        if (location?.state?.data?.email) {
+          setTimeout(() => {
+            navigate("/thankyou", { replace: true });
+          }, 500);
+        }
         reset(); // Reset form
         setTags([]); // Reset tags
         setImageContainers([{ id: 0, file: null }]); // Reset images
@@ -121,7 +126,6 @@ function EditProfile() {
           type: "error",
           text: response.error.message,
         });
-        throw new Error(resultAction.error.message);
       }
     } catch (error) {
       setSnackbar({
@@ -242,29 +246,31 @@ function EditProfile() {
                 placeholder="Enter your website"
                 className="border border-[#BFBCFF]"
                 type="text"
-                {...register("website", {})}
-                error={errors.website?.message}
+                {...register("website")}
                 width=""
               />
-              {/* <div>
-                 <Controller
-          name="workerId"
-          control={control}
-          rules={{ required: "Select Worker" }}
-          render={({ field, fieldState: { error } }) => (
-            <SelectInput
-              label="Select Worker"
-              options={businessTypesOptions}
-              onChange={(option) => {
-                field.onChange(option.value);
-                // handlePartyChange(option);
-              }}
-              error={error?.message}
-              width="w-full"
-              value={field.value}
-            />
-              </div> */}
-              <div className="w-[100%] text-[#2E3192] flex flex-col gap-2">
+              <div>
+                <span className="text-[#2E3192] text-sm">Business Type</span>
+
+                <Controller
+                  name="businessType"
+                  control={control}
+                  rules={{ required: "Select One Business Type" }}
+                  render={({ field, fieldState: { error } }) => (
+                    <SelectInput
+                      label="Select Bussiness Type"
+                      options={businessTypesOptions}
+                      onChange={(option) => {
+                        field.onChange(option.value);
+                      }}
+                      error={error?.message}
+                      width="w-full"
+                      value={field.value}
+                    />
+                  )}
+                />
+              </div>
+              {/* <div className="w-[100%] text-[#2E3192] flex flex-col gap-2">
                 <h1>Select Business Type</h1>
                 <MultiSelect
                   options={businessTypesOptions}
@@ -273,7 +279,7 @@ function EditProfile() {
                   labelledBy="businessType"
                   className="h-15"
                 />
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -517,9 +523,9 @@ function EditProfile() {
           </div>
           <button
             disabled={isSubmitting}
-            className="w-72 bg-[#FFB200] border-2 border-white shadow-2xl hover:shadow-inner px-6 py-3 text-lg font-semibold rounded-md text-white mb-10"
+            className="w-72 bg-[#FFB200] border-2 flex items-center justify-center border-white shadow-2xl hover:shadow-inner px-6 py-3 text-lg font-semibold rounded-md text-white mb-10"
           >
-            {isSubmitting ? <Loader /> : "Submit"}
+            {dealerStatus === "loading" ? <Loader /> : "Submit"}
           </button>
         </form>
       </div>

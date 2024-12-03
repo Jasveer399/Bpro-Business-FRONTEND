@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import AuthInput from "../../ui/AuthInput";
 import { Link, useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchWorkerIdAndNameAsync } from "../../../../Redux/Features/workersSlice";
 import { addDealerAsync } from "../../../../Redux/Features/dealersSlice";
 import Loader from "../../../../ui/Loader";
+import Snackbars from "../../../../ui/Snackbars";
 
 function CreateAccountForm() {
   const {
@@ -14,8 +15,11 @@ function CreateAccountForm() {
     control,
     handleSubmit,
     formState: { errors },
+    getValues,
   } = useForm();
   const { status, workers } = useSelector((state) => state.workers);
+  const { status: dealerStatus, } = useSelector((state) => state.dealers);
+  const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -26,10 +30,32 @@ function CreateAccountForm() {
   }, [status, dispatch]);
 
   const registerDealer = async (data) => {
-    const res = await dispatch(addDealerAsync(data));
+    const response = await dispatch(addDealerAsync(data));
 
-    if (addDealerAsync.fulfilled.match(res)) {
-      navigate("/login")
+    console.log("response", response);
+
+    if (addDealerAsync.fulfilled.match(response)) {
+      setSnackbar({
+        open: true,
+        type: "success",
+        text: response.payload.message,
+      });
+      setTimeout(() => {
+        navigate("/editProfile", {
+          state: {
+            data: {
+              email: getValues("email"),
+              mobileNo: getValues("mobileNo"),
+            },
+          },
+        });
+      }, 500);
+    } else {
+      setSnackbar({
+        open: true,
+        type: "error",
+        text: response.payload || response.error.message,
+      });
     }
   };
 
@@ -40,7 +66,9 @@ function CreateAccountForm() {
       </div>
       <div className="text-center">
         <h1 className="font-semibold text-4xl mt-6">Create Account</h1>
-        <p className="text-[#777] text-lg mt-2 mb-4">Sign in with this accoss the following sites.</p>
+        <p className="text-[#777] text-lg mt-2 mb-4">
+          Sign in with this accoss the following sites.
+        </p>
       </div>
       <form onSubmit={handleSubmit(registerDealer)} className="space-y-6">
         <AuthInput
@@ -59,19 +87,21 @@ function CreateAccountForm() {
             required: "Mobile Number is required",
             pattern: {
               value: /^\d{10}$/,
-              message: "Mobile Number must be exactly 10 digits"
+              message: "Mobile Number must be exactly 10 digits",
             },
             validate: (value) => {
-              const cleanedValue = value.replace(/\D/g, '');
-              return cleanedValue.length === 10 || "Mobile Number must be 10 digits"
-            }
+              const cleanedValue = value.replace(/\D/g, "");
+              return (
+                cleanedValue.length === 10 || "Mobile Number must be 10 digits"
+              );
+            },
           })}
           error={errors.mobileNo?.message}
           width="w-96"
           maxLength={10}
           onChange={(e) => {
             // Only allow digits
-            e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+            e.target.value = e.target.value.replace(/\D/g, "").slice(0, 10);
           }}
         />
         <AuthInput
@@ -115,7 +145,7 @@ function CreateAccountForm() {
             type="submit"
             className="bg-[#EB6752] rounded-md text-white py-2 px-6 hover:bg-[#191A1F] transform duration-300 ease-in-out font-semibold shadow-md"
           >
-            {status === "loading" ? <Loader /> : "Sign Up"}
+            {dealerStatus === "loading" ? <Loader /> : "Sign Up"}
           </button>
         </div>
         <div className="flex justify-center">
@@ -131,6 +161,12 @@ function CreateAccountForm() {
           </p>
         </div>
       </form>
+      <Snackbars
+        open={snackbar.open}
+        type={snackbar.type}
+        text={snackbar.text}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
     </>
   );
 }

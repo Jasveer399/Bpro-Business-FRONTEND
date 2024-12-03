@@ -9,6 +9,7 @@ export const deleteDealer = `${server}/api/v1/dealer/deleteDealer`;
 export const getCurrentDealer = `${server}/api/v1/dealer/getCurrentDealer`;
 export const dealerLogin = `${server}/api/v1/dealer/dealerLogin`;
 export const changePassword = `${server}/api/v1/dealer/changePassword`;
+export const approveDealer = `${server}/api/v1/dealer/approveDealer`;
 
 // ALl Banners Route
 export const addBanner = `${server}/api/v1/banners/addBanner`;
