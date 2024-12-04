@@ -1,8 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ListingCard from "../../Components/Dashboard/Listing/ListingCard";
 import YourListing from "../../Components/Dashboard/Listing/YourListing";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProductsAsync } from "../../../Redux/Features/productSlice";
 
 function Listing() {
+  const { status, error, products } = useSelector((state) => state.products);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (status === "idle") {
+      dispatch(fetchProductsAsync());
+    }
+  }, [dispatch, status]);
   return (
     <>
       <div>
@@ -22,15 +31,10 @@ function Listing() {
             count={"6"}
             name={"Expired Listings"}
           />
-          <ListingCard
-            colorCode={"bg-[#ff9700]"}
-            count={"6"}
-            name={"Pending Approval"}
-          />
         </div>
         <div>
           <h1 className="font-bold text-2xl pl-5">Your Listings</h1>
-          <YourListing />
+          <YourListing status={status} error={error} products={products} />
         </div>
       </div>
     </>

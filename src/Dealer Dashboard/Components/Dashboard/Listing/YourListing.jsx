@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteProductAsync, fetchProductsAsync } from "../../../../Redux/Features/productSlice";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { deleteProductAsync } from "../../../../Redux/Features/productSlice";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 import { FaRupeeSign } from "react-icons/fa";
 import { AiOutlineEdit, AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
@@ -11,17 +11,18 @@ import { HiOutlineLockClosed, HiOutlineChartSquareBar } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import ConfirmationDialog from "../../../../ui/ConfirmationDialog";
 import Snackbars from "../../../../ui/Snackbars";
+import { createPortal } from "react-dom";
 
-function YourListing() {
-  const { status, error, products } = useSelector((state) => state.products);
+function YourListing(
+  {
+    status,
+    error,
+    products
+  }
+) {
   const [activeDropdown, setActiveDropdown] = useState(null);
-  const dispatch = useDispatch();
+  const buttonRef = useRef(null);
 
-  useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchProductsAsync());
-    }
-  }, [dispatch, status]);
 
   const toggleDropdown = (id) => {
     setActiveDropdown(activeDropdown === id ? null : id);
@@ -33,7 +34,9 @@ function YourListing() {
         <table className="w-full h-full">
           <thead>
             <tr className="text-base uppercase bg-[#f6f8fa] border">
+              <th className="py-5 px-3">Image</th>
               <th className="py-5 px-3">Title</th>
+              <th className="py-5 px-3">Price</th>
               <th className="py-5 px-3">Expiry</th>
               <th className="py-5 px-3">Status</th>
               <th className="py-5 px-3">Listing ID</th>
@@ -44,22 +47,27 @@ function YourListing() {
             {products?.map((listing, index) => {
               const timeLeft = calculateTimeLeft(listing.expiryDate);
               const expiryColorClass = getExpiryColor(timeLeft.daysLeft);
-
               return (
                 <tr
                   key={listing.id}
                   className="border border-[rgba(0, 0, 0, 0.06)] text-[#565656] dark:text-lightPrimary"
                 >
-                  <td className="py-3 flex justify-center gap-2">
-                    <div>
+                  <td className=" py-3">
+                    <div className="flex items-center justify-center">
                       <img
-                        src={listing.images && listing.images.length > 0 ? listing.images[0] : '/box.png'}
+                        src={listing?.images[0]}
                         alt={listing.title}
                         className="w-16 h-16 rounded-md"
                       />
                     </div>
-                    <div>
-                      <p className="font-semibold">{listing.title}</p>
+                  </td>
+                  <td className="py-3">
+                    <div className=" flex justify-center">
+                      <p className="font-semibold">{listing.title.slice(0, 20) + "..."}</p>
+                    </div>
+                  </td>
+                  <td className="py-3">
+                    <div className="flex items-center justify-center">
                       <p className="text-[#ef5d50] font-semibold text-lg flex items-center">
                         <FaRupeeSign size={15} />
                         {`${listing.insertPrice}`}
@@ -87,6 +95,7 @@ function YourListing() {
                   <td className="py-3">
                     <div className="flex justify-center space-x-2 relative">
                       <button
+                        ref={buttonRef}
                         className="flex justify-center items-center gap-1 text-[#0967d2] bg-[#eaeff5] py-1 px-4 text-sm rounded-md"
                         onClick={() => toggleDropdown(listing.id)}
                       >
@@ -97,8 +106,15 @@ function YourListing() {
                           <MdKeyboardArrowDown />
                         )}
                       </button>
-                      {activeDropdown === listing.id && (
-                        <ConfigureDialog status={status} setActiveDropdown={setActiveDropdown} product={listing} />
+                      {activeDropdown !== null && (
+                        <Portal>
+                          <ConfigureDialog
+                            status={status}
+                            setActiveDropdown={setActiveDropdown}
+                            product={listing}
+                            buttonRef={buttonRef}
+                          />
+                        </Portal>
                       )}
                     </div>
                   </td>
@@ -111,6 +127,10 @@ function YourListing() {
     </div>
   );
 }
+
+const Portal = ({ children }) => {
+  return createPortal(children, document.body);
+};
 
 const calculateTimeLeft = (expiryDate) => {
   const now = new Date();
@@ -142,17 +162,24 @@ const getExpiryColor = (daysLeft) => {
   return "bg-green-50 text-green-600";
 };
 
-const ConfigureDialog = ({ status, product }) => {
+const ConfigureDialog = ({ status, setActiveDropdown, product, buttonRef }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const navigate = useNavigate()
   const dispatch = useDispatch();
+  const [dialogPosition, setDialogPosition] = useState({ top: 0, left: 0 });
+  useEffect(() => {
+    if (buttonRef.current) {
+      const { top, left, width, height } = buttonRef.current.getBoundingClientRect();
+      setDialogPosition({ top: top + height + 8, left: left - width / 2 });
+    }
+  }, [buttonRef]);
 
   const handleProductDelete = async (productId) => {
     const response = await dispatch(deleteProductAsync(productId));
     if (deleteProductAsync.fulfilled.match(response)) {
-      console.log("Product Delete Response ==============>", response);
+
       console.log("Product Deleted Successfully", deleteProductAsync.fulfilled.match(response));
       setSnackbar({
         open: true,
@@ -191,7 +218,13 @@ const ConfigureDialog = ({ status, product }) => {
 
   return (
     <>
-      <div className="bg-white text-black rounded-lg z-10 p-px absolute top-8 left-3 w-40 shadow-lg">
+      <div
+        className="bg-white text-black rounded-lg z-50 p-px absolute shadow-lg"
+        style={{
+          top: dialogPosition.top,
+          left: dialogPosition.left,
+        }}
+      >
         {options.map((option, index) => (
           <div
             key={index}
