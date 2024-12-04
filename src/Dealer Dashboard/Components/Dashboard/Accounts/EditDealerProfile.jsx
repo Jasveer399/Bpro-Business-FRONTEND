@@ -4,50 +4,97 @@ import { Controller, useForm } from "react-hook-form";
 import SelectInput from "../../../../ui/SelectInput";
 import TextareaInput from "../../../../ui/TextareaInput";
 import { useDispatch, useSelector } from "react-redux";
-import { changePasswordAsync, fetchCurrentDealerAsync, updateDealerAsync } from "../../../../Redux/Features/dealersSlice";
+import {
+  changePasswordAsync,
+  fetchCurrentDealerAsync,
+  updateDealerAsync,
+  updateProfileImgAsync,
+} from "../../../../Redux/Features/dealersSlice";
 import Snackbars from "../../../../ui/Snackbars";
+import { businessTypesOptions } from "../../../../Utils/options";
+import ProfileImage from "./ProfileImage";
 
 function EditDealerProfile() {
-  const {
-    register,
-    formState: { errors },
-    control,
-    setValue,
-    handleSubmit,
-    reset
-  } = useForm();
+  // const {
+  //   editProfileForm.register,
+  //   formState: { editProfileForm.formState.errors },
+  //   control,
+  //   setValue,
+  //   handleSubmit,
+  //   reset,
+  //   getValues,
+  // } = useForm();
+
+   // Separate useForm hooks for edit profile and change password
+   const editProfileForm = useForm();
+   const changePasswordForm = useForm();
+
   const dispatch = useDispatch();
-  const {currentDealer, status} = useSelector((state) => state.dealers);
+  const { currentDealer, status } = useSelector((state) => state.dealers);
   const [displayToPublicOptions, setDisplayToPublicOptions] = useState([]);
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
+  const [profileImageUrl, setProfileImageUrl] = useState(null);
+
+  const handleImageUpload = async(file) => {
+    console.log("file", file);
+    const formData = new FormData();
+    formData.append("profileImgUrl", file);
+    const response = await dispatch(updateProfileImgAsync(formData));
+    console.log("response", response);
+    if (updateProfileImgAsync.fulfilled.match(response)) {
+      setSnackbar({
+        open: true,
+        type: "success",
+        text: "Profile Image Updated Successfully",
+      });
+    } else {
+      setSnackbar({
+        open: true,
+        type: "error",
+        text: response.error.message,
+      });
+    }
+    setProfileImageUrl(URL.createObjectURL(file));
+  };
+
+  const handleImageRemove = () => {
+    // Remove the image from the server and reset the profileImageUrl state
+    setProfileImageUrl(null);
+  };
 
   useEffect(() => {
-    dispatch(fetchCurrentDealerAsync());
-  }, [dispatch]);
+    if (status === "idle") {
+      dispatch(fetchCurrentDealerAsync());
+    }
+  }, [dispatch, status]);
 
   useEffect(() => {
     if (currentDealer) {
       console.log("Current dealer: ", currentDealer);
-      setValue("fullName", currentDealer.fullName);
-      setValue("email", currentDealer.email);
-      setValue("nickname", currentDealer.nickname);
-      setValue("displayToPublic", currentDealer.displayToPublic);
-      setValue("mobileNo", currentDealer.mobileNo);
-      setValue("whatsappNo", currentDealer.whatsappNo);
-      setValue("bio", currentDealer.bio);
-      setValue("address", currentDealer.address);
-      setValue("facebook", currentDealer.facebook);
-      setValue("twitter", currentDealer.twitter);
-      setValue("insta", currentDealer.insta);
-      setValue("youtube", currentDealer.youtube);
-      setDisplayToPublicOptions([
-        { label: currentDealer.fullName, value: currentDealer.fullName },
-        { label: currentDealer.nickname, value: currentDealer.nickname },
-      ]);
+      editProfileForm.setValue("fullName", currentDealer.fullName);
+      editProfileForm.setValue("email", currentDealer.email);
+      editProfileForm.setValue("mobileNo", currentDealer.mobileNo);
+      editProfileForm.setValue("whatsappNo", currentDealer.whatsappNo);
+      editProfileForm.setValue("businessName", currentDealer.businessName);
+      editProfileForm.setValue("businessType", currentDealer.businessType);
+      editProfileForm.setValue("bio", currentDealer.bio);
+      editProfileForm.setValue("streetNo", currentDealer.streetNo);
+      editProfileForm.setValue("areaName", currentDealer.areaName);
+      editProfileForm.setValue("city", currentDealer.city);
+      editProfileForm.setValue("pincode", currentDealer.pincode);
+      editProfileForm.setValue("state", currentDealer.state);
+      editProfileForm.setValue("country", currentDealer.country);
+      editProfileForm.setValue("gstNo", currentDealer.gstNo);
+      editProfileForm.setValue("vatNo", currentDealer.vatNo);
+      editProfileForm.setValue("website", currentDealer.website);
+      editProfileForm.setValue("facebook", currentDealer.facebook);
+      editProfileForm.setValue("insta", currentDealer.insta);
+      editProfileForm.setValue("youtube", currentDealer.youtube);
+      setProfileImageUrl(currentDealer.profileUrl);
     }
   }, [currentDealer]);
 
-  const editProfileHandler = async(data) => {
+  const editProfileHandler = async (data) => {
     try {
       const response = await dispatch(updateDealerAsync(data)).unwrap();
       console.log("Profile Edited Successfully", response);
@@ -66,9 +113,21 @@ function EditDealerProfile() {
         text: error.message,
       });
     }
-  }
+  };
 
-  const changePasswordHandler = async(data) => {
+  const changePasswordHandler = async (data) => {
+    const currentPassword = changePasswordForm.getValues("currentPassword");
+    const newPassword = changePasswordForm.getValues("newPassword");
+
+    if (currentPassword === newPassword) {
+      setSnackbar({
+        open: true,
+        type: "error",
+        text: "New Password cannot be same as Current Password",
+      });
+      return;
+    }
+
     try {
       const response = await dispatch(changePasswordAsync(data)).unwrap();
       console.log("response", response);
@@ -89,46 +148,52 @@ function EditDealerProfile() {
         text: error.message,
       });
     }
-  }
+  };
 
   return (
     <div>
       <div className="flex h-screen bg-gray-100">
         {/* Left Section: Image and Account Settings */}
-        <div className="w-full md:w-1/3 bg-white p-6 flex flex-col items-center">
-          <img
-            src="auth-img.png"
-            alt="Profile"
-            className="w-32 h-32 md:w-64 md:h-64 rounded-full shadow-lg object-cover mb-6"
-          />
+        <div className="w-full md:w-1/3 h-full bg-white p-6 flex flex-col items-center">
+          <div>
+            <ProfileImage
+              imageUrl={profileImageUrl}
+              onImageUpload={handleImageUpload}
+              onImageRemove={handleImageRemove}
+              status={status}
+            />
+          </div>
 
-          <div className="w-full mb-6">
-            <h2 className="text-lg font-bold text-gray-800 mb-4">
+          <div className="w-full my-6">
+            <h1 className="text-3xl font-bold mb-6 text-gray-800">
               Change Password
-            </h2>
-            <form onSubmit={handleSubmit(changePasswordHandler)}>
+            </h1>
+
+            <form onSubmit={changePasswordForm.handleSubmit(changePasswordHandler)}>
               <FormInput
                 label="Current Password"
                 type="password"
-                {...register("currentPassword", {
+                {...changePasswordForm.register("currentPassword",{
                   required: "Current Password is required",
                 })}
-                error={errors.currentPassword?.message}
+                error={changePasswordForm.formState.errors.currentPassword?.message}
                 width="w-full"
               />
-              <FormInput
-                label="New Password"
-                type="password"
-                {...register("newPassword", {
-                  required: "New Password is required",
-                  minLength: {
-                    value: 6,
-                    message: "Password must be at least 6 characters long",
-                  },
-                })}
-                error={errors.newPassword?.message}
-                width="w-full"
-              />
+              <div className="mt-3">
+                <FormInput
+                  label="New Password"
+                  type="password"
+                  {...changePasswordForm.register("newPassword",  {
+                    required: "New Password is required",
+                    minLength: {
+                      value: 6,
+                      message: "Password must be at least 6 characters long",
+                    },
+                  })}
+                  error={changePasswordForm.formState.errors.newPassword?.message}
+                  width="w-full"
+                />
+              </div>
               <button
                 type="submit"
                 className="bg-[#EB6752] w-full py-2 mt-4 rounded-md text-white font-semibold hover:bg-[#191A1F] transition-colors duration-300"
@@ -139,17 +204,17 @@ function EditDealerProfile() {
           </div>
 
           {/* Close Your Account */}
-          <div className="w-full">
-            <h2 className="text-lg font-bold text-gray-800 mb-4">
+          <div className="w-full mt-5">
+            <h1 className="text-3xl font-bold mb-6 text-gray-800">
               Close Your Account
-            </h2>
+            </h1>
             <p className="text-sm text-gray-600 mb-4">
               Deleting your account will remove all your data permanently. This
               action cannot be undone.
             </p>
             <button
               type="button"
-              className="bg-red-600 w-full py-2 rounded-md text-white font-semibold hover:bg-red-700 transition-colors duration-300"
+              className="bg-[#EB6752] w-full py-2 mt-4 rounded-md text-white font-semibold hover:bg-[#191A1F] transition-colors duration-300"
             >
               Close Your Account
             </button>
@@ -161,52 +226,73 @@ function EditDealerProfile() {
           <h1 className="text-3xl font-bold mb-6 text-gray-800">
             Edit Profile
           </h1>
-          <form onSubmit={handleSubmit(editProfileHandler)}>
+          <form onSubmit={editProfileForm.handleSubmit(editProfileHandler)}>
             {/* Row 1: First Name & Last Name */}
-            <div className="flex items-center gap-6 mb-6">
+            <div className="flex items-center gap-6 mb-3">
               <FormInput
                 label="Full Name"
                 type="text"
-                {...register("fullName", {
+                {...editProfileForm.register("fullName", {
                   required: "Full Name is required",
                 })}
-                error={errors.fullName?.message}
+                error={editProfileForm.formState.errors.fullName?.message}
                 width="w-full"
               />
               <FormInput
                 label="Email"
                 type="email"
-                {...register("email", {
+                {...editProfileForm.register("email", {
                   required: "Email is required",
                 })}
-                error={errors.email?.message}
+                error={editProfileForm.formState.errors.email?.message}
                 width="w-full"
               />
             </div>
 
-            {/* Row 2: Nickname & Dropdown */}
-            <div className="flex items-center gap-6 mb-6">
+            {/* Row 3: Phone & WhatsApp */}
+            <div className="flex items-center gap-6 mb-3">
               <FormInput
-                label="Nickname (required)"
-                type="text"
-                {...register("nickname", {
-                  required: "Nick Name is required",
+                label="Mobile Number"
+                type="number"
+                {...editProfileForm.register("mobileNo", {
+                  required: "Mobile Number is required",
                 })}
-                error={errors.nickname?.message}
+                error={editProfileForm.formState.errors.mobileNo?.message}
+                width="w-full"
+              />
+              <FormInput
+                label="WhatsApp Number"
+                type="number"
+                {...editProfileForm.register("whatsappNo", {
+                  required: "WhatsApp Number is required",
+                })}
+                error={editProfileForm.formState.errors.whatsappNo?.message}
+                width="w-full"
+              />
+            </div>
+
+            <div className="flex items-center gap-6 mb-3">
+              <FormInput
+                label="Business Name"
+                type="text"
+                {...editProfileForm.register("businessName", {
+                  required: "Business Name is required",
+                })}
+                error={editProfileForm.formState.errors.businessName?.message}
                 width="w-full"
               />
               <div className="w-full">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Display to Public as
-                </label>
+                <h1 className="text-[15px] ml-1 mb-px text-gray-600">
+                  Business Type
+                </h1>
                 <Controller
-                  name="displayToPublic"
-                  control={control}
+                  name="businessType"
+                  control={editProfileForm.control}
                   rules={{ required: "Category is required" }}
                   render={({ field, fieldState: { error } }) => (
                     <SelectInput
                       label="Select One Option"
-                      options={displayToPublicOptions}
+                      options={businessTypesOptions}
                       onChange={(option) => field.onChange(option.value)}
                       error={error?.message}
                       width="w-full"
@@ -217,96 +303,149 @@ function EditDealerProfile() {
               </div>
             </div>
 
-            {/* Row 3: Phone & WhatsApp */}
-            <div className="flex items-center gap-6 mb-6">
+            {/* Row 4: Biography & Public Address */}
+            <div className="flex items-center gap-6 mb-3 w-full">
+              <div className="w-[50%]">
+                <h1 className="text-[15px] ml-1 mb-px text-gray-600">Bio</h1>
+                <TextareaInput
+                  label="Biography here..."
+                  {...editProfileForm.register("bio", {
+                    required: "Biography is required",
+                    minLength: {
+                      value: 10,
+                      message: "Content must be at least 50 characters",
+                    },
+                  })}
+                  error={editProfileForm.formState.errors.bio?.message}
+                  rows={5}
+                  width="w-full"
+                />
+              </div>
+              <div className="w-[50%]">
+                <FormInput
+                  label="Street No / Office"
+                  type="text"
+                  {...editProfileForm.register("streetNo", {
+                    required: "Street No. is required",
+                  })}
+                  error={editProfileForm.formState.errors.streetNo?.message}
+                  width="w-full"
+                />
+                <div className="w-full mt-3">
+                  <FormInput
+                    label="Area Name / Landmark"
+                    type="text"
+                    {...editProfileForm.register("areaName", {
+                      required: "Area Name / Landmark is required",
+                    })}
+                    error={editProfileForm.formState.errors.areaName?.message}
+                    width="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-6 mb-3">
               <FormInput
-                label="Mobile Number"
-                type="number"
-                {...register("mobileNo", {
-                  required: "Mobile Number is required",
+                label="City"
+                type="text"
+                {...editProfileForm.register("city", {
+                  required: "City is required",
                 })}
-                error={errors.mobileNo?.message}
+                error={editProfileForm.formState.errors.city?.message}
                 width="w-full"
               />
               <FormInput
-                label="WhatsApp Number"
+                label="Pincode"
                 type="number"
-                {...register("whatsappNo", {
-                  required: "WhatsApp Number is required",
+                {...editProfileForm.register("pincode", {
+                  required: "Pincode is required",
                 })}
-                error={errors.whatsappNo?.message}
+                error={editProfileForm.formState.errors.pincode?.message}
                 width="w-full"
               />
             </div>
 
-            {/* Row 4: Biography & Public Address */}
-            <div className="flex items-center gap-6 mb-6">
-              <TextareaInput
-                label="Biography here..."
-                {...register("bio", {
-                  required: "Biography is required",
-                  minLength: {
-                    value: 10,
-                    message: "Content must be at least 50 characters",
-                  },
+            <div className="flex items-center gap-6 mb-3">
+              <FormInput
+                label="State"
+                type="text"
+                {...editProfileForm.register("state", {
+                  required: "State is required",
                 })}
-                error={errors.bio?.message}
-                rows={6}
+                error={editProfileForm.formState.errors.state?.message}
                 width="w-full"
               />
-              <TextareaInput
-                label="Public Address here..."
-                {...register("address", {
-                  required: "Public Address is required",
-                  minLength: {
-                    value: 10,
-                    message: "Content must be at least 50 characters",
-                  },
+              <FormInput
+                label="Country"
+                type="text"
+                {...editProfileForm.register("country", {
+                  required: "Country is required",
                 })}
-                error={errors.address?.message}
-                rows={6}
+                error={editProfileForm.formState.errors.country?.message}
+                width="w-full"
+              />
+            </div>
+
+            <div className="flex items-center gap-6 mb-3">
+              <FormInput
+                label="GST No."
+                type="text"
+                {...editProfileForm.register("gstNo", {
+                  required: "GST No. is required",
+                })}
+                error={editProfileForm.formState.errors.gstNo?.message}
+                width="w-full"
+              />
+              <FormInput
+                label="VAT No."
+                type="text"
+                {...editProfileForm.register("vatNo", {
+                  required: "VAT No. is required",
+                })}
+                error={editProfileForm.formState.errors.vatNo?.message}
                 width="w-full"
               />
             </div>
 
             {/* Row 5: Social Media Links */}
-            <div className="flex items-center gap-6 mb-6">
+            <div className="flex items-center gap-6 mb-3">
               <FormInput
-                label="Facebook Link"
+                label="Website (Optional)"
                 type="text"
-                {...register("facebook")}
-                error={errors.facebook?.message}
+                {...editProfileForm.register("website")}
+                error={editProfileForm.formState.errors.website?.message}
                 width="w-full"
               />
               <FormInput
-                label="Twitter Link"
+                label="Facebook (Optional)"
                 type="text"
-                {...register("twitter")}
-                error={errors.twitter?.message}
+                {...editProfileForm.register("facebook")}
+                error={editProfileForm.formState.errors.facebook?.message}
                 width="w-full"
               />
             </div>
 
             <div className="flex items-center gap-6 mb-6">
               <FormInput
-                label="Instagram Link"
+                label="Instagram (Optional)"
                 type="text"
-                {...register("insta")}
-                error={errors.instagram?.message}
+                {...editProfileForm.register("insta")}
+                error={editProfileForm.formState.errors.instagram?.message}
                 width="w-full"
               />
               <FormInput
-                label="YouTube Link"
+                label="YouTube (Optional)"
                 type="text"
-                {...register("youtube")}
-                error={errors.youtube?.message}
+                {...editProfileForm.register("youtube")}
+                error={editProfileForm.formState.errors.youtube?.message}
                 width="w-full"
               />
             </div>
 
             <button
               type="submit"
-              className="bg-[#EB6752] w-full py-3 rounded-md text-white font-semibold hover:bg-[#191A1F] transition-colors duration-300"
+              className="bg-[#EB6752] w-full py-3 mb-5 rounded-md text-white font-semibold hover:bg-[#191A1F] transition-colors duration-300"
             >
               Update Profile
             </button>

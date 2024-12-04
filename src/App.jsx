@@ -36,6 +36,7 @@ import ProductDetail from "./Dealer Dashboard/Components/Dashboard/Listing/Produ
 import EditProductLisiting from "./Dealer Dashboard/Components/Forms/Product/EditProductLisiting";
 import DealerProfile from "./Components/Dealers/DealerProfile";
 import Thankyou from "./Dealer Dashboard/Pages/Edit Profile/Thankyou";
+import Messages from "./Dealer Dashboard/Pages/Dashboard/Messages";
 
 function App() {
   return (
@@ -70,6 +71,7 @@ function App() {
               element={<EditDealerProfile />}
             />
             <Route path="/my-dashboard/bookmarks" element={<Bookmark />} />
+          <Route path="/my-dashboard/messages" element={<Messages />} />
           </Route>
           <Route path="/my-dashboard/product-detail/:id" element={<ProductDetail />} />
           <Route path="/my-dashboard/edit-product-detail/:id" element={<EditProductLisiting />} />

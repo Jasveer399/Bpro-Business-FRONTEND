@@ -10,6 +10,7 @@ export const getCurrentDealer = `${server}/api/v1/dealer/getCurrentDealer`;
 export const dealerLogin = `${server}/api/v1/dealer/dealerLogin`;
 export const changePassword = `${server}/api/v1/dealer/changePassword`;
 export const approveDealer = `${server}/api/v1/dealer/approveDealer`;
+export const updateProfileImg = `${server}/api/v1/dealer/updateProfileImg`;
 
 // ALl Banners Route
 export const addBanner = `${server}/api/v1/banners/addBanner`;
