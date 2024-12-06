@@ -85,10 +85,12 @@ function MyCustomUploadAdapterPlugin(editor) {
 const TextAreaEditor = ({ onChange }) => {
 
     const editorConfiguration = {
-        // width: '100%',
         toolbar: [
             'undo', 'redo', '|',
             'heading', '|', 'bold', 'italic', 'underline', 'strikethrough', '|',
+            'imageStyle:alignLeft',
+            'imageStyle:alignCenter',
+            'imageStyle:alignRight', "|",
             'alignment', 'highlight', 'fontColor', 'fontBackgroundColor', '|',
             'link', 'blockQuote', 'insertTable', 'mediaEmbed', 'imageUpload', '|',
             'bulletedList', 'numberedList', 'indent', 'outdent'
@@ -98,35 +100,58 @@ const TextAreaEditor = ({ onChange }) => {
             Font, Heading, Highlight, Indent, IndentBlock, Italic, Link,
             List, MediaEmbed, Paragraph, Table, TableToolbar,
             TextTransformation, Undo, Image, ImageToolbar,
-            ImageCaption, ImageStyle, ImageResize, ImageUpload
+            ImageCaption, ImageStyle, ImageResize, ImageUpload,
+            Essentials,
+            Paragraph,
+            Heading,
+            Image,
+            ImageStyle,
+            ImageToolbar,
+            ImageResize,
+            Alignment,
         ],
         extraPlugins: [MyCustomUploadAdapterPlugin],
+        heading: {
+            options: [
+                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
+            ]
+        },
         image: {
-            toolbar: [
-                'imageStyle:full',
-                'imageStyle:side',
-                'imageStyle:alignLeft',
-                'imageStyle:alignRight',
-                '|',
-                'imageTextAlternative',
-                'resizeImage'
-            ],
+            styles: {
+                options: [
+                    'alignLeft',
+                    'alignCenter',
+                    'alignRight'
+                ]
+            },
             resizeOptions: [
                 {
-                    name: 'resizeImage:original',
-                    label: 'Original',
-                    value: null
+                    name: 'imageResize:original',
+                    value: null,
+                    label: 'Original'
                 },
                 {
-                    name: 'resizeImage:50',
-                    label: '50%',
-                    value: '50'
+                    name: 'imageResize:50',
+                    value: '50',
+                    label: '50%'
                 },
                 {
-                    name: 'resizeImage:75',
-                    label: '75%',
-                    value: '75'
+                    name: 'imageResize:75',
+                    value: '75',
+                    label: '75%'
                 }
+            ],
+            toolbar: [
+                'imageStyle:alignLeft',
+                'imageStyle:alignCenter',
+                'imageStyle:alignRight',
+                '|',
+                'imageResize',
+                '|',
+                'imageTextAlternative'
             ]
         },
         initialData: '<h1>Hello from CKEditor 5!</h1>'
@@ -143,7 +168,6 @@ const TextAreaEditor = ({ onChange }) => {
             onChange(content);
         }
     };
-
 
     return (
         <div className="w-full">

@@ -36,6 +36,7 @@ import ProductDetail from "./Dealer Dashboard/Components/Dashboard/Listing/Produ
 import EditProductLisiting from "./Dealer Dashboard/Components/Forms/Product/EditProductLisiting";
 import DealerProfile from "./Components/Dealers/DealerProfile";
 import Thankyou from "./Dealer Dashboard/Pages/Edit Profile/Thankyou";
+import Edtior from "./ui/Edtior";
 
 function App() {
   return (
@@ -88,6 +89,7 @@ function App() {
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/editProfile" element={<EditProfile />} />
         <Route path="/thankyou" element={<Thankyou />} />
+        <Route path="/edtior" element={<Edtior />} />
       </Routes>
     </>
   );
