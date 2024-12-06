@@ -9,6 +9,7 @@ import {
   dealerLogin,
   changePassword,
   approveDealer,
+  updateProfileImg,
 } from "../../Utils/server";
 import { getDealerAccessToken } from "../../Utils/Helper";
 
@@ -170,6 +171,27 @@ export const approveDealerAsync = createAsyncThunk(
   }
 );
 
+export const updateProfileImgAsync = createAsyncThunk(
+  "dealers/updateProfileImg",
+  async (data, { rejectWithValue }) => {
+    console.log("data", data);
+    try {
+      const response = await axios.put(updateProfileImg, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${getDealerAccessToken()}`,
+        },
+      });
+      return response.data.data;
+    } catch (error) {
+      console.error("Error in updating profile:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
 const dealersSlice = createSlice({
   name: "dealers",
   initialState: {
@@ -285,9 +307,25 @@ const dealersSlice = createSlice({
       .addCase(approveDealerAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
         console.log("action.payload.id", action.payload);
-        state.dealers.find((d) => d.id === action.payload.data.id).verified = true;
+        state.dealers.find(
+          (d) => d.id === action.payload.data.id
+        ).verified = true;
       })
       .addCase(approveDealerAsync.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      // ... update dealer profile....
+      .addCase(updateProfileImgAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(updateProfileImgAsync.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        console.log("action.payload.data.id", action.payload);
+        // state.dealers.find((d) => d.id === action.payload.id).profileUrl =
+        //   action.payload.profileUrl;
+      })
+      .addCase(updateProfileImgAsync.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });

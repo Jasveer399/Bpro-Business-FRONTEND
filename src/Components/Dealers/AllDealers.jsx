@@ -51,7 +51,7 @@ const AllDealers = () => {
                 >
                   <td className="py-5 text-center">{dealer.fullName}</td>
                   <td className="py-5 text-center">{dealer.businessName}</td>
-                  <td className="py-5 text-center">{dealer.agentId}</td>
+                  <td className="py-5 text-center">{dealer.Worker.workerId}</td>
                   <td className="py-5 text-center">{dealer.city}, {dealer.state}</td>
                   <td className="py-5 text-center">
                     <span
