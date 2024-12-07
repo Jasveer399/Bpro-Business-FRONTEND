@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import Navbar from "../../Components/Home/Navbar";
 import Header from "../../Components/Home/Header";
 import PopularSearches from "../../Components/Home/PopularSearches";
-import LocationCard from "../../Components/Home/LocationCard";
 import Footer from "../../Components/Home/Footer";
 import Advertisement from "../../Components/Home/Advertisement";
 import LatestArticles from "../../Components/Home/LatestArticles";
@@ -10,6 +9,7 @@ import ShopsCategory from "../../Components/Home/ShopsCategory";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBannerCategoryAsync } from "../../../Redux/Features/bannersCategorySlice";
 import { fetchProductsAsync } from "../../../Redux/Features/productSlice";
+import LocationCarousel from "../../Components/Home/LocationCard";
 
 function Home() {
   const dispatch = useDispatch();
@@ -145,22 +145,12 @@ function Home() {
           <h1 className="font-montserrat font-extrabold text-xl md:text-2xl mx-3 md:mx-5 mb-3">
             We are available in...
           </h1>
-          <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 mx-2 md:mx-3 gap-3">
-            <LocationCard />
-            <LocationCard />
-            <LocationCard />
-            <LocationCard />
-            <LocationCard />
-            <LocationCard />
-            <LocationCard />
-            <LocationCard />
-            <LocationCard />
-            <LocationCard />
+          <div className="flex overflow-x-auto space-x-4 mx-2 md:mx-3">
+            <LocationCarousel />
           </div>
         </div>
-
       </div>
-        <Footer />
+      <Footer />
     </>
   );
 }
