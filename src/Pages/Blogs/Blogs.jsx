@@ -5,7 +5,6 @@ import Dialog from '../../ui/Dialog';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchBlogsAsync } from '../../Redux/Features/blogsSlice';
 import BlogCardGrid from '../../Components/Forms/Blogs/BlogCardGrid';
-import { Typography } from '@mui/material';
 
 function Blogs() {
 
