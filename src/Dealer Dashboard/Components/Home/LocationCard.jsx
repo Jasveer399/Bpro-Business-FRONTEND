@@ -1,7 +1,7 @@
 // LocationCard.js
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import {   Autoplay } from "swiper/modules"; // Import Autoplay module
+import { Autoplay } from "swiper/modules"; // Import Autoplay module
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -26,15 +26,14 @@ function LocationCard({ image, name }) {
 
 const cities = [
   { name: "Mumbai", image: "/mumbai.png" },
-  { name: "Mumbai", image: "/mumbai.png" },
-  { name: "Mumbai", image: "/mumbai.png" },
-  { name: "Mumbai", image: "/mumbai.png" },
-  { name: "Mumbai", image: "/mumbai.png" },
-  { name: "Mumbai", image: "/mumbai.png" },
-  { name: "Delhi", image: "/delhi.png" },
   { name: "Bangalore", image: "/bangalore.png" },
+  { name: "Chandigarh", image: "/chandigarh.png" },
+  { name: "Delhi", image: "/delhi.png" },
   { name: "Kolkata", image: "/kolkata.png" },
-  { name: "Chennai", image: "/chennai.png" },
+  { name: "Jaipur", image: "/jaipur.png" },
+  { name: "Delhi", image: "/delhi.png" },
+  { name: "Gurugram", image: "/gurugram.png" },
+  { name: "panchkula", image: "/panchkula.png" },
 ];
 
 export default function LocationCarousel() {
@@ -51,6 +50,7 @@ export default function LocationCarousel() {
           disableOnInteraction: false, // Auto-resume autoplay after user interaction
         }}
         breakpoints={{
+          0: { slidesPerView: 1 },
           640: { slidesPerView: 1 }, // For very small screens
           768: { slidesPerView: 3 }, // Tablets
           1024: { slidesPerView: 4 }, // Medium screens

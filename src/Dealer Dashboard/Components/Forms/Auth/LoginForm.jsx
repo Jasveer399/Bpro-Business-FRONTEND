@@ -13,7 +13,7 @@ function LoginForm() {
     register,
     handleSubmit,
     formState: { errors },
-    getValues
+    getValues,
   } = useForm();
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const { status, dealers } = useSelector((state) => state.dealers);
@@ -39,7 +39,9 @@ function LoginForm() {
         "Please complete your profile first. Redirecting...."
       ) {
         setTimeout(() => {
-          navigate("/editProfile", { state: { data: {email: getValues("email")} } });
+          navigate("/editProfile", {
+            state: { data: { email: getValues("email") } },
+          });
         }, 500);
       }
       setSnackbar({
@@ -51,60 +53,67 @@ function LoginForm() {
   };
   return (
     <>
-      <div>
+      {/* <div>
         <img src="BproBusiness.png" className="w-[100%]" />
+      </div> */}
+      <div className="bg-[#2E3192] flex justify-center items-center w-full h-60 font-montserrat">
+        <h1 className=" md:text-6xl text-4xl text-white font-montserrat">
+          Login
+        </h1>
       </div>
-      <div className="text-center">
-        <h1 className="font-semibold text-4xl mt-6">Sign In</h1>
-        <p className="text-[#777] text-lg mt-2 mb-4">
+      <div className="max-w-lg mx-auto font-montserrat px-5">
+        <div className="text-center">
+          <h1 className="font-semibold text-4xl my-6">Login</h1>
+          {/* <p className="text-[#777] text-lg mt-2 mb-4">
           Sign in with this accoss the following sites.
-        </p>
+        </p> */}
+        </div>
+        <form onSubmit={handleSubmit(loginDealer)} className="space-y-6">
+          <AuthInput
+            label="Email"
+            type="email"
+            {...register("email", {
+              required: "Email is required",
+            })}
+            error={errors.email?.message}
+            // width="w-96"
+          />
+          <AuthInput
+            label="Password"
+            type="password"
+            {...register("password", {
+              required: "Password is required",
+            })}
+            error={errors.password?.message}
+            // width="w-96"
+          />
+          <div className="flex justify-center w-full">
+            <button
+              type="submit"
+              className="bg-secondary rounded-md text-white py-3 w-full px-6 hover:bg-[#191A1F] transform duration-300 ease-in-out font-semibold shadow-md"
+            >
+              {status === "loading" ? <Loader /> : "Sign In"}
+            </button>
+          </div>
+          <div className="flex justify-center text-[#2E3192] font-bold">
+            <p>
+              <Link
+                //   to="/register"
+                className="font-semibold text-secondary cursor-pointer hover:underline"
+              >
+                Forgot Password
+              </Link>{" "}
+              or follow here to{" "}
+              <Link
+                to="/register"
+                className="font-semibold text-secondary cursor-pointer underline"
+              >
+                Create New Account
+              </Link>
+            </p>
+          </div>
+        </form>
       </div>
-      <form onSubmit={handleSubmit(loginDealer)} className="space-y-6">
-        <AuthInput
-          label="Email"
-          type="email"
-          {...register("email", {
-            required: "Email is required",
-          })}
-          error={errors.email?.message}
-          width="w-96"
-        />
-        <AuthInput
-          label="Password"
-          type="password"
-          {...register("password", {
-            required: "Password is required",
-          })}
-          error={errors.password?.message}
-          width="w-96"
-        />
-        <div className="flex justify-center">
-          <button
-            type="submit"
-            className="bg-[#EB6752] rounded-md text-white py-2 px-6 hover:bg-[#191A1F] transform duration-300 ease-in-out font-semibold shadow-md"
-          >
-            {status === "loading" ? <Loader /> : "Sign In"}
-          </button>
-        </div>
-        <div className="flex justify-center">
-          <p>
-            <Link
-              //   to="/register"
-              className="font-semibold text-[#EB6752] cursor-pointer hover:underline"
-            >
-              Forgot Password
-            </Link>{" "}
-            or follow here to{" "}
-            <Link
-              to="/register"
-              className="font-semibold text-[#EB6752] cursor-pointer hover:underline"
-            >
-              Create New Account
-            </Link>
-          </p>
-        </div>
-      </form>
       <Snackbars
         open={snackbar.open}
         type={snackbar.type}

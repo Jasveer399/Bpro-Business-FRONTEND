@@ -12,6 +12,8 @@ function Listing() {
       dispatch(fetchProductsAsync());
     }
   }, [dispatch, status]);
+
+  console.log("prodthcsy", products)
   return (
     <>
       <div>

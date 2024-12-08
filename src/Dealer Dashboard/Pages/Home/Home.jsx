@@ -23,7 +23,6 @@ function Home() {
   );
 
   useEffect(() => {
-    // Fetch banners and products if not already loaded
     if (status === "idle") {
       dispatch(fetchBannerCategoryAsync());
     }
