@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import Navbar from "../Home/Navbar";
 import Header from "../Home/Header";
@@ -8,9 +8,19 @@ import { TbMessages } from "react-icons/tb";
 import { IoAddCircleOutline } from "react-icons/io5";
 import { LogOut } from "lucide-react";
 import { removeDealerAccessToken } from "../../../Utils/Helper";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCurrentDealerAsync } from "../../../Redux/Features/dealersSlice";
 
 function DealerLayout() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { currentDealer, status } = useSelector((state) => state.dealers);
+  useEffect(() => {
+    if (status === "idle") {
+      dispatch(fetchCurrentDealerAsync());
+    }
+  }, [dispatch, status]);
+
   const navItems = [
     { name: "Listing", icon: PiDiamondsFour, link: "/my-dashboard/listing" },
     {
@@ -31,6 +41,8 @@ function DealerLayout() {
     },
   ];
 
+  console.log("currentDealer", currentDealer);
+
   const logout = () => {
     removeDealerAccessToken();
     navigate("/login", { replace: true });
@@ -44,17 +56,17 @@ function DealerLayout() {
         {/* Sidebar */}
         <div className="w-[22%] h-full">
           {/* Profile Section */}
-          <div className="flex items-center gap-2 justify-center my-6">
+          <div className="flex items-center gap-2 mx-14 my-6">
             <div>
               <img
-                src="auth-img.png"
+                src={`${currentDealer?.profileUrl ? currentDealer?.profileUrl : "/dummy-profile.png"}`}
                 alt="Profile"
                 className="w-12 h-12 rounded-full"
               />
             </div>
             <div>
-              <p className="text-[#777]">bproindia</p>
-              <h4 className="font-semibold">Bpro@India</h4>
+              <p className="text-[#777]">{currentDealer?.username}</p>
+              <h4 className="font-semibold">{currentDealer?.fullName}</h4>
             </div>
           </div>
 

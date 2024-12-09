@@ -19,7 +19,7 @@ export const addBannerAsync = createAsyncThunk(
           "Content-Type": "multipart/form-data",
         },
       });
-      return response.data.data;
+      return response.data;
     } catch (error) {
       console.error("Error in addBannerAsync:", error);
       return rejectWithValue(
@@ -56,7 +56,7 @@ export const updateBannerAsync = createAsyncThunk(
           "Content-Type": "multipart/form-data",
         },
       });
-      return response.data.data;
+      return response.data;
     } catch (error) {
       console.error("Error in updateBannerAsync:", error);
       return rejectWithValue(
@@ -98,7 +98,10 @@ const bannersSlice = createSlice({
       })
       .addCase(addBannerAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.banners.push(action.payload);
+        console.log("action.payload", action);
+        console.log("state.banners before", state.banners);
+        state.banners.push(action.payload.data);
+        console.log("state.banners", state.banners);
       })
       .addCase(addBannerAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -126,7 +129,7 @@ const bannersSlice = createSlice({
           (banner) => banner.id === action.payload.id
         );
         if (index !== -1) {
-          state.banners[index] = action.payload;
+          state.banners[index] = action.payload.data;
         }
       })
       .addCase(updateBannerAsync.rejected, (state, action) => {
@@ -139,6 +142,7 @@ const bannersSlice = createSlice({
       })
       .addCase(deleteBannerAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
+        console.log("action: >>", action);
         state.banners = state.banners.filter(
           (banner) => banner.id !== action.payload
         );
