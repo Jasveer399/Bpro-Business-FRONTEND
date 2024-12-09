@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import Navbar from "../Home/Navbar";
 import Header from "../Home/Header";
@@ -8,9 +8,19 @@ import { TbMessages } from "react-icons/tb";
 import { IoAddCircleOutline } from "react-icons/io5";
 import { LogOut } from "lucide-react";
 import { removeDealerAccessToken } from "../../../Utils/Helper";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCurrentDealerAsync } from "../../../Redux/Features/dealersSlice";
 
 function DealerLayout() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { currentDealer, status } = useSelector((state) => state.dealers);
+  useEffect(() => {
+    if (status === "idle") {
+      dispatch(fetchCurrentDealerAsync());
+    }
+  }, [dispatch, status]);
+
   const navItems = [
     { name: "Listing", icon: PiDiamondsFour, link: "/my-dashboard/listing" },
     {
@@ -30,6 +40,8 @@ function DealerLayout() {
       link: "/my-dashboard/bookmarks",
     },
   ];
+
+  console.log("currentDealer", currentDealer);
 
   const logout = () => {
     removeDealerAccessToken();

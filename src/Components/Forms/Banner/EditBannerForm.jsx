@@ -8,11 +8,13 @@ import Loader from "../../../ui/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { updateBannerAsync } from "../../../Redux/Features/bannersSlice";
 import { ImageUp, X } from "lucide-react";
+import Snackbars from "../../../ui/Snackbars";
 
 function EditBannerForm({ closeDialog, banner }) {
     const dispatch = useDispatch()
     const { status } = useSelector((state) => state.banners)
     const [imageContainer, setImageContainer] = useState({ file: null });
+    const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const {
     formState: { errors },
     handleSubmit,
@@ -47,9 +49,24 @@ function EditBannerForm({ closeDialog, banner }) {
     formData.append("externalUrl", data.externalUrl);
 
     try {
-      await dispatch(updateBannerAsync({id: banner.id, formData})).unwrap();
+      const res = await dispatch(updateBannerAsync({id: banner.id, formData})).unwrap();
       console.log("Banner update successfully");
-      closeDialog();
+      if (res.success) {
+        setSnackbar({
+          open: true,
+          type: "success",
+          text: res.message,
+        });
+        setTimeout(() => {
+          closeDialog();
+        }, 500);
+      } else {
+        setSnackbar({
+          open: true,
+          type: "error",
+          text: res?.payload || res?.error?.message || "Error adding banner",
+        });
+      }
     } catch (error) {
       console.error("Failed to updating banner:", error);
     }
@@ -175,6 +192,12 @@ function EditBannerForm({ closeDialog, banner }) {
           </div>
         </form>
       </div>
+      <Snackbars
+        open={snackbar.open}
+        type={snackbar.type}
+        text={snackbar.text}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
     </>
   );
 }
