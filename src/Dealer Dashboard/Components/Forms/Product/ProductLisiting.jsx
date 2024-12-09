@@ -16,7 +16,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { addProductAsync } from "../../../../Redux/Features/productSlice";
 import Snackbars from "../../../../ui/Snackbars";
 import Loader from "../../../../ui/Loader";
-import { CustomTiming, PaymentOptions, priceOptions, StatusOpstions, weekDays } from "../../../../Utils/options";
+import {
+  CustomTiming,
+  PaymentOptions,
+  priceOptions,
+  StatusOpstions,
+  weekDays,
+} from "../../../../Utils/options";
 import { FaRupeeSign } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
@@ -179,12 +185,14 @@ function ProductLisiting() {
         alt="productLisiting"
         className="w-full h-72 object-cover relative"
       />
-      <h1 className="flex flex-col md:text-6xl text-4xl font-semibold text-white absolute top-56 md:left-20 left-5 gap-4">
+      <h1 className="flex flex-col text-3xl sm:text-4xl md:text-6xl font-semibold text-white absolute top-80 sm:top-56 left-4 sm:left-5 md:left-20 gap-2 sm:gap-4">
         Product Lisiting{" "}
-        <span className="text-xl">Home | Product Lisiting</span>
+        <span className="text-base sm:text-xl">Home | Product Lisiting</span>
       </h1>
-      <div className="mx-52 mt-20">
-        <h1 className="text-4xl font-bold text-center">Create New listing</h1>
+      <div className="mx-4 sm:mx-8 md:mx-16 lg:mx-52 sm:mt-20 pb-10">
+        <h1 className="text-2xl sm:text-4xl font-bold text-center mb-8">
+          Create New listing
+        </h1>
         <form
           className="flex flex-col gap-10"
           onSubmit={handleSubmit(addProductLisitingHandler)}
@@ -243,7 +251,7 @@ function ProductLisiting() {
                 some minutes.
               </span>
             </h1>
-            <div className="w-[90%] flex gap-5">
+            <div className="w-[90%] flex flex-col md:flex-row gap-5">
               <FormInput
                 label="Date"
                 type="date"
@@ -275,21 +283,22 @@ function ProductLisiting() {
             </h1>
             <div className="flex flex-col gap-3 w-[90%]">
               <label className="text-lg">Timeings</label>
-              <div className="w-full flex gap-2">
+              <div className="w-full flex flex-col md:flex-row gap-2">
                 {weekDays.map((day, index) => (
                   <div
                     key={index}
-                    className={`text-lg border ${selectedDay === Object.values(day)[0]
+                    className={`text-lg border ${
+                      selectedDay === Object.values(day)[0]
                         ? "bg-blue text-white"
                         : "border-gray-500"
-                      } py-1 px-5 w-32 rounded-lg flex items-center justify-center`}
+                    } py-1 px-5 w-32 rounded-lg flex items-center justify-center`}
                     onClick={() => setSelectedDay(Object.values(day)[0])}
                   >
                     {Object.values(day)[0]}
                   </div>
                 ))}
               </div>
-              <div className="w-full flex gap-5 items-centers relative">
+              <div className="w-full flex flex-col md:flex-row gap-5 items-centers relative">
                 <TimePicker
                   label=""
                   onChange={(value) => setValue("dayStartTime", value)}
@@ -320,7 +329,7 @@ function ProductLisiting() {
                 />
               </div>
             </div>
-            <div className="w-[90%] flex gap-5 items-centers relative mt-10">
+            <div className="w-[90%] flex flex-col md:flex-row gap-5 items-centers relative mt-10">
               <h1 className="text-lg absolute -top-8">Price</h1>
               {/* <FormInput
                 label="Currency Symbol"
@@ -370,7 +379,7 @@ function ProductLisiting() {
             </div>
             <div className="w-[90%]">
               <label className="text-lg">Payment Options</label>
-              <div className="grid grid-cols-3 gap-5 w-full mt-5">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full mt-5">
                 {PaymentOptions.map((option, index) => (
                   <div className="flex gap-5 p-1 items-center border border-gray-400 w-full rounded-lg">
                     <Checkbox
