@@ -524,7 +524,7 @@ function ProductLisiting() {
           </div> */}
           <button
             disabled={isSubmitting}
-            className="w-32 bg-blue border-2 border-white shadow-2xl hover:shadow-inner px-6 py-3 text-lg font-bold rounded-lg text-white mb-10"
+            className="w-32 bg-blue border-2 border-white shadow-2xl hover:shadow-inner px-6 py-3 text-lg font-bold rounded-lg text-white mb-10 flex justify-center items-center"
           >
             {isSubmitting ? <Loader /> : "Submit"}
           </button>

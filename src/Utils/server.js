@@ -46,3 +46,8 @@ export const getProducts = `${server}/api/v1/product/getProducts`;
 export const editProduct = `${server}/api/v1/product/editProduct`;
 export const deleteProduct = `${server}/api/v1/product/deleteProduct`;
 
+//All BookMarks Routes
+// export const getAllBookmarks = `${server}/api/v1/bookmarks/getAllBookmarks`;
+export const getUserBookmarks = `${server}/api/v1/bookmark/getUserBookmarks`;
+export const createBookmark = `${server}/api/v1/bookmark/createBookmark`;
+export const deleteBookmark = `${server}/api/v1/bookmark/deleteBookmark`;

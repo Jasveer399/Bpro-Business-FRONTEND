@@ -90,7 +90,7 @@ function LoginForm() {
           <div className="flex justify-center w-full">
             <button
               type="submit"
-              className="bg-secondary rounded-md text-white py-3 w-full px-6 hover:bg-[#191A1F] transform duration-300 ease-in-out font-semibold shadow-md"
+              className="bg-secondary rounded-md text-white py-3 w-full px-6 hover:bg-[#191A1F] transform duration-300 ease-in-out font-semibold shadow-md flex justify-center items-center"
             >
               {status === "loading" ? <Loader /> : "Sign In"}
             </button>

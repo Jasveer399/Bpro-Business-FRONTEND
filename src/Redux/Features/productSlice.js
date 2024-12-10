@@ -13,6 +13,7 @@ export const addProductAsync = createAsyncThunk(
   "products/addProduct",
   async (productData, { rejectWithValue }) => {
     try {
+      console.log("getDealerAccessToken =======>", getDealerAccessToken());
       const response = await axios.post(createProduct, productData, {
         withCredentials: true,
         headers: {

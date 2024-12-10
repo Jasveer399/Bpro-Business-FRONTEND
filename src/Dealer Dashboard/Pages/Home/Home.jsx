@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../../Components/Home/Navbar";
 import Header from "../../Components/Home/Header";
 import PopularSearches from "../../Components/Home/PopularSearches";
@@ -10,17 +10,51 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchBannerCategoryAsync } from "../../../Redux/Features/bannersCategorySlice";
 import { fetchProductsAsync } from "../../../Redux/Features/productSlice";
 import LocationCarousel from "../../Components/Home/LocationCard";
+import {
+  addBookmarkAsync,
+  deleteBookmarkAsync,
+  fetchUserBookmarksAsync,
+} from "../../../Redux/Features/bookmarkSlice";
 
 function Home() {
   const dispatch = useDispatch();
   const { bannersCategory, status, error } = useSelector(
     (state) => state.bannersCategory
   );
-
+  const [updatedProducts, setUpdatedProducts] = useState([])
+  
   // Fetch products from the listings
   const { data: products, status: productStatus } = useSelector(
     (state) => state.products
   );
+  const { items: bookmarkedItems, bookmarkStatus } = useSelector((state) => state.bookmarks);
+  
+  useEffect(() => {
+    const updatedData = products?.data?.map((product) => ({
+      ...product,
+      bookmark: bookmarkedItems.some((item) => item.productId === product.id),
+    }));
+    setUpdatedProducts(updatedData);
+  }, [products, bookmarkedItems]);
+  
+  const handleBookmarkToggle = (product) => {
+    const isBookmarked = product.bookmark;
+
+    const updatedProductList = updatedProducts.map((p) =>
+      p.id === product.id ? { ...p, bookmark: !isBookmarked } : p
+    );
+    setUpdatedProducts(updatedProductList);
+  
+    const bookmarkedItem = bookmarkedItems.find((item) => item.productId === product.id);
+  
+    if (isBookmarked && bookmarkedItem) {
+      // Remove bookmark using the item's ID
+      dispatch(deleteBookmarkAsync(bookmarkedItem.id));
+    } else {
+      // Add bookmark using the product ID
+      dispatch(addBookmarkAsync(product.id));
+    }
+  };
 
   useEffect(() => {
     if (status === "idle") {
@@ -30,7 +64,10 @@ function Home() {
     if (productStatus === "idle") {
       dispatch(fetchProductsAsync({ page: 1, limit: 8 }));
     }
-  }, [status, productStatus, dispatch]);
+    if (bookmarkStatus === "idle") {
+      dispatch(fetchUserBookmarksAsync());
+    }
+  }, [status, productStatus,bookmarkStatus, dispatch]);
 
   const articleData = [
     {
@@ -114,8 +151,12 @@ function Home() {
             Popular Searches
           </h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 m-2 md:m-4 gap-3 md:gap-5">
-            {products?.data?.map((product) => (
-              <PopularSearches key={product.id} product={product} />
+            {updatedProducts?.map((product) => (
+              <PopularSearches
+                key={product.id}
+                product={product}
+                onBookmarkToggle={handleBookmarkToggle}
+              />
             ))}
           </div>
           {products?.data?.length >= 8 && (

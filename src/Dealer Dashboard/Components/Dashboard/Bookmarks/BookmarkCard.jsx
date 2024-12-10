@@ -3,16 +3,8 @@ import React from "react";
 import { FaStar, FaWhatsapp } from "react-icons/fa";
 import { IoLocationSharp } from "react-icons/io5";
 import { VscVerifiedFilled } from "react-icons/vsc";
-import { useDispatch } from "react-redux";
-import { removeBookmark } from "../../../../Redux/Features/bookmarkSlice";
 
 function BookmarkCard({ product }) {
-  const dispatch = useDispatch();
-
-  // Handle removing bookmark
-  const handleRemoveBookmark = () => {
-    dispatch(removeBookmark(product));
-  };
 
   return (
     <div className="border border-[#E7E7E7] rounded-md font-montserrat p-2">
@@ -73,7 +65,6 @@ function BookmarkCard({ product }) {
 
       {/* Remove Bookmark */}
       <button
-        onClick={handleRemoveBookmark}
         className="mt-2 text-sm text-red-500 underline"
       >
         Remove from Bookmarks

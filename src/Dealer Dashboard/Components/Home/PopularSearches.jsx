@@ -1,45 +1,21 @@
 import React from "react";
-import { FaStar, FaBookmark, FaRegBookmark, FaWhatsapp } from "react-icons/fa";
+import { FaStar, FaWhatsapp, FaBookmark } from "react-icons/fa";
 import { IoLocationSharp } from "react-icons/io5";
 import { VscVerifiedFilled } from "react-icons/vsc";
 import { MailOpen } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  addBookmark,
-  removeBookmark,
-} from "../../../Redux/Features/bookmarkSlice";
 
-function PopularSearches({ product }) {
-  const dispatch = useDispatch();
-  const bookmarkedItems = useSelector((state) => state.bookmarks.items);
-
-  // Check if current product is bookmarked
-  const isBookmarked = bookmarkedItems.some((item) => item.id === product.id);
-
-  // Log data for debugging
-  // console.log("Product Data:", product);
-
-  // Handle bookmark toggle
-  const handleBookmarkToggle = () => {
-    if (isBookmarked) {
-      dispatch(removeBookmark(product));
-    } else {
-      dispatch(addBookmark(product));
-    }
-  };
-
+function PopularSearches({ product, onBookmarkToggle }) {
   return (
     <div className="relative border border-[#E7E7E7] rounded-md font-montserrat p-2">
       {/* Bookmark Icon */}
       <div
-        className="absolute top-2 right-2 cursor-pointer z-20"
-        onClick={handleBookmarkToggle}
+        className="absolute top-3 right-3 cursor-pointer z-20"
+        onClick={() => onBookmarkToggle(product)}
       >
-        {isBookmarked ? (
-          <FaBookmark className="text-primary" size={20} />
-        ) : (
-          <FaRegBookmark className="text-gray-500" size={20} />
-        )}
+        <FaBookmark
+          className={`${product.bookmark ? "text-yellow-500" : "text-gray-500"}`}
+          size={20}
+        />
       </div>
 
       {/* Product Image */}
@@ -97,5 +73,6 @@ function PopularSearches({ product }) {
     </div>
   );
 }
+
 
 export default PopularSearches;
