@@ -51,7 +51,7 @@ function Layout() {
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
-    navigate("/login");
+    navigate("/admin-login");
   };
 
   return (
