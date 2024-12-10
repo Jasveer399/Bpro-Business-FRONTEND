@@ -7,6 +7,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import Dialog from "../../ui/Dialog";
 import EditCategoryForm from "../Forms/Category/EditCategoryForm";
+import Snackbars from "../../ui/Snackbars";
 
 const AllCategories = () => {
   const dispatch = useDispatch();
@@ -14,6 +15,7 @@ const AllCategories = () => {
     (state) => state.categories
   );
   const [selectedCategory, setSelectedCategory] = useState();
+  const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
 
   useEffect(() => {
     if (status === "idle") {
@@ -23,10 +25,22 @@ const AllCategories = () => {
 
   const deleteHandler = async (id) => {
     try {
-      await dispatch(deleteCategoryAsync(id)).unwrap();
-      console.log("Category deleted successfully");
+      const res = await dispatch(deleteCategoryAsync(id)).unwrap();
+      console.log("Category deleted successfully", res);
+      if (res) {
+        setSnackbar({
+          open: true,
+          type: "success",
+          text: "Category Deleted Successfully",
+        });
+      }
     } catch (error) {
       console.error("Failed to delete category:", error);
+      setSnackbar({
+        open: true,
+        type: "error",
+        text: "Error Deleting Category !!",
+      });
     }
   };
 
@@ -42,7 +56,7 @@ const AllCategories = () => {
               <th className="py-5 px-3">Action</th>
             </tr>
           </thead>
-          <tbody >
+          <tbody>
             {categories.map((category) => (
               <tr
                 key={category.id}
@@ -96,6 +110,12 @@ const AllCategories = () => {
           </tbody>
         </table>
       </div>
+      <Snackbars
+        open={snackbar.open}
+        type={snackbar.type}
+        text={snackbar.text}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
     </div>
   );
 };

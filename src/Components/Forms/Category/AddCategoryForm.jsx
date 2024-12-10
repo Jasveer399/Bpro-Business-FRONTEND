@@ -6,12 +6,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { addCategoryAsync } from "../../../Redux/Features/categoriesSlice";
 import Loader from "../../../ui/Loader";
 import { ImageUp, X } from "lucide-react";
+import Snackbars from "../../../ui/Snackbars";
 
 function AddCategoryForm({ closeDialog }) {
   const dispatch = useDispatch();
   const { status } = useSelector((state) => state.categories);
   const [iconImg, setIconImg] = useState({ file: null });
   const [categoryImg, setCategoryImg] = useState({ file: null });
+  const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const {
     formState: { errors },
     handleSubmit,
@@ -30,9 +32,25 @@ function AddCategoryForm({ closeDialog }) {
     }
 
     try {
-      await dispatch(addCategoryAsync(formData)).unwrap();
+      const response = await dispatch(addCategoryAsync(formData)).unwrap();
       console.log("Category added successfully");
-      closeDialog();
+      console.log("response", response);
+      if (response.success) {
+        setSnackbar({
+          open: true,
+          type: "success",
+          text: response.message,
+        });
+        setTimeout(() => {
+          closeDialog();
+        }, 500);
+      } else {
+        setSnackbar({
+          open: true,
+          type: "error",
+          text: response?.payload || response?.error?.message || "Error adding banner",
+        });
+      }
     } catch (error) {
       console.error("Failed to add category:", error);
     }
@@ -153,6 +171,12 @@ function AddCategoryForm({ closeDialog }) {
           </div>
         </form>
       </div>
+      <Snackbars
+        open={snackbar.open}
+        type={snackbar.type}
+        text={snackbar.text}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
     </>
   );
 }

@@ -6,12 +6,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateCategoryAsync } from "../../../Redux/Features/categoriesSlice";
 import Loader from "../../../ui/Loader";
 import { ImageUp, X } from "lucide-react";
+import Snackbars from "../../../ui/Snackbars";
 
 function EditCategoryForm({ closeDialog, category }) {
   const dispatch = useDispatch();
   const { status } = useSelector((state) => state.categories);
   const [iconImg, setIconImg] = useState({ file: null });
   const [categoryImg, setCategoryImg] = useState({ file: null });
+  const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const {
     formState: { errors },
     handleSubmit,
@@ -44,9 +46,23 @@ function EditCategoryForm({ closeDialog, category }) {
     }
 
     try {
-      await dispatch(updateCategoryAsync({id: category.id, formData})).unwrap();
-      console.log("Category updated successfully");
-      closeDialog();
+      const response = await dispatch(updateCategoryAsync({id: category.id, formData})).unwrap();
+      if (response.success) {
+        setSnackbar({
+          open: true,
+          type: "success",
+          text: response.message,
+        });
+        setTimeout(() => {
+          closeDialog();
+        }, 500);
+      } else {
+        setSnackbar({
+          open: true,
+          type: "error",
+          text: response?.payload || response?.error?.message || "Error adding banner",
+        });
+      }
     } catch (error) {
       console.error("Failed to updating category:", error);
     }
@@ -167,6 +183,12 @@ function EditCategoryForm({ closeDialog, category }) {
           </div>
         </form>
       </div>
+      <Snackbars
+        open={snackbar.open}
+        type={snackbar.type}
+        text={snackbar.text}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
     </>
   );
 }

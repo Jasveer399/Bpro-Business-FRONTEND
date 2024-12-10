@@ -5,17 +5,34 @@ import { deleteBannerAsync } from "../../Redux/Features/bannersSlice";
 import { useDispatch } from "react-redux";
 import Dialog from "../../ui/Dialog";
 import EditBannerForm from "../Forms/Banner/EditBannerForm";
+import Snackbars from "../../ui/Snackbars";
 
 const AllBanners = ({ banners, categoryId }) => {
   const dispatch = useDispatch();
   const [selectedBanner, setSelectedBanner] = useState();
+  const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
 
   const deleteHandler = async (id) => {
     try {
-      await dispatch(deleteBannerAsync(id)).unwrap();
-      console.log("Banner deleted successfully");
+      const response = await dispatch(deleteBannerAsync(id)).unwrap();
+      console.log("Banner deleted successfully", response);
+
+      if (response) {
+        setSnackbar({
+          open: true,
+          type: "success",
+          text: "Banner Deleted Successfully",
+        });
+      }
     } catch (error) {
       console.error("Failed to delete banner:", error);
+      if (response) {
+        setSnackbar({
+          open: true,
+          type: "error",
+          text: "Error Deleting Banner !!",
+        });
+      }
     }
   };
 
@@ -95,6 +112,12 @@ const AllBanners = ({ banners, categoryId }) => {
           </tbody>
         </table>
       </div>
+      <Snackbars
+        open={snackbar.open}
+        type={snackbar.type}
+        text={snackbar.text}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
     </div>
   );
 };

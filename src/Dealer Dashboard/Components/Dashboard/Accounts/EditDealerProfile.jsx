@@ -25,9 +25,9 @@ function EditDealerProfile() {
   //   getValues,
   // } = useForm();
 
-   // Separate useForm hooks for edit profile and change password
-   const editProfileForm = useForm();
-   const changePasswordForm = useForm();
+  // Separate useForm hooks for edit profile and change password
+  const editProfileForm = useForm();
+  const changePasswordForm = useForm();
 
   const dispatch = useDispatch();
   const { currentDealer, status } = useSelector((state) => state.dealers);
@@ -35,7 +35,7 @@ function EditDealerProfile() {
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const [profileImageUrl, setProfileImageUrl] = useState(null);
 
-  const handleImageUpload = async(file) => {
+  const handleImageUpload = async (file) => {
     console.log("file", file);
     const formData = new FormData();
     formData.append("profileImgUrl", file);
@@ -152,7 +152,7 @@ function EditDealerProfile() {
 
   return (
     <div>
-      <div className="flex h-screen bg-gray-100">
+      <div className="flex flex-col md:flex-row h-screen bg-gray-100">
         {/* Left Section: Image and Account Settings */}
         <div className="w-full md:w-1/3 h-full bg-white p-6 flex flex-col items-center">
           <div>
@@ -169,28 +169,34 @@ function EditDealerProfile() {
               Change Password
             </h1>
 
-            <form onSubmit={changePasswordForm.handleSubmit(changePasswordHandler)}>
+            <form
+              onSubmit={changePasswordForm.handleSubmit(changePasswordHandler)}
+            >
               <FormInput
                 label="Current Password"
                 type="password"
-                {...changePasswordForm.register("currentPassword",{
+                {...changePasswordForm.register("currentPassword", {
                   required: "Current Password is required",
                 })}
-                error={changePasswordForm.formState.errors.currentPassword?.message}
+                error={
+                  changePasswordForm.formState.errors.currentPassword?.message
+                }
                 width="w-full"
               />
               <div className="mt-3">
                 <FormInput
                   label="New Password"
                   type="password"
-                  {...changePasswordForm.register("newPassword",  {
+                  {...changePasswordForm.register("newPassword", {
                     required: "New Password is required",
                     minLength: {
                       value: 6,
                       message: "Password must be at least 6 characters long",
                     },
                   })}
-                  error={changePasswordForm.formState.errors.newPassword?.message}
+                  error={
+                    changePasswordForm.formState.errors.newPassword?.message
+                  }
                   width="w-full"
                 />
               </div>
@@ -222,13 +228,13 @@ function EditDealerProfile() {
         </div>
 
         {/* Right Section: Form */}
-        <div className="w-2/3 bg-white p-8">
+        <div className="md:w-2/3 w-full mt-32 md:mt-0 bg-white p-8">
           <h1 className="text-3xl font-bold mb-6 text-gray-800">
             Edit Profile
           </h1>
           <form onSubmit={editProfileForm.handleSubmit(editProfileHandler)}>
             {/* Row 1: First Name & Last Name */}
-            <div className="flex items-center gap-6 mb-3">
+            <div className="flex flex-col md:flex-row items-center gap-6 mb-3">
               <FormInput
                 label="Full Name"
                 type="text"
@@ -250,7 +256,7 @@ function EditDealerProfile() {
             </div>
 
             {/* Row 3: Phone & WhatsApp */}
-            <div className="flex items-center gap-6 mb-3">
+            <div className="flex flex-col md:flex-row items-center gap-6 mb-3">
               <FormInput
                 label="Mobile Number"
                 type="number"
@@ -271,7 +277,7 @@ function EditDealerProfile() {
               />
             </div>
 
-            <div className="flex items-center gap-6 mb-3">
+            <div className="flex flex-col md:flex-row items-center gap-6 mb-3">
               <FormInput
                 label="Business Name"
                 type="text"
@@ -304,8 +310,8 @@ function EditDealerProfile() {
             </div>
 
             {/* Row 4: Biography & Public Address */}
-            <div className="flex items-center gap-6 mb-3 w-full">
-              <div className="w-[50%]">
+            <div className="flex flex-col md:flex-row items-center gap-6 mb-3 w-full">
+              <div className="md:w-[50%] w-full">
                 <h1 className="text-[15px] ml-1 mb-px text-gray-600">Bio</h1>
                 <TextareaInput
                   label="Biography here..."
@@ -321,7 +327,7 @@ function EditDealerProfile() {
                   width="w-full"
                 />
               </div>
-              <div className="w-[50%]">
+              <div className="md:w-[50%] w-full">
                 <FormInput
                   label="Street No / Office"
                   type="text"
@@ -345,7 +351,7 @@ function EditDealerProfile() {
               </div>
             </div>
 
-            <div className="flex items-center gap-6 mb-3">
+            <div className="flex flex-col md:flex-row items-center gap-6 mb-3">
               <FormInput
                 label="City"
                 type="text"
@@ -366,7 +372,7 @@ function EditDealerProfile() {
               />
             </div>
 
-            <div className="flex items-center gap-6 mb-3">
+            <div className="flex flex-col md:flex-row items-center gap-6 mb-3">
               <FormInput
                 label="State"
                 type="text"
@@ -387,7 +393,7 @@ function EditDealerProfile() {
               />
             </div>
 
-            <div className="flex items-center gap-6 mb-3">
+            <div className="flex flex-col md:flex-row items-center gap-6 mb-3">
               <FormInput
                 label="GST No."
                 type="text"
@@ -409,7 +415,7 @@ function EditDealerProfile() {
             </div>
 
             {/* Row 5: Social Media Links */}
-            <div className="flex items-center gap-6 mb-3">
+            <div className="flex flex-col md:flex-row items-center gap-6 mb-3">
               <FormInput
                 label="Website (Optional)"
                 type="text"
@@ -426,7 +432,7 @@ function EditDealerProfile() {
               />
             </div>
 
-            <div className="flex items-center gap-6 mb-6">
+            <div className="flex flex-col md:flex-row items-center gap-6 mb-6">
               <FormInput
                 label="Instagram (Optional)"
                 type="text"

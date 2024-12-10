@@ -12,7 +12,7 @@ export const addCategoryAsync = createAsyncThunk(
           "Content-Type": "multipart/form-data",
         },
       });
-      return response.data.data;
+      return response.data;
     } catch (error) {
       console.error("Error in addCategoryAsync:", error);
       return rejectWithValue(
@@ -51,7 +51,7 @@ export const fetchCategoriesAsync = createAsyncThunk(
             "Content-Type": "multipart/form-data",
           },
         });
-        return response.data.data;
+        return response.data;
       } catch (error) {
         console.error("Error in updateCategoryAsync:", error);
         return rejectWithValue(
@@ -93,7 +93,7 @@ const categoriesSlice = createSlice({
       })
       .addCase(addCategoryAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.categories.push(action.payload);
+        state.categories.push(action.payload.data);
       })
       .addCase(addCategoryAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -117,9 +117,9 @@ const categoriesSlice = createSlice({
       })
       .addCase(updateCategoryAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        const index = state.categories.findIndex(cat => cat.id === action.payload.id);
+        const index = state.categories.findIndex(cat => cat.id === action.payload.data.id);
         if (index !== -1) {
-          state.categories[index] = action.payload;
+          state.categories[index] = action.payload.data;
         }
       })
       .addCase(updateCategoryAsync.rejected, (state, action) => {
