@@ -57,12 +57,12 @@ function DealerLayout() {
         <div className="hidden md:flex flex-col w-64 bg-white shadow-lg">
           <div className="flex flex-col items-center mt-6">
             <img
-              src="auth-img.png"
+              src={`${currentDealer?.profileUrl ? currentDealer?.profileUrl : "/dummy-profile.png"}`}
               alt="Profile"
               className="w-12 h-12 rounded-full mb-2"
             />
-            <p className="text-gray-500">bproindia</p>
-            <h4 className="font-semibold">Bpro@India</h4>
+            <p className="text-gray-500">{currentDealer?.username}</p>
+            <h4 className="font-semibold">{currentDealer?.fullName}</h4>
           </div>
           <nav className="flex-1 mt-6 px-4">
             {navItems.map((item, index) => (
@@ -117,7 +117,7 @@ function DealerLayout() {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-auto p-4 pb-20 md:pb-0">
+        <div className="flex-1 overflow-auto pr-4 pb-20 md:pb-0">
           <Outlet />
         </div>
       </div>

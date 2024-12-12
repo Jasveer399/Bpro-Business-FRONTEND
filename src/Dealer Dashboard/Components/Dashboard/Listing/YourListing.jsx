@@ -29,7 +29,7 @@ function YourListing(
   };
 
   return (
-    <div className="bg-white rounded-md shadow-lg mx-4 mt-2 dark:bg-darkgrey overflow-hidden overflow-y-auto">
+    <div className="bg-white rounded-md shadow-lg mt-2 dark:bg-darkgrey overflow-hidden overflow-y-auto">
       <div className="overflow-x-auto">
         <table className="w-full h-full">
           <thead>
@@ -83,7 +83,7 @@ function YourListing(
                   </td>
                   <td className="py-3 text-center">
                     <span
-                      className={`px-2 py-1 rounded-full text-xs font-semibold dark:text-black ${listing.status === "active"
+                      className={`px-2 py-1 rounded-full text-xs capitalize font-semibold dark:text-black ${listing.status === "active"
                         ? "bg-green-200"
                         : "bg-red-200"
                         }`}
@@ -91,7 +91,7 @@ function YourListing(
                       {listing.status}
                     </span>
                   </td>
-                  <td className="py-3 text-center">L{index + 1}</td>
+                  <td className="py-3 text-center uppercase">{listing.id.slice(0, 5)}</td>
                   <td className="py-3">
                     <div className="flex justify-center space-x-2 relative">
                       <button

@@ -140,7 +140,7 @@ function Home() {
               className="w-full md:w-[100%] h-auto"
               isLeft={true}
               isButtonShow={true}
-              banners={bannersCategory[4]?.Banners}
+              banners={bannersCategory[3]?.Banners}
             />
           </div>
         </div>

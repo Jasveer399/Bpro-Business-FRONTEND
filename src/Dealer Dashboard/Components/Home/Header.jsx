@@ -3,8 +3,10 @@ import LocationSelector from "./LocationSelector";
 import SearchBar from "./SearchBar";
 import { MdOutlineHelpOutline } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { getDealerAccessToken } from "../../../Utils/Helper";
 
 function Header() {
+  const token = getDealerAccessToken()
   return (
     <>
       <div className="flex flex-col md:flex-row items-center justify-between px-4 py-3 font-montserrat space-y-4 md:space-y-0">
@@ -30,7 +32,7 @@ function Header() {
             <MdOutlineHelpOutline size={20} className="text-primary" />
             <h1 className="font-semibold text-primary">Help?</h1>
           </div>
-          <Link to="/product-listing" className="bg-secondary py-2 px-4 rounded-lg font-semibold">
+          <Link to={`${token ? "/product-listing" : "/pricing" }`} className="bg-secondary py-2 px-4 rounded-lg font-semibold">
             Sell Product?
           </Link>
         </div>

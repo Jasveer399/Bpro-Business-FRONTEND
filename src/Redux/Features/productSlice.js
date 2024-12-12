@@ -5,6 +5,7 @@ import {
   deleteProduct,
   editProduct,
   getProducts,
+  getProductsStats,
 } from "../../Utils/server";
 import { getDealerAccessToken } from "../../Utils/Helper";
 import { referenceLineClasses } from "@mui/x-charts";
@@ -33,20 +34,9 @@ export const addProductAsync = createAsyncThunk(
 
 export const fetchProductsAsync = createAsyncThunk(
   "products/fetchProducts",
-  async (
-    { page = 1, limit = 8, search = "", category = "", adminView = false } = {},
-    { rejectWithValue }
-  ) => {
+  async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(getProducts, {
-        params: {
-          page,
-          limit,
-          search,
-          category,
-          adminView,
-        },
-        withCredentials: true,
         headers: {
           Authorization: `Bearer ${getDealerAccessToken()}`,
         },
@@ -107,12 +97,34 @@ export const deleteProductAsync = createAsyncThunk(
   }
 );
 
+export const getProductsStatsAsync = createAsyncThunk(
+  "products/getProductsStats",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${getProductsStats}`, {
+        headers: {
+          Authorization: `Bearer ${getDealerAccessToken()}`,
+        },
+      });
+      return response.data.data;
+    } catch (error) {
+      console.error("Error in getProductsStats:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
 const productSlice = createSlice({
   name: "products",
   initialState: {
     data: null,
     products: [],
+    productsStats: null,
+    productsStatsStatus: "idle",
     product: null,
+    productStatus: "idle",
     status: "idle",
     error: null,
     currentPage: 1,
@@ -127,6 +139,9 @@ const productSlice = createSlice({
     setProduct: (state, action) => {
       state.product =
         state.products.find((p) => p.id === action.payload) || null;
+      if (!action.payload) {
+        state.productStatus = "idle";
+      }
     },
   },
   extraReducers: (builder) => {
@@ -146,14 +161,13 @@ const productSlice = createSlice({
       })
       .addCase(fetchProductsAsync.pending, (state) => {
         state.status = "loading";
+        state.productStatus = "idle";
       })
       .addCase(fetchProductsAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.data = action.payload;
         state.products = action.payload.data || action.payload || [];
-        state.currentPage = action.payload.page || 1;
-        state.totalPages = action.payload.totalPages || 1;
-        state.totalProducts = action.payload.total || 0;
+        state.productStatus = "idle";
       })
       .addCase(fetchProductsAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -209,6 +223,17 @@ const productSlice = createSlice({
       })
       .addCase(deleteProductAsync.rejected, (state, action) => {
         state.status = "failed";
+        state.error = action.payload;
+      })
+      .addCase(getProductsStatsAsync.pending, (state) => {
+        state.productsStatsStatus = "loading";
+      })
+      .addCase(getProductsStatsAsync.fulfilled, (state, action) => {
+        state.productsStatsStatus = "succeeded";
+        state.productsStats = action.payload;
+      })
+      .addCase(getProductsStatsAsync.rejected, (state, action) => {
+        state.productsStatsStatus = "failed";
         state.error = action.payload;
       });
   },

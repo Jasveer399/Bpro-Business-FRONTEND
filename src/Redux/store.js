@@ -8,6 +8,7 @@ import workersReducer from "../Redux/Features/workersSlice.js";
 import bannersCategoryReducer from "../Redux/Features/bannersCategorySlice.js";
 import ProductReducer from "../Redux/Features/productSlice.js";
 import bookmarkReducer from "../Redux/Features/bookmarkSlice.js";
+import reviewReducer from "../Redux/Features/reviewsSlice.js";
 
 export const store = configureStore({
   reducer: {
@@ -20,5 +21,6 @@ export const store = configureStore({
     products: ProductReducer,
     bannersCategory: bannersCategoryReducer,
     bookmarks: bookmarkReducer,
+    reviews: reviewReducer
   },
 });

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../Home/Header";
 import Navbar from "../../Home/Navbar";
 import { Bookmark, ClockIcon, EyeIcon } from "lucide-react";
@@ -28,49 +28,48 @@ import {
 import { useParams } from "react-router-dom";
 import { fetchCurrentDealerAsync } from "../../../../Redux/Features/dealersSlice";
 import { current } from "@reduxjs/toolkit";
+import { addReviewAsync } from "../../../../Redux/Features/reviewsSlice";
+import Snackbars from "../../../../ui/Snackbars";
 
 function ProductDetail() {
   const {
     register,
     formState: { errors },
     handleSubmit,
+    setValue,
   } = useForm();
   const dispatch = useDispatch();
 
   const { id } = useParams();
   const {
     product,
-    status: productStatus,
+    status: allProductsStatus,
+    productStatus,
     error,
   } = useSelector((state) => state.products);
 
+  const { addReviewStatus } = useSelector((state) => state.reviews);
+
   const { categories, status } = useSelector((state) => state.categories);
+  const [productRating, setProductRating] = useState(4);
+  const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
+  const [showAll, setShowAll] = useState(false);
 
-  const { currentDealer, status: currentDealerStatus } = useSelector(
-    (state) => state.dealers
-  );
-
-  useEffect(() => {
-    if (currentDealerStatus === "idle") {
-      dispatch(fetchCurrentDealerAsync());
-    }
-  }, [dispatch]);
+  const reviewsToShow = showAll
+    ? product?.Reviews
+    : product?.Reviews.slice(0, 2);
 
   useEffect(() => {
-    if (currentDealer) {
-      console.log("Current dealer: ", currentDealer);
-    }
-  }, [currentDealer]);
-
-  useEffect(() => {
-    if (status === "idle") {
+    if (allProductsStatus === "idle") {
       dispatch(fetchProductsAsync());
     }
-  }, []);
+  }, [allProductsStatus, dispatch]);
 
   useEffect(() => {
-    dispatch(setProduct(id));
-  }, [status, dispatch]);
+    if (productStatus === "idle") {
+      dispatch(setProduct(id));
+    }
+  }, [productStatus, dispatch]);
 
   useEffect(() => {
     if (status === "idle") {
@@ -78,9 +77,37 @@ function ProductDetail() {
     }
   }, [status, dispatch]);
 
-  const addReviewHandler = (data) => {
-    console.log("data", data);
+  const addReviewHandler = async (data) => {
+    const fullData = {
+      ...data,
+      productId: product?.id,
+      ratings: productRating,
+    };
+
+    console.log("fullData:>>", fullData);
+    const response = await dispatch(addReviewAsync(fullData));
+    console.log("res:>>", response);
+    if (response.payload.success) {
+      setSnackbar({
+        open: true,
+        type: "success",
+        text: response.payload.message,
+      });
+      setValue("review", "");
+      setValue("title", "");
+    } else {
+      setSnackbar({
+        open: true,
+        type: "error",
+        text:
+          response?.payload ||
+          response?.error?.message ||
+          "Error adding review",
+      });
+    }
   };
+
+  console.log("product", product);
   return (
     <>
       <Navbar />
@@ -123,14 +150,14 @@ function ProductDetail() {
                 </tr>
                 <tr className="text-lg border-b border-gray-400">
                   <th className="w-44 text-left pt-5 pb-3">Phone:</th>
-                  <td className="pt-5 pb-3">{currentDealer?.mobileNo}</td>
+                  <td className="pt-5 pb-3">{product?.Dealer?.mobileNo}</td>
                 </tr>
                 <tr className="text-lg border-b border-gray-400">
                   <th className="w-44 text-left pt-5 pb-3">Address:</th>
                   <td className="pt-5 pb-3">
-                    {currentDealer?.streetNo}, {currentDealer?.areaName},{" "}
-                    {currentDealer?.city}, {currentDealer?.state},{" "}
-                    {currentDealer?.pincode}
+                    {product?.Dealer?.streetNo}, {product?.Dealer?.areaName},{" "}
+                    {product?.Dealer?.city}, {product?.Dealer?.state},{" "}
+                    {product?.Dealer?.pincode}
                   </td>
                 </tr>
                 {product?.tags.length > 0 && (
@@ -141,54 +168,76 @@ function ProductDetail() {
                     </td>
                   </tr>
                 )}
-                {currentDealer?.website && (
+                {product?.Dealer?.website && (
                   <tr className="text-lg border-b border-gray-400">
                     <th className="w-44 text-left pt-5 pb-3">Website:</th>
-                    <td className="pt-5 pb-3">{currentDealer?.website}</td>
+                    <td className="pt-5 pb-3">{product?.Dealer?.website}</td>
                   </tr>
                 )}
-                {currentDealer?.email && (
+                {product?.Dealer?.email && (
                   <tr className="text-lg border-b border-gray-400">
                     <th className="w-44 text-left pt-5 pb-3">Email:</th>
-                    <td className="pt-5 pb-3">{currentDealer?.email}</td>
+                    <td className="pt-5 pb-3">{product?.Dealer?.email}</td>
                   </tr>
                 )}
               </table>
             </div>
           </div>
           <h2 className="font-bold text-2xl my-5">User Review</h2>
-          <div className="border px-6 py-4 rounded-lg border-gray-400">
-            <div className="flex items-center gap-4 mb-3">
-              <img
-                src="/dummy-profile.png"
-                className="w-14 h-14 rounded-full"
-              />
-              <div>
-                <h3 className="font-semibold">Name</h3>
-                <small>January 25, 2023, 12:56 pm</small>
-              </div>
+          {product?.Reviews && product?.Reviews.length > 0 ? (
+            reviewsToShow.map((review) => (
+              <>
+                <div
+                  key={review.id}
+                  className="border px-6 py-4 rounded-lg border-gray-400 mb-2"
+                >
+                  <div className="flex items-center gap-4 mb-3">
+                    <img
+                      src={`${
+                        review?.Dealer?.profileUrl
+                          ? review?.Dealer?.profileUrl
+                          : "/dummy-profile.png"
+                      } `}
+                      className="w-14 h-14 rounded-full"
+                    />
+                    <div>
+                      <h3 className="font-semibold">
+                        {review?.Dealer?.fullName}
+                      </h3>
+                      <small>{review?.createdAt}</small>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <h2 className="font-semibold mb-2 text-lg">
+                      {review.title}
+                    </h2>
+                    <ReadOnlyRatings value={review.ratings} />
+                  </div>
+                  <p className="text-justify">{review.review}</p>
+                </div>
+              </>
+            ))
+          ) : (
+            <div className="flex items-center justify-center">
+              <p className="font-semibold text-[20px]">No Reviews</p>
             </div>
-            <div className="flex items-center justify-between">
-              <h2 className="font-semibold mb-2 text-lg">
-                Classiads - Classified Ads WordPress Theme
-              </h2>
-              <ReadOnlyRatings />
+          )}
+          {product?.Reviews.length > 2 && (
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={() => setShowAll(!showAll)}
+                className="bg-secondary font-semibold text-white shadow-lg px-4 py-2 rounded-md"
+              >
+                {showAll ? "Show Less" : "Show More"}
+              </button>
             </div>
-            <p className="text-justify">
-              ClassiAds includes 20+ category templates, making it great for
-              those hoping to create specific classified sites. As an admin,
-              simply approve seller applications, and they can manage their ads
-              in a front-end panel. The default listing type is free, but you
-              can elect to charge users to feature their ads in high-traffic
-              site areas for increased engagement and visibility.
-            </p>
-          </div>
+          )}
           <h2 className="font-bold text-2xl my-5">Post New Review</h2>
           <div className="flex items-center gap-3">
             <p className="font-semibold">
               Your Rating<span className="text-red-500">*</span>
             </p>
-            <Ratings />
+            <Ratings onRatingChange={(rating) => setProductRating(rating)} />
           </div>
           <form
             onSubmit={handleSubmit(addReviewHandler)}
@@ -197,10 +246,10 @@ function ProductDetail() {
             <FormInput
               label="Review Title"
               type="text"
-              {...register("reviewTitle", {
+              {...register("title", {
                 required: "Review Title is required",
               })}
-              error={errors.reviewTitle?.message}
+              error={errors.title?.message}
               width="w-full"
             />
             <div>
@@ -221,9 +270,9 @@ function ProductDetail() {
             </div>
             <button
               type="submit"
-              className="bg-[#EB6752] rounded-md text-white py-2 px-6 hover:bg-[#191A1F] transform duration-300 ease-in-out font-semibold shadow-md"
+              className="bg-secondary rounded-md text-white py-2 px-6 hover:bg-[#191A1F] transform duration-300 ease-in-out font-semibold shadow-lg"
             >
-              Submit Review
+              {addReviewStatus === "loading" ? <Loader /> : "Post Review"}
             </button>
           </form>
           <h2 className="font-bold text-2xl my-5">Related Listings</h2>
@@ -271,36 +320,36 @@ function ProductDetail() {
           <div className="text-center bg-white border border-gray-400 mt-5 rounded-lg px-4 py-6 flex flex-col justify-center items-center">
             <img src="/mumbai.png" className="w-48 h-48 rounded-full" />
             <h1 className="text-xl mt-3 font-bold">
-              {currentDealer?.username}
+              {product?.Dealer?.username}
             </h1>
             <p className="text-gray-500 text-sm mb-3">
-              Member since {currentDealer?.created_at?.split("T")[0]}
+              Member since {product?.Dealer?.created_at?.split("T")[0]}
             </p>
             <p className="font-semibold underline cursor-pointer text-[#4C7BE3] mb-3">
               View All Ads
             </p>
             <div className="flex gap-5 my-3">
-              {currentDealer?.facebook && (
+              {product?.Dealer?.facebook && (
                 <a
-                  href={currentDealer?.facebook}
+                  href={product?.Dealer?.facebook}
                   target="_blank"
                   className="hover:bg-[#EB6752] p-3 rounded-md cursor-pointer transform duration-100 ease-in-out border border-gray-400 hover:border-[#EB6752]"
                 >
                   <FaFacebookF size={20} />
                 </a>
               )}
-              {currentDealer?.youtube && (
+              {product?.Dealer?.youtube && (
                 <a
-                  href={currentDealer?.youtube}
+                  href={product?.Dealer?.youtube}
                   target="_blank"
                   className="hover:bg-[#EB6752] p-3 rounded-md cursor-pointer transform duration-100 ease-in-out border border-gray-400 hover:border-[#EB6752]"
                 >
                   <FaYoutube size={20} />
                 </a>
               )}
-              {currentDealer?.insta && (
+              {product?.Dealer?.insta && (
                 <a
-                  href={currentDealer?.insta}
+                  href={product?.Dealer?.insta}
                   target="_blank"
                   className="hover:bg-[#EB6752] p-3 rounded-md cursor-pointer transform duration-100 ease-in-out border border-gray-400 hover:border-[#EB6752]"
                 >
@@ -316,41 +365,41 @@ function ProductDetail() {
                 Send Offer
               </button>
             </div>
-            {currentDealer?.mobileNo && (
+            {product?.Dealer?.mobileNo && (
               <div className="flex w-full bg-[#4C7BE3] text-white h-full rounded-lg shadow-md mb-4">
                 <div className="w-[20%] bg-[#4171d9] flex items-center justify-center rounded-l-lg">
                   <FaPhoneAlt className="text-3xl " />
                 </div>
                 <a
                   className="w-[80%] py-2"
-                  href={`tel:+91${currentDealer?.mobileNo}`}
+                  href={`tel:+91${product?.Dealer?.mobileNo}`}
                 >
                   <small>Click To Show Number</small>
                   <h1 className="font-bold text-2xl">
-                    +91 {currentDealer?.mobileNo}
+                    +91 {product?.Dealer?.mobileNo}
                   </h1>
                 </a>
               </div>
             )}
-            {currentDealer?.whatsappNo && (
+            {product?.Dealer?.whatsappNo && (
               <div className="flex w-full bg-[#73ce42] text-white h-full rounded-lg shadow-md mb-4">
                 <div className="w-[20%] bg-[#64bf33] flex items-center justify-center rounded-l-lg">
                   <FaWhatsapp className="text-3xl " />
                 </div>
                 <a
                   className="w-[80%] py-2"
-                  href={`https://wa.me/+91${currentDealer?.whatsappNo}`}
+                  href={`https://wa.me/+91${product?.Dealer?.whatsappNo}`}
                 >
                   <small>Click To Show Number</small>
                   <h1 className="font-bold text-2xl">
-                    +91 {currentDealer?.whatsappNo}
+                    +91 {product?.Dealer?.whatsappNo}
                   </h1>
                 </a>
               </div>
             )}
             <a
               className="flex w-full bg-[#ef5d50] text-white h-full rounded-lg shadow-md"
-              href={`mailto:${currentDealer?.email}`}
+              href={`mailto:${product?.Dealer?.email}`}
             >
               <div className="w-[20%] bg-[#ce4538] flex items-center justify-center rounded-l-lg">
                 <IoIosMailOpen className="text-3xl " />
@@ -387,6 +436,12 @@ function ProductDetail() {
         </div>
         <div className="w-[7.5%]"></div>
       </div>
+      <Snackbars
+        open={snackbar.open}
+        type={snackbar.type}
+        text={snackbar.text}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
     </>
   );
 }

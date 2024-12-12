@@ -1,5 +1,5 @@
-// export const server = "http://localhost:3000"
-export const server = "https://bpro-business-backend.onrender.com"
+export const server = "http://localhost:3000"
+// export const server = "https://bpro-business-backend.onrender.com"
 
 //  ALl Dealers Route
 export const createDealerAccount = `${server}/api/v1/dealer/createDealerAccount`;
@@ -45,9 +45,14 @@ export const createProduct = `${server}/api/v1/product/createProduct`;
 export const getProducts = `${server}/api/v1/product/getProducts`;
 export const editProduct = `${server}/api/v1/product/editProduct`;
 export const deleteProduct = `${server}/api/v1/product/deleteProduct`;
+export const getProductsStats = `${server}/api/v1/product/getProductsStats`;
 
 //All BookMarks Routes
 // export const getAllBookmarks = `${server}/api/v1/bookmarks/getAllBookmarks`;
 export const getUserBookmarks = `${server}/api/v1/bookmark/getUserBookmarks`;
 export const createBookmark = `${server}/api/v1/bookmark/createBookmark`;
 export const deleteBookmark = `${server}/api/v1/bookmark/deleteBookmark`;
+
+//All Reviews Routes
+export const createReview = `${server}/api/v1/review/createReview`;
+export const getSpecificProductReviews = `${server}/api/v1/review/getSpecificProductReviews`;

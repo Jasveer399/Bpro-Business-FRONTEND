@@ -20,7 +20,7 @@ function getLabelText(value) {
   return `${value} Star${value !== 1 ? 's' : ''}, ${labels[value]}`;
 }
 
-export default function Ratings() {
+export default function Ratings({ onRatingChange }) {
   const [value, setValue] = React.useState(4);
   const [hover, setHover] = React.useState(-1);
 
@@ -33,6 +33,7 @@ export default function Ratings() {
         getLabelText={getLabelText}
         onChange={(event, newValue) => {
           setValue(newValue);
+          onRatingChange(newValue);
         }}
         onChangeActive={(event, newHover) => {
           setHover(newHover);
