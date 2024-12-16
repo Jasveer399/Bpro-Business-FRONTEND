@@ -8,6 +8,8 @@ import { useTheme } from "../Context/ThemeContext";
 import { BsFillPersonVcardFill } from "react-icons/bs";
 import { ImBlogger } from "react-icons/im";
 import { useSelector } from "react-redux";
+import { BiCategoryAlt } from "react-icons/bi";
+import { IoPricetagsOutline } from "react-icons/io5";
 
 function Layout() {
   const navigate = useNavigate();
@@ -25,7 +27,8 @@ function Layout() {
     { name: "Workers", icon: UserCircle, link: "/workers" },
     { name: "Blogs", icon: ImBlogger, link: "/blogs" },
     { name: "Banner", icon: UserCircle, link: "/banners" },
-    { name: "Category", icon: UserCircle, link: "/categories" },
+    { name: "Category", icon: BiCategoryAlt, link: "/categories" },
+    { name: "Pricing", icon: IoPricetagsOutline, link: "/pricing" },
   ];
 
   useEffect(() => {

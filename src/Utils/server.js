@@ -56,3 +56,9 @@ export const deleteBookmark = `${server}/api/v1/bookmark/deleteBookmark`;
 //All Reviews Routes
 export const createReview = `${server}/api/v1/review/createReview`;
 export const getSpecificProductReviews = `${server}/api/v1/review/getSpecificProductReviews`;
+
+//ALl Plans Routes
+export const createPlan = `${server}/api/v1/plan/createPlan`;
+export const updatePlan = `${server}/api/v1/plan/updatePlan`;
+export const deletePlan = `${server}/api/v1/plan/deletePlan`;
+export const getAllPlans = `${server}/api/v1/plan/getAllPlans`;

@@ -8,7 +8,6 @@ import Category from "./Pages/Category/Category";
 import BlogView from "./Components/Forms/Blogs/BlogView";
 import AdminLogin from "./Pages/Login/AdminLogin";
 import Home from "./Dealer Dashboard/Pages/Home/Home";
-import Pricing from "./Dealer Dashboard/Pages/Pricing/Pricing";
 import {
   ProtectedAdminRoutes,
   RedirectIfAuthenticated,
@@ -38,6 +37,8 @@ import DealerProfile from "./Components/Dealers/DealerProfile";
 import Thankyou from "./Dealer Dashboard/Pages/Edit Profile/Thankyou";
 import Edtior from "./ui/Edtior";
 import Messages from "./Dealer Dashboard/Pages/Dashboard/Messages";
+import PricingPlan from "./Dealer Dashboard/Pages/PricingPlan/PricingPlan";
+import Pricing from "./Pages/Pricing/Pricing";
 
 function App() {
   return (
@@ -58,6 +59,7 @@ function App() {
             <Route path="/categories" element={<Category />} />
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/blogview/:id" element={<BlogView />} />
+            <Route path="/pricing" element={<Pricing />} />
           </Route>
         </Route>
         <Route element={<ProtectedDealerRoutes />}>
@@ -84,7 +86,7 @@ function App() {
           <Route path="/login" element={<DealerLogin />} />
         </Route>
         <Route path="/home" element={<Home />} />
-        <Route path="/pricing" element={<Pricing />} />
+        <Route path="/pricing-plan" element={<PricingPlan />} />
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/sellProduct" element={<SellProduct />} />
         <Route path="/Allblogs" element={<Allblogs />} />

@@ -4,7 +4,7 @@ import Header from "../../Components/Home/Header";
 import Footer from "../../Components/Home/Footer";
 import { GoCheck, GoX } from "react-icons/go";
 
-function Pricing() {
+function PricingPlan() {
   const firstPricingPlans = [
     {
       duration: "For One Year",
@@ -226,4 +226,4 @@ function Pricing() {
   );
 }
 
-export default Pricing;
+export default PricingPlan;
