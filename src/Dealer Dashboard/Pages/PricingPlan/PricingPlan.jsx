@@ -3,8 +3,11 @@ import Navbar from "../../Components/Home/Navbar";
 import Header from "../../Components/Home/Header";
 import Footer from "../../Components/Home/Footer";
 import { GoCheck, GoX } from "react-icons/go";
+import { getDealerAccessToken } from "../../../Utils/Helper";
+import { useNavigate } from "react-router-dom";
 
 function PricingPlan() {
+  const navigate = useNavigate();
   const firstPricingPlans = [
     {
       duration: "For One Year",
@@ -86,6 +89,8 @@ function PricingPlan() {
     },
   ];
 
+  const token = getDealerAccessToken()
+
   return (
     <>
       <Navbar />
@@ -153,6 +158,7 @@ function PricingPlan() {
                   plan.title === "" ? "bg-[#00e682]" : "bg-[#ff2b88]"
                 } text-white mb-3 rounded-sm py-2 px-5 hover:bg-[#5a54f8] transition border-[#ff2b88]`}
                 style={{ boxShadow: "0 -1px 0px rgba(50, 50, 50, 0.2) inset" }}
+                onClick={() => navigate(`${token ? "/product-listing" : "/register" }`)}
               >
                 Select This Plan
               </button>
