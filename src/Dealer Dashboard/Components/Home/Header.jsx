@@ -43,7 +43,7 @@ function Header() {
             <MdOutlineHelpOutline size={20} className="text-primary" />
             <h1 className="font-semibold text-primary">Help?</h1>
           </div>
-          <Link to="/product-listing" className="bg-secondary py-2 px-4 rounded-lg font-semibold text-sm">
+          <Link to={`${token ? "/product-listing" : "/pricing-plan" }`} className="bg-secondary py-2 px-4 rounded-lg font-semibold text-sm">
             Sell Product?
           </Link>
         </div>

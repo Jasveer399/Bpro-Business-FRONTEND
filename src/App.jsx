@@ -39,6 +39,7 @@ import Edtior from "./ui/Edtior";
 import Messages from "./Dealer Dashboard/Pages/Dashboard/Messages";
 import PricingPlan from "./Dealer Dashboard/Pages/PricingPlan/PricingPlan";
 import Pricing from "./Pages/Pricing/Pricing";
+import DealersDetails from "./Components/Workers/DealersDetails";
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
             <Route path="/dealers" element={<Dealers />} />
             <Route path="/dealers/view-profile/:id" element={<DealerProfile />} />
             <Route path="/workers" element={<Workers />} />
+            <Route path="/workers/dealers-details/:id" element={<DealersDetails />} />
             <Route path="/banners" element={<BannersCategory />} />
             <Route path="/banners/:id" element={<Banner />} />
             <Route path="/categories" element={<Category />} />

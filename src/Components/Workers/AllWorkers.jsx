@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { PencilIcon, Trash2 } from "lucide-react";
-import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteWorkerAsync,
@@ -8,9 +7,12 @@ import {
 } from "../../Redux/Features/workersSlice";
 import Dialog from "../../ui/Dialog";
 import EditWorkerForm from "../Forms/Worker/EditWorkerForm";
+import { MdRemoveRedEye } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
-const AllWorkers = () => {
+const AllWorkers = ({ selectedYear, selectedMonth }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const { workers, status, error } = useSelector((state) => state.workers);
   const [selectedWorker, setSelectedWorker] = useState(null);
 
@@ -24,10 +26,19 @@ const AllWorkers = () => {
     try {
       await dispatch(deleteWorkerAsync(id)).unwrap();
       console.log("Worker deleted successfully");
-      closeDialog();
     } catch (error) {
       console.error("Failed to delete worker:", error);
     }
+  };
+
+  const getDealerCount = (worker, year, month) => {
+    if (!worker.Dealer) return 0;
+    
+    return worker.Dealer.filter(dealer => {
+      const dealerDate = new Date(dealer.created_at);
+      return dealerDate.getFullYear().toString() === year &&
+             dealerDate.getMonth().toString() === month;
+    }).length;
   };
 
   return (
@@ -40,6 +51,7 @@ const AllWorkers = () => {
               <th className="py-5 px-3">Worker ID</th>
               <th className="py-5 px-3">Mobile No.</th>
               <th className="py-5 px-3">Created At</th>
+              <th className="py-5 px-3">Dealers Count</th>
               <th className="py-5 px-3">Action</th>
             </tr>
           </thead>
@@ -54,6 +66,12 @@ const AllWorkers = () => {
                 <td className="py-5 text-center">{worker.mobileNo}</td>
                 <td className="py-5 text-center">
                   {worker.created_at?.split("T")[0]}
+                </td>
+                <td className="py-5 flex items-center justify-center mt-1 gap-2">
+                  {getDealerCount(worker, selectedYear, selectedMonth)}
+                  <MdRemoveRedEye className="cursor-pointer" onClick={() => {
+                    navigate(`/workers/dealers-details/${worker.id}`)
+                  }} />
                 </td>
                 <td className="py-5">
                   <div className="flex justify-center gap-3">

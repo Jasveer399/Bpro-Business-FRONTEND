@@ -4,6 +4,9 @@ import { GrInstagram } from "react-icons/gr";
 import { Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getDealerAccessToken } from "../../../Utils/Helper";
+import Dialog from "../../../ui/Dialog";
+import MobileNoForm from "../Forms/Auth/MobileNoInput";
+import CustomerLoginForm from "../Forms/Auth/CustomerLoginForm";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -41,9 +44,15 @@ const Navbar = () => {
               Dashboard
             </Link>
           ) : (
-            <Link to="/login" className="hover:opacity-80">
-              Register/Login
-            </Link>
+            <Dialog
+              trigger={
+                <button className="hover:opacity-80">Register/Login</button>
+              }
+              width="w-[35%]"
+              height="h-[55%]"
+            >
+              <CustomerLoginForm />
+            </Dialog>
           )}
           <div className="flex items-center gap-1 cursor-pointer hover:opacity-80">
             <img src="/eng.png" alt="Language" className="w-5 h-5" />
@@ -80,9 +89,21 @@ const Navbar = () => {
             <Link href="/contact" className="hover:opacity-80">
               Contact Us
             </Link>
-            <Link href="/login" className="hover:opacity-80">
-              Register/Login
-            </Link>
+            {token ? (
+              <Link to="/my-dashboard/listing" className="hover:opacity-80">
+                Dashboard
+              </Link>
+            ) : (
+              <Dialog
+                trigger={
+                  <button className="hover:opacity-80">Register/Login</button>
+                }
+                width="w-[35%]"
+                height="h-[55%]"
+              >
+                <CustomerLoginForm />
+              </Dialog>
+            )}
             <div className="flex items-center gap-1 cursor-pointer hover:opacity-80">
               <img src="/eng.png" alt="Language" className="w-5 h-5" />
               <span>ENG</span>
