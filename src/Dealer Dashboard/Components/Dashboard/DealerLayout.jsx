@@ -117,7 +117,7 @@ function DealerLayout() {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-auto pr-4 pb-20 md:pb-0">
+        <div className="flex-1 overflow-auto pr-4 pb-20 md:pb-0 no-scrollbar">
           <Outlet />
         </div>
       </div>

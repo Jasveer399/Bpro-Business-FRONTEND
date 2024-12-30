@@ -53,7 +53,7 @@ const Dialog = ({ trigger, children, onClose, width, height='h-[94%]' }) => {
           <div className="absolute -top-2 inset-0 bg-black bg-opacity-50 backdrop-blur-sm dialog-backdrop" />
           <div
             ref={dialogRef}
-            className={`bg-neutral-200 cursor-default ${height} no-scrollbar overflow-y-scroll rounded-[20px] shadow-2xl z-10 ${width}`}
+            className={`bg-white cursor-default ${height} no-scrollbar overflow-y-scroll rounded-[20px] shadow-2xl z-10 ${width}`}
             onClick={(e) => e.stopPropagation()}
           >
             {/* <div className="flex justify-center mb-4">

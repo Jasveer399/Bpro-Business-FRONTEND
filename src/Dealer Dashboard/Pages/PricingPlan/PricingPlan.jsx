@@ -5,8 +5,11 @@ import Footer from "../../Components/Home/Footer";
 import { GoCheck, GoX } from "react-icons/go";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPlansAsync } from "../../../Redux/Features/PlansSlice";
+import { getDealerAccessToken } from "../../../Utils/Helper";
+import { useNavigate } from "react-router-dom";
 
 function PricingPlan() {
+  const navigate = useNavigate()
   const dispatch = useDispatch();
   const { plans, plansStatus } = useSelector((state) => state.plans);
 
@@ -79,6 +82,7 @@ function PricingPlan() {
                 className={`${plan.planName === "Premium" ? "bg-[#00e682]" : "bg-[#ff2b88]"
                   } text-white mb-3 rounded-sm py-2 px-20 hover:bg-[#5a54f8] transition border-[#ff2b88]`}
                 style={{ boxShadow: "0 -1px 0px rgba(50, 50, 50, 0.2) inset" }}
+                onClick={() => navigate(`${token ? "/product-listing" : "/register" }`)}
               >
                 Choose Plan
               </button>

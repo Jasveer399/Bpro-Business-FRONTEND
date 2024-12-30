@@ -252,6 +252,7 @@ function EditDealerProfile() {
                 })}
                 error={editProfileForm.formState.errors.email?.message}
                 width="w-full"
+                readOnly={true}
               />
             </div>
 
@@ -265,6 +266,7 @@ function EditDealerProfile() {
                 })}
                 error={editProfileForm.formState.errors.mobileNo?.message}
                 width="w-full"
+                readOnly={true}
               />
               <FormInput
                 label="WhatsApp Number"
@@ -286,6 +288,7 @@ function EditDealerProfile() {
                 })}
                 error={editProfileForm.formState.errors.businessName?.message}
                 width="w-full"
+                readOnly={true}
               />
               <div className="w-full">
                 <h1 className="text-[15px] ml-1 mb-px text-gray-600">
@@ -303,6 +306,7 @@ function EditDealerProfile() {
                       error={error?.message}
                       width="w-full"
                       value={field.value}
+                      readOnly={true}
                     />
                   )}
                 />
@@ -336,6 +340,7 @@ function EditDealerProfile() {
                   })}
                   error={editProfileForm.formState.errors.streetNo?.message}
                   width="w-full"
+                  readOnly={true}
                 />
                 <div className="w-full mt-3">
                   <FormInput
@@ -346,6 +351,7 @@ function EditDealerProfile() {
                     })}
                     error={editProfileForm.formState.errors.areaName?.message}
                     width="w-full"
+                    readOnly={true}
                   />
                 </div>
               </div>
@@ -360,6 +366,7 @@ function EditDealerProfile() {
                 })}
                 error={editProfileForm.formState.errors.city?.message}
                 width="w-full"
+                readOnly={true}
               />
               <FormInput
                 label="Pincode"
@@ -369,6 +376,7 @@ function EditDealerProfile() {
                 })}
                 error={editProfileForm.formState.errors.pincode?.message}
                 width="w-full"
+                readOnly={true}
               />
             </div>
 
@@ -381,6 +389,7 @@ function EditDealerProfile() {
                 })}
                 error={editProfileForm.formState.errors.state?.message}
                 width="w-full"
+                readOnly={true}
               />
               <FormInput
                 label="Country"
@@ -390,6 +399,7 @@ function EditDealerProfile() {
                 })}
                 error={editProfileForm.formState.errors.country?.message}
                 width="w-full"
+                readOnly={true}
               />
             </div>
 
@@ -402,6 +412,7 @@ function EditDealerProfile() {
                 })}
                 error={editProfileForm.formState.errors.gstNo?.message}
                 width="w-full"
+                readOnly={true}
               />
               <FormInput
                 label="VAT No."
@@ -411,6 +422,7 @@ function EditDealerProfile() {
                 })}
                 error={editProfileForm.formState.errors.vatNo?.message}
                 width="w-full"
+                readOnly={true}
               />
             </div>
 

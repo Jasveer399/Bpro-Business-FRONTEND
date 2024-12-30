@@ -21,7 +21,7 @@ const AllBannersCategory = () => {
   }, [status, dispatch]);
 
   return (
-    <div className="bg-white rounded-xl shadow-lg mx-3 dark:bg-darkgrey overflow-hidden h-[34rem] overflow-y-auto">
+    <div className="bg-white rounded-xl shadow-lg mx-3 dark:bg-darkgrey overflow-hidden h-[33rem] overflow-y-auto">
       <div className="overflow-x-auto">
         <table className="w-full h-full">
           <thead>

@@ -110,10 +110,17 @@ const workersSlice = createSlice({
   name: "workers",
   initialState: {
     workers: [],
+    worker: null,
     status: "idle",
     error: null,
   },
-  reducers: {},
+  reducers: {
+    setWorker: (state, action) => {
+      console.log("action.payload", action.payload);
+      console.log("state.workers", state.workers);
+      state.worker = state.workers.find((w) => w.id === action.payload) || null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Add Worker cases
@@ -186,4 +193,5 @@ const workersSlice = createSlice({
   },
 });
 
+export const { setWorker } = workersSlice.actions;
 export default workersSlice.reducer;
