@@ -16,7 +16,6 @@ import { createPortal } from "react-dom";
 function YourListing(
   {
     status,
-    error,
     products
   }
 ) {
@@ -37,7 +36,9 @@ function YourListing(
               <th className="py-5 px-3">Image</th>
               <th className="py-5 px-3">Title</th>
               <th className="py-5 px-3">Price</th>
-              <th className="py-5 px-3">Expiry</th>
+              <th className="py-5 px-3">Discount</th>
+              <th className="py-5 px-3">Discount Price</th>
+              <th className="py-5 px-3">Total Price</th>
               <th className="py-5 px-3">Status</th>
               <th className="py-5 px-3">Listing ID</th>
               <th className="py-5 px-3">Setting</th>
@@ -68,18 +69,28 @@ function YourListing(
                   </td>
                   <td className="py-3">
                     <div className="flex items-center justify-center">
-                      <p className="text-[#ef5d50] font-semibold text-lg flex items-center">
+                      <p className="text-green-800 font-semibold text-lg flex items-center">
                         <FaRupeeSign size={15} />
-                        {`${listing.insertPrice}`}
+                        {`${listing?.insertPriceAfterDiscount > 0 ? listing?.insertPriceAfterDiscount : listing?.insertPrice}`}
                       </p>
                     </div>
                   </td>
-                  <td className="py-3 text-center">
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${expiryColorClass}`}
-                    >
-                      {timeLeft.text}
-                    </span>
+                  <td className="py-3 text-center text-primary font-semibold">
+                    {listing?.discount || 0}%
+                  </td>
+                  <td className="py-3 text-center text-primary font-semibold">
+                    <div className="flex items-center justify-center">
+                      {/* <p className="text-green-800 font-semibold text-lg flex items-center"> */}
+                      <FaRupeeSign size={15} />
+                      {`${listing?.insertPriceAfterDiscount > 0 ? listing.insertPrice - listing?.insertPriceAfterDiscount : 0}`}
+                      {/* </p> */}
+                    </div>
+                  </td>
+                  <td className="py-3 text-center text-[#ef5d50] font-semibold">
+                    <div className="flex items-center justify-center">
+                      <FaRupeeSign size={15} />
+                      {`${listing?.insertPrice}`}
+                    </div>
                   </td>
                   <td className="py-3 text-center">
                     <span
@@ -179,8 +190,6 @@ const ConfigureDialog = ({ status, setActiveDropdown, product, buttonRef }) => {
   const handleProductDelete = async (productId) => {
     const response = await dispatch(deleteProductAsync(productId));
     if (deleteProductAsync.fulfilled.match(response)) {
-
-      console.log("Product Deleted Successfully", deleteProductAsync.fulfilled.match(response));
       setSnackbar({
         open: true,
         type: "success",

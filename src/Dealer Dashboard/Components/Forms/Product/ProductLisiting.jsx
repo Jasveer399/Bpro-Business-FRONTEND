@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../../Home/Navbar";
 import Header from "../../Home/Header";
 import { Controller, useForm } from "react-hook-form";
@@ -23,8 +23,10 @@ import {
   StatusOpstions,
   weekDays,
 } from "../../../../Utils/options";
-import { FaRupeeSign } from "react-icons/fa";
+import { FaPercentage, FaRupeeSign } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { PiPercentBold } from "react-icons/pi";
+import { fetchCategoriesAsync } from "../../../../Redux/Features/categoriesSlice";
 
 function ProductLisiting() {
   const {
@@ -38,29 +40,44 @@ function ProductLisiting() {
   } = useForm({
     defaultValues: {
       status: "active",
-      time: "",
-      dayStartTime: "",
-      dayEndTime: "",
+      // time: "",
+      // dayStartTime: "",
+      // dayEndTime: "",
     },
   });
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [selectedDay, setSelectedDay] = useState();
+  // const [selectedDay, setSelectedDay] = useState();
   const [description, setDescription] = useState("");
   const [imageContainers, setImageContainers] = useState([
     { id: 0, file: null },
   ]);
   const [tags, setTags] = useState([]);
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
+  const [categoriesOptions, setCategoriesOptions] = useState([
+    {
+      label: "",
+      value: "",
+    }
+  ]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { status: categoryStatus, error: categoryError, categories } =
+    useSelector((state) => state.categories);
+  useEffect(() => {
+    if (categoryStatus === "idle") {
+      dispatch(fetchCategoriesAsync());
+    }
+    if (categoryStatus === "succeeded") {
+      console.log("categories", categories);
+      setCategoriesOptions(categories.map((category) => ({
+        label: category.title,
+        value: category.id
+      })));
+    }
+  }, [dispatch, categoryStatus]);
+
   const { status, error } = useSelector((state) => state.products);
   const isSubmitting = status === "loading";
-
-  const options = [
-    { label: "Hotel & Restaurant", value: "Hotel & Restaurant" },
-    { label: "Grocery", value: "Grocery" },
-    { label: "Lift & Elevators", value: "Lift & Elevators" },
-  ];
   const addProductLisitingHandler = async (formData) => {
     try {
       const formDataToSend = new FormData();
@@ -68,8 +85,8 @@ function ProductLisiting() {
       // Add basic form fields
       formDataToSend.append("title", formData.title);
       formDataToSend.append("status", formData.status);
-      formDataToSend.append("date", formData.date);
-      formDataToSend.append("time", formData.time);
+      // formDataToSend.append("date", formData.date);
+      // formDataToSend.append("time", formData.time);
 
       // Add tags
       tags.forEach((tag, index) => {
@@ -78,18 +95,20 @@ function ProductLisiting() {
 
       // Add selected categories
       selectedCategories.forEach((category, index) => {
+        // console.log("category ==========>", category);
         formDataToSend.append(`categories[${index}]`, category.value);
       });
 
       // Add timing details
-      formDataToSend.append("selectedDay", selectedDay);
-      formDataToSend.append("dayStartTime", formData.dayStartTime);
-      formDataToSend.append("dayEndTime", formData.dayEndTime);
-      formDataToSend.append("customTiming", formData.customTiming);
+      // formDataToSend.append("selectedDay", selectedDay);
+      // formDataToSend.append("dayStartTime", formData.dayStartTime);
+      // formDataToSend.append("dayEndTime", formData.dayEndTime);
+      // formDataToSend.append("customTiming", formData.customTiming);
 
       // Add pricing details
       // formDataToSend.append("currencySymbol", formData.currencysymbol);
       formDataToSend.append("insertprice", formData.insertprice);
+      formDataToSend.append("discount", formData.discount);
       formDataToSend.append("priceOption", formData.priceOption);
 
       // Add payment methods
@@ -122,7 +141,6 @@ function ProductLisiting() {
       // formDataToSend.append("addressLine2", formData.addressline2);
       // formDataToSend.append("zipCode", formData.zipcode);
       // formDataToSend.append("additionalInfo", formData.additionalinfo);
-
       const response = await dispatch(addProductAsync(formDataToSend));
       if (addProductAsync.fulfilled.match(response)) {
         setSnackbar({
@@ -239,7 +257,7 @@ function ProductLisiting() {
                 )}
               />
             </div>
-            <h1 className="text-[17px] font-semibold dark:border-gray-600 px-16 w-full flex flex-col gap-4">
+            {/* <h1 className="text-[17px] font-semibold dark:border-gray-600 px-16 w-full flex flex-col gap-4">
               Listing expiration date
               <span className="text-sm text-gray-400">
                 Regular users can not change expiration date. This option is
@@ -265,11 +283,11 @@ function ProductLisiting() {
                 onChange={(value) => setValue("time", value)}
                 error={errors.time?.message}
               />
-            </div>
+            </div> */}
             <div className="w-[90%] flex flex-col gap-2">
               <h1>Categories</h1>
               <MultiSelect
-                options={options}
+                options={categoriesOptions}
                 value={selectedCategories}
                 onChange={setSelectedCategories}
                 labelledBy="Categories"
@@ -281,7 +299,7 @@ function ProductLisiting() {
             <h1 className="text-xl font-bold border-b border-gray-200 dark:border-gray-600 py-4 px-8 w-full">
               Extra Details
             </h1>
-            <div className="flex flex-col gap-3 w-[90%]">
+            {/* <div className="flex flex-col gap-3 w-[90%]">
               <label className="text-lg">Timeings</label>
               <div className="w-full flex flex-col md:flex-row gap-2">
                 {weekDays.map((day, index) => (
@@ -328,7 +346,7 @@ function ProductLisiting() {
                   )}
                 />
               </div>
-            </div>
+            </div> */}
             <div className="w-[90%] flex flex-col md:flex-row gap-5 items-centers relative mt-10">
               <h1 className="text-lg absolute -top-8">Price</h1>
               {/* <FormInput
@@ -351,7 +369,40 @@ function ProductLisiting() {
                   {...register("insertprice", {
                     required: "Inser Price is required",
                   })}
-                  error={errors.title?.message}
+                  error={errors.insertprice?.message}
+                  width="w-[90%]"
+                  className="border-l-0 rounded-r rounded-l-none"
+                />
+              </div>
+              <div className="w-full flex">
+                <FaPercentage
+                  size={50}
+                  className="border-2 border-y p-3.5 border-gray-400 rounded-l-md mt-[1.46rem] text-gray-500"
+                />
+                <FormInput
+                  label="Discount"
+                  type="tel"
+                  onKeyPress={(e) => {
+                    // Allow only number keys
+                    if (!/[0-9]/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  onInput={(e) => {
+                    // Remove any non-numeric characters
+                    e.target.value = e.target.value.replace(/[^0-9]/g, '');
+
+                    // Ensure value doesn't exceed 100
+                    let value = parseInt(e.target.value);
+                    if (value > 100) {
+                      e.target.value = '100';
+                    }
+                    if (value < 0) {
+                      e.target.value = '0';
+                    }
+                  }}
+                  {...register("discount")}
+                  error={errors.discount?.message}
                   width="w-[90%]"
                   className="border-l-0 rounded-r rounded-l-none"
                 />
