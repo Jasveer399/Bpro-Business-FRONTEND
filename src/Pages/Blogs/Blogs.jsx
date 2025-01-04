@@ -16,8 +16,6 @@ function Blogs() {
         }
     }, [dispatch, status])
 
-    // console.log("blogs =>", blogs)
-
 
 
     return (
