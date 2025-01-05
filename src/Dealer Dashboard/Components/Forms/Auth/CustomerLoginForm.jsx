@@ -1,7 +1,5 @@
 import React from "react";
 import MobileNoInput from "./MobileNoInput";
-import OTPInput from "./OtpInput";
-import NameLocationInput from "./NameLocationInput";
 
 function CustomerLoginForm() {
   return (
