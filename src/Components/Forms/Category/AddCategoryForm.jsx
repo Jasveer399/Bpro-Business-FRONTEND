@@ -90,7 +90,8 @@ function AddCategoryForm({ closeDialog }) {
             error={errors.title?.message}
             width="w-full"
           />
-          <div className="w-40 h-40 mx-auto border-dotted border-2 border-blue rounded-xl flex flex-col justify-center items-center relative">
+          <p className="text-center">upload icon</p>
+          <div className="w-20 h-20 mx-auto border-dotted border-2 border-blue rounded-xl flex flex-col justify-center items-center relative">
             {iconImg.file ? (
               <>
                 <img
@@ -109,10 +110,9 @@ function AddCategoryForm({ closeDialog }) {
               </>
             ) : (
               <>
-                <p className="text-center mt-4">Upload Icon</p>
                 <ImageUp
                   size={50}
-                  className="text-blue text-xl font-bold cursor-pointer mb-4"
+                  className="text-blue text-xl font-bold cursor-pointer"
                   onClick={() =>
                     document.getElementById("icon-upload").click()
                   }
@@ -127,7 +127,9 @@ function AddCategoryForm({ closeDialog }) {
               </>
             )}
           </div>
-          <div className="w-80 mx-auto border-dotted border-2 border-blue rounded-xl flex flex-col justify-center items-center relative">
+
+          <p className=" mt-4">Upload Category Image</p>
+          <div className="w-full h-52 mx-auto border-dotted border-2 border-blue rounded-xl flex flex-col justify-center items-center relative">
             {categoryImg.file ? (
               <>
                 <img
@@ -146,7 +148,6 @@ function AddCategoryForm({ closeDialog }) {
               </>
             ) : (
               <>
-                <p className="text-center mt-4">Upload Category Image</p>
                 <ImageUp
                   size={50}
                   className="text-blue text-xl font-bold cursor-pointer mb-4"

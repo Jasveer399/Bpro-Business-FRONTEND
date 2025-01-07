@@ -17,8 +17,8 @@ function Category() {
                 Add Category
               </button>
             }
-            width="w-[30%]"
-            height="h-[55%]"
+            width="w-[40%]"
+            height="h-[85%]"
           >
             <AddCategoryForm />
           </Dialog>

@@ -67,8 +67,8 @@ function Workers() {
                   Add Worker
                 </button>
               }
-              width="w-[30%]"
-              height="h-[40%]"
+              width="w-[40%]"
+              height="h-[50%]"
             >
               <AddWorkerForm />
             </Dialog>
