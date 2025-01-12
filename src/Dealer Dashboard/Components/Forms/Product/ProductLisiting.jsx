@@ -57,22 +57,27 @@ function ProductLisiting() {
     {
       label: "",
       value: "",
-    }
+    },
   ]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { status: categoryStatus, error: categoryError, categories } =
-    useSelector((state) => state.categories);
+  const {
+    status: categoryStatus,
+    error: categoryError,
+    categories,
+  } = useSelector((state) => state.categories);
   useEffect(() => {
     if (categoryStatus === "idle") {
       dispatch(fetchCategoriesAsync());
     }
     if (categoryStatus === "succeeded") {
       console.log("categories", categories);
-      setCategoriesOptions(categories.map((category) => ({
-        label: category.title,
-        value: category.id
-      })));
+      setCategoriesOptions(
+        categories.map((category) => ({
+          label: category.title,
+          value: category.id,
+        }))
+      );
     }
   }, [dispatch, categoryStatus]);
 
@@ -390,15 +395,15 @@ function ProductLisiting() {
                   }}
                   onInput={(e) => {
                     // Remove any non-numeric characters
-                    e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                    e.target.value = e.target.value.replace(/[^0-9]/g, "");
 
                     // Ensure value doesn't exceed 100
                     let value = parseInt(e.target.value);
                     if (value > 100) {
-                      e.target.value = '100';
+                      e.target.value = "100";
                     }
                     if (value < 0) {
-                      e.target.value = '0';
+                      e.target.value = "0";
                     }
                   }}
                   {...register("discount")}
@@ -446,7 +451,11 @@ function ProductLisiting() {
               </div>
             </div>
             <div className="w-[90%]">
-              <TextAreaEditor onChange={setDescription} />
+              <TextAreaEditor
+                onContentChange={(description) =>
+                  setValue("description", description)
+                }
+              />
             </div>
             <TextareaInput
               label="Summary..."

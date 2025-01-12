@@ -1,7 +1,7 @@
-import React from 'react';
-import { Calendar, ArrowUpRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import DOMPurify from 'dompurify';
+import React from "react";
+import { Calendar, ArrowUpRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import DOMPurify from "dompurify";
 
 const BlogCardGrid = ({ data }) => {
   // Check if data exists and is in the correct format
@@ -21,8 +21,10 @@ export default BlogCardGrid;
 const BlogCard = ({ blog }) => {
   const navigate = useNavigate();
 
+  console.log("Blog data in Blog Card ==>", blog);
+
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
@@ -33,9 +35,9 @@ const BlogCard = ({ blog }) => {
     <div className="bg-white dark:bg-darkComponet dark:text-colorText rounded-lg shadow-md p-4 mb-4">
       <h2 className="text-xl font-bold mb-2">{blog.name}</h2>
 
-      {blog.images && blog.images.length > 0 && (
+      {blog.image && (
         <img
-          src={blog.images[0].url}
+          src={blog.image}
           alt={blog.name}
           className="w-full h-48 object-cover rounded-md mb-4"
         />

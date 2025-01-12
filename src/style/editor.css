@@ -1,0 +1,278 @@
+.text-editor-container {
+  @apply max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden;
+}
+
+/* Menu Bar Styles */
+.editor-menubar {
+  @apply bg-white border-b border-gray-200 p-2 sticky top-0 z-10;
+}
+
+.menubar-group {
+  @apply flex items-center gap-1 px-2;
+  border-right: 1px solid #e2e8f0;
+}
+
+.menubar-group:last-child {
+  border-right: none;
+}
+
+/* Button Styles */
+.editor-button {
+  @apply p-2 rounded-md transition-all duration-200 relative hover:bg-gray-100 focus:outline-none;
+}
+
+.editor-button:focus {
+  box-shadow: 0 0 0 2px #3b82f6;
+  outline: none;
+}
+
+.editor-button.active {
+  @apply bg-gray-200 text-blue;
+}
+
+.editor-button svg {
+  @apply w-4 h-4;
+}
+
+/* Dropdown Menus */
+.dropdown-menu {
+  @apply absolute top-full left-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 p-2 z-20;
+  min-width: 200px;
+}
+
+/* Color Picker */
+.color-picker {
+  @apply grid grid-cols-6 gap-1 p-2;
+}
+
+.color-swatch {
+  @apply w-6 h-6 rounded-full cursor-pointer transition-transform duration-200 hover:scale-110;
+}
+
+/* Editor Content Area */
+.ProseMirror {
+  @apply p-4 min-h-[300px] max-h-[600px] overflow-y-auto focus:outline-none;
+}
+
+/* Typography */
+.ProseMirror h1 {
+  @apply text-3xl font-bold mb-4 mt-6;
+}
+
+.ProseMirror h2 {
+  @apply text-2xl font-bold mb-3 mt-5;
+}
+
+.ProseMirror h3 {
+  @apply text-xl font-bold mb-2 mt-4;
+}
+
+.ProseMirror p {
+  @apply mb-4 leading-relaxed;
+}
+
+/* Lists */
+.ProseMirror ul {
+  @apply list-disc pl-6 mb-4;
+}
+
+.ProseMirror ol {
+  @apply list-decimal pl-6 mb-4;
+}
+
+.ProseMirror li {
+  @apply mb-1;
+}
+
+/* Blockquotes */
+.ProseMirror blockquote {
+  @apply pl-4 border-l-4 border-gray-300 italic my-4 text-gray-700;
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Links */
+.ProseMirror a {
+  @apply text-blue hover:text-blue underline;
+}
+
+/* Images and Image Alignment */
+.ProseMirror img {
+  @apply max-w-full h-auto rounded-lg my-4 shadow-md hover:shadow-lg transition-shadow duration-200;
+}
+
+.image-align-left {
+  @apply float-left mr-4 mb-4;
+}
+
+.image-align-center {
+  @apply block mx-auto mb-4;
+  float: none;
+}
+
+.image-align-right {
+  @apply float-right ml-4 mb-4;
+}
+
+/* Image Component */
+.image-component {
+  @apply relative inline-block;
+}
+
+.image-component.image-align-center {
+  @apply block w-full text-center;
+}
+
+.image-component.image-align-center img {
+  @apply mx-auto;
+}
+
+/* Text Alignment */
+/* .ProseMirror .text-left {
+  text-align: left;
+} */
+
+.ProseMirror .text-center {
+  text-align: center;
+}
+
+.ProseMirror .text-right {
+  text-align: right;
+}
+
+/* Highlighted Text */
+.ProseMirror mark {
+  @apply px-1 rounded-sm;
+}
+
+/* Code Blocks */
+.ProseMirror pre {
+  @apply bg-gray-100 rounded-lg p-4 my-4 overflow-x-auto font-mono text-sm;
+}
+
+/* Tables */
+.ProseMirror table {
+  @apply w-full my-4 border-collapse;
+}
+
+.ProseMirror th {
+  @apply bg-gray-100 border border-gray-300 p-2 text-left;
+}
+
+.ProseMirror td {
+  @apply border border-gray-300 p-2;
+}
+
+/* Link Input */
+.link-input {
+  @apply flex gap-2 items-center p-2 bg-white rounded-lg shadow-lg border border-gray-200;
+}
+
+.link-input input {
+  @apply border rounded px-3 py-1 text-sm min-w-[200px];
+}
+
+.link-input button {
+  @apply bg-blue text-white px-3 py-1 rounded text-sm hover:bg-blue transition-colors duration-200;
+}
+
+/* Loading States */
+.editor-loading {
+  @apply animate-pulse bg-gray-100 rounded-lg;
+  min-height: 300px;
+}
+
+/* Error States */
+.editor-error {
+  @apply text-red-500 text-sm mt-2;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .editor-menubar {
+    @apply flex-wrap;
+  }
+
+  .menubar-group {
+    @apply border-none mb-2;
+  }
+
+  .editor-button {
+    @apply p-1;
+  }
+
+  .ProseMirror {
+    @apply p-2;
+  }
+}
+
+/* Custom Scrollbar */
+.ProseMirror::-webkit-scrollbar {
+  @apply w-2;
+}
+
+.ProseMirror::-webkit-scrollbar-track {
+  @apply bg-gray-100 rounded-full;
+}
+
+.ProseMirror::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full hover:bg-gray-400 transition-colors duration-200;
+}
+
+/* Data Attributes Styling */
+[data-text-align="left"] {
+  text-align: left !important;
+}
+
+[data-text-align="center"] {
+  text-align: center !important;
+}
+
+[data-text-align="right"] {
+  text-align: right !important;
+}
+
+/* Heading Styles */
+[data-heading-level="h1"] {
+  @apply text-3xl font-bold mt-6 mb-2;
+}
+
+[data-heading-level="h2"] {
+  @apply text-2xl font-semibold mt-5 mb-2;
+}
+
+[data-heading-level="h3"] {
+  @apply text-xl font-medium mt-4 mb-2;
+}
+
+/* List Styles */
+[data-list-type="bullet"] {
+  @apply list-disc mb-4 pl-8;
+}
+
+[data-list-type="ordered"] {
+  @apply list-decimal mb-4 pl-8;
+}
+
+[data-list-type] li {
+  @apply mb-2 leading-relaxed;
+}
+
+/* Nested Lists */
+[data-list-type] [data-list-type] {
+  @apply mt-2 mb-0;
+}
+
+/* Editor Content List Spacing */
+.editor-content [data-list-type],
+.ProseMirror [data-list-type] {
+  @apply my-4;
+}
+
+.editor-content [data-list-type] [data-list-type],
+.ProseMirror [data-list-type] [data-list-type] {
+  @apply my-2;
+}
+
+[data-list-type] + [data-list-type] {
+  margin-top: 0;
+}
