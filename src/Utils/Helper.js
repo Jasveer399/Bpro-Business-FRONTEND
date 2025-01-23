@@ -8,6 +8,7 @@ const removeDealerAccessToken = () => {
   localStorage.removeItem("dealerAccessToken");
 };
 const getDealerAccessToken = () => localStorage.getItem("dealerAccessToken");
+const getAdminAccessToken = () => localStorage.getItem("accessToken");
 
 const isColorDark = (hexColor) => {
   const rgb = parseInt(hexColor.slice(1), 16);
@@ -64,6 +65,7 @@ export {
   storeDealerAccessToken,
   removeDealerAccessToken,
   getDealerAccessToken,
+  getAdminAccessToken,
   isColorDark,
   uploadFile,
   deleteFile,

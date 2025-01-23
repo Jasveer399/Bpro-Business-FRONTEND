@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   changePasswordAsync,
   fetchCurrentDealerAsync,
+  sendRequestAsync,
   updateDealerAsync,
   updateProfileImgAsync,
 } from "../../../../Redux/Features/dealersSlice";
@@ -34,6 +35,8 @@ function EditDealerProfile() {
   const [displayToPublicOptions, setDisplayToPublicOptions] = useState([]);
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const [profileImageUrl, setProfileImageUrl] = useState(null);
+
+  console.log("currentDealer", currentDealer);
 
   const handleImageUpload = async (file) => {
     console.log("file", file);
@@ -95,6 +98,7 @@ function EditDealerProfile() {
   }, [currentDealer]);
 
   const editProfileHandler = async (data) => {
+    console.log("data: ", data);
     try {
       const response = await dispatch(updateDealerAsync(data)).unwrap();
       console.log("Profile Edited Successfully", response);
@@ -146,6 +150,27 @@ function EditDealerProfile() {
         open: true,
         type: "error",
         text: error.message,
+      });
+    }
+  };
+
+  const handleRequestSend = async () => {
+    console.log("handleRequestSend");
+    try {
+      const res = await dispatch(sendRequestAsync()).unwrap();
+      if (res.success) {
+        setSnackbar({
+          open: true,
+          type: "success",
+          text: res.message,
+        });
+      }
+    } catch (error) {
+      console.log("error", error);
+      setSnackbar({
+        open: true,
+        type: "error",
+        text: error?.message || "Error sending request",
       });
     }
   };
@@ -243,6 +268,7 @@ function EditDealerProfile() {
                 })}
                 error={editProfileForm.formState.errors.fullName?.message}
                 width="w-full"
+                readOnly={!currentDealer?.isProfileUpdate}
               />
               <FormInput
                 label="Email"
@@ -252,7 +278,7 @@ function EditDealerProfile() {
                 })}
                 error={editProfileForm.formState.errors.email?.message}
                 width="w-full"
-                readOnly={true}
+                readOnly={!currentDealer?.isProfileUpdate}
               />
             </div>
 
@@ -276,6 +302,7 @@ function EditDealerProfile() {
                 })}
                 error={editProfileForm.formState.errors.whatsappNo?.message}
                 width="w-full"
+                readOnly={!currentDealer?.isProfileUpdate}
               />
             </div>
 
@@ -329,6 +356,7 @@ function EditDealerProfile() {
                   error={editProfileForm.formState.errors.bio?.message}
                   rows={5}
                   width="w-full"
+                  readOnly={!currentDealer?.isProfileUpdate}
                 />
               </div>
               <div className="md:w-[50%] w-full">
@@ -340,7 +368,7 @@ function EditDealerProfile() {
                   })}
                   error={editProfileForm.formState.errors.streetNo?.message}
                   width="w-full"
-                  readOnly={true}
+                  readOnly={!currentDealer?.isProfileUpdate}
                 />
                 <div className="w-full mt-3">
                   <FormInput
@@ -351,7 +379,7 @@ function EditDealerProfile() {
                     })}
                     error={editProfileForm.formState.errors.areaName?.message}
                     width="w-full"
-                    readOnly={true}
+                    readOnly={!currentDealer?.isProfileUpdate}
                   />
                 </div>
               </div>
@@ -366,7 +394,7 @@ function EditDealerProfile() {
                 })}
                 error={editProfileForm.formState.errors.city?.message}
                 width="w-full"
-                readOnly={true}
+                readOnly={!currentDealer?.isProfileUpdate}
               />
               <FormInput
                 label="Pincode"
@@ -376,7 +404,7 @@ function EditDealerProfile() {
                 })}
                 error={editProfileForm.formState.errors.pincode?.message}
                 width="w-full"
-                readOnly={true}
+                readOnly={!currentDealer?.isProfileUpdate}
               />
             </div>
 
@@ -389,7 +417,7 @@ function EditDealerProfile() {
                 })}
                 error={editProfileForm.formState.errors.state?.message}
                 width="w-full"
-                readOnly={true}
+                readOnly={!currentDealer?.isProfileUpdate}
               />
               <FormInput
                 label="Country"
@@ -399,7 +427,7 @@ function EditDealerProfile() {
                 })}
                 error={editProfileForm.formState.errors.country?.message}
                 width="w-full"
-                readOnly={true}
+                readOnly={!currentDealer?.isProfileUpdate}
               />
             </div>
 
@@ -422,7 +450,7 @@ function EditDealerProfile() {
                 })}
                 error={editProfileForm.formState.errors.vatNo?.message}
                 width="w-full"
-                readOnly={true}
+                readOnly={!currentDealer?.isProfileUpdate}
               />
             </div>
 
@@ -434,6 +462,7 @@ function EditDealerProfile() {
                 {...editProfileForm.register("website")}
                 error={editProfileForm.formState.errors.website?.message}
                 width="w-full"
+                readOnly={!currentDealer?.isProfileUpdate}
               />
               <FormInput
                 label="Facebook (Optional)"
@@ -441,6 +470,7 @@ function EditDealerProfile() {
                 {...editProfileForm.register("facebook")}
                 error={editProfileForm.formState.errors.facebook?.message}
                 width="w-full"
+                readOnly={!currentDealer?.isProfileUpdate}
               />
             </div>
 
@@ -451,6 +481,7 @@ function EditDealerProfile() {
                 {...editProfileForm.register("insta")}
                 error={editProfileForm.formState.errors.instagram?.message}
                 width="w-full"
+                readOnly={!currentDealer?.isProfileUpdate}
               />
               <FormInput
                 label="YouTube (Optional)"
@@ -458,15 +489,33 @@ function EditDealerProfile() {
                 {...editProfileForm.register("youtube")}
                 error={editProfileForm.formState.errors.youtube?.message}
                 width="w-full"
+                readOnly={!currentDealer?.isProfileUpdate}
               />
             </div>
 
-            <button
-              type="submit"
-              className="bg-[#EB6752] w-full py-3 mb-5 rounded-md text-white font-semibold hover:bg-[#191A1F] transition-colors duration-300"
-            >
-              Update Profile
-            </button>
+            {currentDealer?.isReqSent ? (
+              <button
+                type="button"
+                className="bg-[#EB6752] w-full py-3 mb-5 rounded-md text-white font-semibold hover:bg-[#191A1F] transition-colors duration-300 cursor-not-allowed"
+                disabled={true}
+              >
+                Request Sent. Wait For Approval !!
+              </button>
+            ) : currentDealer?.isProfileUpdate ? (
+              <button
+                type="submit"
+                className="bg-[#EB6752] w-full py-3 mb-5 rounded-md text-white font-semibold hover:bg-[#191A1F] transition-colors duration-300"
+              >
+                Update Profile
+              </button>
+            ) : (
+              <div
+                className="bg-[#EB6752] w-full py-3 mb-5 rounded-md text-white text-center font-semibold hover:bg-[#191A1F] transition-colors duration-300"
+                onClick={handleRequestSend}
+              >
+                Request Profile Update
+              </div>
+            )}
           </form>
         </div>
       </div>

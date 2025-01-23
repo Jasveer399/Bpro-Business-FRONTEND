@@ -82,6 +82,7 @@ const categoriesSlice = createSlice({
   initialState: {
     categories: [],
     status: "idle",
+    updateStatus: "idle",
     error: null,
   },
   reducers: {},
@@ -113,17 +114,17 @@ const categoriesSlice = createSlice({
       })
       // Update Category cases
       .addCase(updateCategoryAsync.pending, (state) => {
-        state.status = "loading";
+        state.updateStatus = "loading";
       })
       .addCase(updateCategoryAsync.fulfilled, (state, action) => {
-        state.status = "succeeded";
+        state.updateStatus = "succeeded";
         const index = state.categories.findIndex(cat => cat.id === action.payload.data.id);
         if (index !== -1) {
           state.categories[index] = action.payload.data;
         }
       })
       .addCase(updateCategoryAsync.rejected, (state, action) => {
-        state.status = "failed";
+        state.updateStatus = "failed";
         state.error = action.payload;
       })
       // Delete Category cases

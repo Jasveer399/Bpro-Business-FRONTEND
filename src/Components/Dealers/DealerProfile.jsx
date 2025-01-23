@@ -155,6 +155,14 @@ function DealerProfile() {
             </tr>
             <tr>
               <th className="py-[6px] px-3 border border-gray-400 text-left w-52">
+                Category
+              </th>
+              <td className="py-[6px] px-3 border border-gray-400 text-left w-56">
+                {dealer?.Category?.title}
+              </td>
+            </tr>
+            <tr>
+              <th className="py-[6px] px-3 border border-gray-400 text-left w-52">
                 GST No.
               </th>
               <td className="py-[6px] px-3 border border-gray-400 text-left w-56">
@@ -219,9 +227,9 @@ function DealerProfile() {
             </tr>
           </table>
         </div>
-        <div>
+        <div className="w-[50%]">
           <h1 className="text-xl font-semibold">Adhaar Card</h1>
-          <div className="flex">
+          <div className="flex gap-4">
             <img
               src={dealer?.adhaarFrontUrl}
               alt="Adhaar Card Front"
@@ -233,8 +241,22 @@ function DealerProfile() {
               className="w-60"
             />
           </div>
-          <h1 className="text-xl font-semibold mt-10">MSME / Visiting Card</h1>
-          <div className="grid grid-cols-2">
+
+          <h1 className="text-xl font-semibold mt-5">PAN Card</h1>
+          <div className="flex gap-4">
+            <img
+              src={dealer?.panFrontUrl}
+              alt="Adhaar Card Front"
+              className="w-60"
+            />
+            <img
+              src={dealer?.panBackUrl}
+              alt="Adhaar Card Back"
+              className="w-60"
+            />
+          </div>
+          <h1 className="text-xl font-semibold mt-5">MSME / Visiting Card</h1>
+          <div className="grid grid-cols-2 gap-4">
             {dealer?.docUrl.map((doc, index) => (
               <img src={doc} alt="Doc" className="w-60" />
             ))}

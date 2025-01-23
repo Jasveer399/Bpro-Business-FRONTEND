@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import FormHeading from "../../../ui/FormHeading";
 import FormInput from "../../../ui/FormInput";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../../ui/Loader";
 import { addWorkerAsync } from "../../../Redux/Features/workersSlice";
+import Snackbars from "../../../ui/Snackbars";
 
 function AddWorkerForm({ closeDialog }) {
   const dispatch = useDispatch();
   const { status } = useSelector((state) => state.workers);
+  const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const {
     formState: { errors },
     handleSubmit,
@@ -17,14 +19,27 @@ function AddWorkerForm({ closeDialog }) {
 
   const addWorkerHandler = async (data) => {
     console.log("addWorker: ", data);
-    const formData = new FormData();
 
     try {
-      await dispatch(addWorkerAsync(data)).unwrap();
-      console.log("Worker added successfully");
-      closeDialog();
+      const res = await dispatch(addWorkerAsync(data)).unwrap();
+      console.log("Worker added successfully", res);
+      if (res.success) {
+        setSnackbar({
+          open: true,
+          type: "success",
+          text: res.message,
+        });
+      }
+      setTimeout(() => {
+        closeDialog();
+      }, 500);
     } catch (error) {
       console.error("Failed to add worker:", error);
+      setSnackbar({
+        open: true,
+        type: "error",
+        text: error?.message || "Error adding worker",
+      });
     }
   };
   return (
@@ -36,7 +51,7 @@ function AddWorkerForm({ closeDialog }) {
           className="px-16 mt-4 space-y-4"
         >
           <FormInput
-            label="Enter Worker Name"
+            label="Name"
             type="text"
             {...register("name", {
               required: "Name is required",
@@ -45,21 +60,68 @@ function AddWorkerForm({ closeDialog }) {
             width="w-full"
           />
           <FormInput
-            label="Enter Worker Mobile No."
-            type="number"
+            label="Mobile No."
+            type="tel"
             {...register("mobileNo", {
-              required: "Mobile No. is required",
+              required: "Mobile Number is required",
+              pattern: {
+                value: /^\d{10}$/,
+                message: "Mobile Number must be exactly 10 digits",
+              },
+              validate: (value) => {
+                const cleanedValue = value.replace(/\D/g, "");
+                return (
+                  cleanedValue.length === 10 ||
+                  "Mobile Number must be 10 digits"
+                );
+              },
             })}
             error={errors.mobileNo?.message}
             width="w-full"
+            maxLength={10}
+            onChange={(e) => {
+              // Only allow digits
+              e.target.value = e.target.value.replace(/\D/g, "").slice(0, 10);
+            }}
           />
-          <div className="flex justify-center mt-4">
-            <button className="bg-blue px-3 rounded-md font-semibold dark:text-white py-1">
+          <FormInput
+            label="Adhaar No."
+            type="number"
+            {...register("adhaarNo", {
+              required: "Adhaar Number is required",
+              pattern: {
+                value: /^\d{12}$/,
+                message: "Adhaar Number must be exactly 12 digits",
+              },
+              validate: (value) => {
+                const cleanedValue = value.replace(/\D/g, "");
+                return (
+                  cleanedValue.length === 12 ||
+                  "Adhaar Number must be 12 digits"
+                );
+              },
+            })}
+            error={errors.adhaarNo?.message}
+            width="w-full"
+            maxLength={12}
+            onChange={(e) => {
+              // Only allow digits
+              e.target.value = e.target.value.replace(/\D/g, "").slice(0, 12);
+            }}
+          />
+          <div className="flex justify-center mt-4 pb-4">
+            <button className="bg-blue px-3 rounded-md font-semibold text-white py-1">
               {status === "loading" ? <Loader /> : "Submit"}
             </button>
           </div>
         </form>
       </div>
+      <Snackbars
+        open={snackbar.open}
+        type={snackbar.type}
+        text={snackbar.text}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
     </>
   );
 }

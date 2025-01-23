@@ -10,8 +10,11 @@ import {
   changePassword,
   approveDealer,
   updateProfileImg,
+  requestUpdateProfile,
+  getAllUpdateApprovalRequests,
+  changeStatusUpdateProfile,
 } from "../../Utils/server";
-import { getDealerAccessToken } from "../../Utils/Helper";
+import { getAdminAccessToken, getDealerAccessToken } from "../../Utils/Helper";
 
 // Thunk for adding a new dealer
 export const addDealerAsync = createAsyncThunk(
@@ -23,7 +26,7 @@ export const addDealerAsync = createAsyncThunk(
           "Content-Type": "application/json",
         },
       });
-      return response.data.data;
+      return response.data;
     } catch (error) {
       console.error("Error in addDealerAsync:", error);
       return rejectWithValue(
@@ -171,6 +174,73 @@ export const approveDealerAsync = createAsyncThunk(
   }
 );
 
+export const sendRequestAsync = createAsyncThunk(
+  "dealers/sendRequest",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(
+        requestUpdateProfile,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getDealerAccessToken()}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error in requesting Dealer:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
+export const changeStatusUpdateProfileAsync = createAsyncThunk(
+  "dealers/changeStatusUpdateProfile",
+  async ({ id, status }, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(
+        `${changeStatusUpdateProfile}/${id}`,
+        { status },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getAdminAccessToken()}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error in requesting Dealer:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
+export const fetchRequestsAsync = createAsyncThunk(
+  "dealers/getAllUpdateApprovalRequests",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(getAllUpdateApprovalRequests, {
+        headers: {
+          Authorization: `Bearer ${getAdminAccessToken()}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error in requesting Dealer:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
 export const updateProfileImgAsync = createAsyncThunk(
   "dealers/updateProfileImg",
   async (data, { rejectWithValue }) => {
@@ -198,6 +268,7 @@ const dealersSlice = createSlice({
     dealers: [],
     dealer: null,
     status: "idle",
+    approvalDismissStatus: "idle",
     error: null,
   },
   reducers: {
@@ -213,7 +284,8 @@ const dealersSlice = createSlice({
       })
       .addCase(addDealerAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.dealers.push(action.payload);
+        console.log(action)
+        state.dealers.push(action.payload.data);
       })
       .addCase(addDealerAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -250,11 +322,12 @@ const dealersSlice = createSlice({
       .addCase(updateDealerAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
         const index = state.dealers.findIndex(
-          (dealer) => dealer.id === action.payload.id
+          (dealer) => dealer.id === action.payload.data.id
         );
         if (index !== -1) {
-          state.dealers[index] = action.payload;
+          state.dealers[index] = action.payload.data;
         }
+        state.currentDealer = action.payload.data;
       })
       .addCase(updateDealerAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -313,6 +386,43 @@ const dealersSlice = createSlice({
       })
       .addCase(approveDealerAsync.rejected, (state, action) => {
         state.status = "failed";
+        state.error = action.payload;
+      })
+      // ... send request ...
+      .addCase(sendRequestAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(sendRequestAsync.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        console.log("action:>>>", action);
+        state.currentDealer.isReqSent = true;
+      })
+      .addCase(sendRequestAsync.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      // ... fetch requests ...
+      .addCase(fetchRequestsAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchRequestsAsync.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.requests = action.payload.data;
+      })
+      .addCase(fetchRequestsAsync.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      // ... accept request ...
+      .addCase(changeStatusUpdateProfileAsync.pending, (state) => {
+        state.approvalDismissStatus = "loading";
+      })
+      .addCase(changeStatusUpdateProfileAsync.fulfilled, (state, action) => {
+        state.approvalDismissStatus = "succeeded";
+        state.requests = state.requests.filter((req) => req.id !== action.payload.data.id);
+      })
+      .addCase(changeStatusUpdateProfileAsync.rejected, (state, action) => {
+        state.approvalDismissStatus = "failed";
         state.error = action.payload;
       })
       // ... update dealer profile....

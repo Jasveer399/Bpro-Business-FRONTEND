@@ -19,7 +19,7 @@ export const addWorkerAsync = createAsyncThunk(
           "Content-Type": "application/json",
         },
       });
-      return response.data.data;
+      return response.data;
     } catch (error) {
       console.error("Error in addWorkerAsync:", error);
       return rejectWithValue(
@@ -63,7 +63,7 @@ export const updateWorkerAsync = createAsyncThunk(
           },
         }
       );
-      return response.data.data;
+      return response.data;
     } catch (error) {
       console.error("Error in updateWorkerAsync:", error);
       return rejectWithValue(
@@ -112,6 +112,7 @@ const workersSlice = createSlice({
     workers: [],
     worker: null,
     status: "idle",
+    updateStatus: "idle",
     error: null,
   },
   reducers: {
@@ -129,7 +130,7 @@ const workersSlice = createSlice({
       })
       .addCase(addWorkerAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.workers.push(action.payload);
+        state.workers.push(action.payload.data);
       })
       .addCase(addWorkerAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -149,19 +150,19 @@ const workersSlice = createSlice({
       })
       // Update Worker cases
       .addCase(updateWorkerAsync.pending, (state) => {
-        state.status = "loading";
+        state.updateStatus = "loading";
       })
       .addCase(updateWorkerAsync.fulfilled, (state, action) => {
-        state.status = "succeeded";
+        state.updateStatus = "succeeded";
         const index = state.workers.findIndex(
-          (worker) => worker.id === action.payload.id
+          (worker) => worker.id === action.payload.data.id
         );
         if (index !== -1) {
-          state.workers[index] = action.payload;
+          state.workers[index] = action.payload.data;
         }
       })
       .addCase(updateWorkerAsync.rejected, (state, action) => {
-        state.status = "failed";
+        state.updateStatus = "failed";
         state.error = action.payload;
       })
       // Delete Worker cases

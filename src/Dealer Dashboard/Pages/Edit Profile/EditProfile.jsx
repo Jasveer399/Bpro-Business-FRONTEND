@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../../Components/Home/Navbar";
 import Header from "../../Components/Home/Header";
 import { Controller, useForm } from "react-hook-form";
@@ -11,6 +11,7 @@ import SelectInput from "../../../ui/SelectInput";
 import { businessTypesOptions } from "../../../Utils/options";
 import { updateDealerAsync } from "../../../Redux/Features/dealersSlice";
 import { replace, useLocation, useNavigate } from "react-router-dom";
+import { fetchCategoriesAsync } from "../../../Redux/Features/categoriesSlice";
 
 function EditProfile() {
   const navigate = useNavigate();
@@ -30,7 +31,21 @@ function EditProfile() {
     },
   });
   const location = useLocation();
+  const dispatch = useDispatch();
   const { status: dealerStatus } = useSelector((state) => state.dealers);
+  const { categories, status: categoryStatus } = useSelector((state) => state.categories);
+
+  console.log("categories", categories);
+
+  const allCategories = categories?.map((cat) => {
+    return { value: cat.id, label: cat.title }
+  })
+
+  useEffect(() => {
+    if (categoryStatus === 'idle') {
+      dispatch(fetchCategoriesAsync())
+    }
+  }, [dispatch, categoryStatus])
 
   if (location?.state?.data) {
     setValue("email", location?.state?.data?.email);
@@ -45,9 +60,13 @@ function EditProfile() {
     { id: "front", file: null },
     { id: "back", file: null },
   ]);
+  const [panImageContainers, setPanImageContainers] = useState([
+    { id: "panfront", file: null },
+    { id: "panback", file: null },
+  ]);
   const [tags, setTags] = useState([]);
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
-  const dispatch = useDispatch();
+  
   const { status, error } = useSelector((state) => state.products);
   const isSubmitting = status === "loading";
 
@@ -93,6 +112,13 @@ function EditProfile() {
         (container) => container.id === "back"
       );
 
+      const panFrontContainer = panImageContainers.find(
+        (container) => container.id === "panfront"
+      );
+      const panBackContainer = panImageContainers.find(
+        (container) => container.id === "panback"
+      );
+
       if (adhaarFrontContainer?.file) {
         formDataToSend.append("adhaarFrontUrl", adhaarFrontContainer.file);
       }
@@ -100,6 +126,18 @@ function EditProfile() {
       if (adhaarBackContainer?.file) {
         formDataToSend.append("adhaarBackUrl", adhaarBackContainer.file);
       }
+
+      if (panFrontContainer?.file) {
+        formDataToSend.append("panFrontUrl", panFrontContainer.file);
+      }
+
+      if (panBackContainer?.file) {
+        formDataToSend.append("panBackUrl", panBackContainer.file);
+      }
+
+      formDataToSend.append("newUser", true);
+
+      formDataToSend.append("categoryId", formData.categoryId);
 
       const response = await dispatch(updateDealerAsync(formDataToSend));
       if (updateDealerAsync.fulfilled.match(response)) {
@@ -119,6 +157,10 @@ function EditProfile() {
         setAadharImageContainers([
           { id: "front", file: null },
           { id: "back", file: null },
+        ]); // Reset images
+        setPanImageContainers([
+          { id: "panfront", file: null },
+          { id: "panback", file: null },
         ]); // Reset images
       } else {
         setSnackbar({
@@ -151,6 +193,17 @@ function EditProfile() {
     const file = e.target.files[0];
     if (file) {
       setAadharImageContainers((prev) =>
+        prev.map((container) =>
+          container.id === id ? { ...container, file } : container
+        )
+      );
+    }
+  };
+
+  const handlePanImageUpload = (e, id) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPanImageContainers((prev) =>
         prev.map((container) =>
           container.id === id ? { ...container, file } : container
         )
@@ -196,7 +249,11 @@ function EditProfile() {
           <div className="w-full pb-4 sm:pb-6 mt-5 text-lg font-medium flex justify-center items-center flex-col gap-8 ">
             <div className="w-[100%] grid grid-cols-3 gap-4">
               <FormInput
-                label={<span className="text-[#2E3192]">Your Name</span>}
+                label={
+                  <span className="text-[#2E3192]">
+                    Your Name<span className="text-red-500">*</span>
+                  </span>
+                }
                 className="border border-[#BFBCFF]"
                 placeholder="Enter your name"
                 type="text"
@@ -207,7 +264,11 @@ function EditProfile() {
                 width=""
               />
               <FormInput
-                label={<span className="text-[#2E3192]">Your Email</span>}
+                label={
+                  <span className="text-[#2E3192]">
+                    Your Email<span className="text-red-500">*</span>
+                  </span>
+                }
                 placeholder="Enter your email"
                 className="border border-[#BFBCFF]"
                 type="email"
@@ -218,7 +279,11 @@ function EditProfile() {
                 width=""
               />
               <FormInput
-                label={<span className="text-[#2E3192]">Your Phone</span>}
+                label={
+                  <span className="text-[#2E3192]">
+                    Your Phone<span className="text-red-500">*</span>
+                  </span>
+                }
                 placeholder="Enter your phone"
                 className="border border-[#BFBCFF]"
                 type="text"
@@ -229,7 +294,11 @@ function EditProfile() {
                 width=""
               />
               <FormInput
-                label={<span className="text-[#2E3192]">Business Name</span>}
+                label={
+                  <span className="text-[#2E3192]">
+                    Business Name<span className="text-red-500">*</span>
+                  </span>
+                }
                 placeholder="Enter your business name"
                 className="border border-[#BFBCFF]"
                 type="text"
@@ -240,9 +309,7 @@ function EditProfile() {
                 width=""
               />
               <FormInput
-                label={
-                  <span className="text-[#2E3192]">Website (Optional)</span>
-                }
+                label={<span className="text-[#2E3192]">Website</span>}
                 placeholder="Enter your website"
                 className="border border-[#BFBCFF]"
                 type="text"
@@ -250,7 +317,9 @@ function EditProfile() {
                 width=""
               />
               <div>
-                <span className="text-[#2E3192] text-sm">Business Type</span>
+                <span className="text-[#2E3192] text-sm">
+                  Business Type<span className="text-red-500">*</span>
+                </span>
 
                 <Controller
                   name="businessType"
@@ -260,6 +329,30 @@ function EditProfile() {
                     <SelectInput
                       label="Select Bussiness Type"
                       options={businessTypesOptions}
+                      onChange={(option) => {
+                        field.onChange(option.value);
+                      }}
+                      error={error?.message}
+                      width="w-full"
+                      value={field.value}
+                    />
+                  )}
+                />
+              </div>
+
+              <div>
+                <span className="text-[#2E3192] text-sm">
+                  Category<span className="text-red-500">*</span>
+                </span>
+
+                <Controller
+                  name="categoryId"
+                  control={control}
+                  rules={{ required: "Select One Category" }}
+                  render={({ field, fieldState: { error } }) => (
+                    <SelectInput
+                      label="Select Category"
+                      options={allCategories}
                       onChange={(option) => {
                         field.onChange(option.value);
                       }}
@@ -288,7 +381,11 @@ function EditProfile() {
           <div className="w-full pb-4 sm:pb-6 mt-5 text-lg font-medium flex justify-center items-center flex-col gap-8 ">
             <div className="w-[100%] grid grid-cols-2 gap-4">
               <FormInput
-                label={<span className="text-[#2E3192]">GST No.</span>}
+                label={
+                  <span className="text-[#2E3192]">
+                    GST No.<span className="text-red-500">*</span>
+                  </span>
+                }
                 className="border border-[#BFBCFF]"
                 placeholder="Enter your GST No."
                 type="text"
@@ -303,10 +400,7 @@ function EditProfile() {
                 placeholder="Enter your Vat No."
                 className="border border-[#BFBCFF]"
                 type="text"
-                {...register("vatNo", {
-                  required: "Vat is required",
-                })}
-                error={errors.vatNo?.message}
+                {...register("vatNo")}
                 width=""
               />
             </div>
@@ -318,7 +412,9 @@ function EditProfile() {
             <div className="w-[100%] grid grid-cols-2 gap-4">
               <FormInput
                 label={
-                  <span className="text-[#2E3192]">Street No/ Office</span>
+                  <span className="text-[#2E3192]">
+                    Street No/ Office<span className="text-red-500">*</span>
+                  </span>
                 }
                 className="border border-[#BFBCFF]"
                 placeholder="Enter your Street No/ Office"
@@ -331,7 +427,9 @@ function EditProfile() {
               />
               <FormInput
                 label={
-                  <span className="text-[#2E3192]">Area Name/ Landmark</span>
+                  <span className="text-[#2E3192]">
+                    Area Name/ Landmark<span className="text-red-500">*</span>
+                  </span>
                 }
                 placeholder="Enter your Area Name/ Landmark"
                 className="border border-[#BFBCFF]"
@@ -343,7 +441,11 @@ function EditProfile() {
                 width=""
               />
               <FormInput
-                label={<span className="text-[#2E3192]">City</span>}
+                label={
+                  <span className="text-[#2E3192]">
+                    City<span className="text-red-500">*</span>
+                  </span>
+                }
                 placeholder="Enter your city"
                 className="border border-[#BFBCFF]"
                 type="text"
@@ -354,7 +456,11 @@ function EditProfile() {
                 width=""
               />
               <FormInput
-                label={<span className="text-[#2E3192]">State</span>}
+                label={
+                  <span className="text-[#2E3192]">
+                    State<span className="text-red-500">*</span>
+                  </span>
+                }
                 placeholder="Enter your state"
                 className="border border-[#BFBCFF]"
                 type="text"
@@ -365,7 +471,11 @@ function EditProfile() {
                 width=""
               />
               <FormInput
-                label={<span className="text-[#2E3192]">Country</span>}
+                label={
+                  <span className="text-[#2E3192]">
+                    Country<span className="text-red-500">*</span>
+                  </span>
+                }
                 placeholder="Enter your country"
                 className="border border-[#BFBCFF]"
                 type="text"
@@ -376,7 +486,11 @@ function EditProfile() {
                 width=""
               />
               <FormInput
-                label={<span className="text-[#2E3192]">Pin Code</span>}
+                label={
+                  <span className="text-[#2E3192]">
+                    Pin Code<span className="text-red-500">*</span>
+                  </span>
+                }
                 placeholder="Enter your pincode"
                 className="border border-[#BFBCFF]"
                 type="text"
@@ -386,6 +500,130 @@ function EditProfile() {
                 error={errors.pincode?.message}
                 width=""
               />
+            </div>
+          </div>
+
+          {/*  Add Aadhaar card images */}
+          <div className="w-full pb-4 sm:pb-6 mt-5 text-[#2E3192] flex justify-center items-center flex-col gap-8">
+            <h1 className="text-xl font-bold w-full">
+              Upload Aadhaar Card<span className="text-red-500">*</span>
+            </h1>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 p-3 rounded-md gap-4 w-[90%] border border-gray-200">
+              {aadharImageContainers.map((container) => (
+                <div key={container.id} className="relative group">
+                  <div className="aspect-video rounded-xl shadow-[0_6px_15px_rgba(0,0,0,0.25)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.25)] overflow-hidden">
+                    {container.file ? (
+                      <div className="relative h-full">
+                        <img
+                          src={URL.createObjectURL(container.file)}
+                          alt={`Preview ${container.id}`}
+                          className="w-full h-full object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleAdharImageUpload(
+                              { target: { files: [] } },
+                              container.id
+                            )
+                          }
+                          className="absolute top-2 right-2 p-1 bg-red-500 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ) : (
+                      <div
+                        onClick={() =>
+                          document
+                            .getElementById(
+                              `adhar-image-upload-${container.id}`
+                            )
+                            .click()
+                        }
+                        className="h-full flex flex-col items-center justify-center cursor-pointer bg-gray-50"
+                      >
+                        <ImageUp className="w-8 h-8 text-gray-400" />
+                        <p className="mt-2 text-lg font-bold text-[#2E3192]">
+                          {container.id === "front"
+                            ? "Front Upload"
+                            : "Back Upload"}
+                        </p>
+                        <input
+                          id={`adhar-image-upload-${container.id}`}
+                          type="file"
+                          className="hidden"
+                          onChange={(e) =>
+                            handleAdharImageUpload(e, container.id)
+                          }
+                          accept="image/*"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/*  Add Pan card images */}
+          <div className="w-full pb-4 sm:pb-6 mt-5 text-[#2E3192] flex justify-center items-center flex-col gap-8">
+            <h1 className="text-xl font-bold w-full">Upload PAN Card</h1>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 p-3 rounded-md gap-4 w-[90%] border border-gray-200">
+              {panImageContainers.map((container) => (
+                <div key={container.id} className="relative group">
+                  <div className="aspect-video rounded-xl shadow-[0_6px_15px_rgba(0,0,0,0.25)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.25)] overflow-hidden">
+                    {container.file ? (
+                      <div className="relative h-full">
+                        <img
+                          src={URL.createObjectURL(container.file)}
+                          alt={`Preview ${container.id}`}
+                          className="w-full h-full object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handlePanImageUpload(
+                              { target: { files: [] } },
+                              container.id
+                            )
+                          }
+                          className="absolute top-2 right-2 p-1 bg-red-500 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ) : (
+                      <div
+                        onClick={() =>
+                          document
+                            .getElementById(
+                              `adhar-image-upload-${container.id}`
+                            )
+                            .click()
+                        }
+                        className="h-full flex flex-col items-center justify-center cursor-pointer bg-gray-50"
+                      >
+                        <ImageUp className="w-8 h-8 text-gray-400" />
+                        <p className="mt-2 text-lg font-bold text-[#2E3192]">
+                          {container.id === "panfront"
+                            ? "Front Upload"
+                            : "Back Upload"}
+                        </p>
+                        <input
+                          id={`adhar-image-upload-${container.id}`}
+                          type="file"
+                          className="hidden"
+                          onChange={(e) =>
+                            handlePanImageUpload(e, container.id)
+                          }
+                          accept="image/*"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -448,67 +686,6 @@ function EditProfile() {
                   <Plus className="w-8 h-8 text-gray-400" />
                 </button>
               )}
-            </div>
-          </div>
-
-          {/*  Add Aadhaar card images */}
-          <div className="w-full pb-4 sm:pb-6 mt-5 text-[#2E3192] flex justify-center items-center flex-col gap-8">
-            <h1 className="text-xl font-bold w-full">Upload Aadhaar Card</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 p-3 rounded-md gap-4 w-[90%] border border-gray-200">
-              {aadharImageContainers.map((container) => (
-                <div key={container.id} className="relative group">
-                  <div className="aspect-video rounded-xl shadow-[0_6px_15px_rgba(0,0,0,0.25)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.25)] overflow-hidden">
-                    {container.file ? (
-                      <div className="relative h-full">
-                        <img
-                          src={URL.createObjectURL(container.file)}
-                          alt={`Preview ${container.id}`}
-                          className="w-full h-full object-cover"
-                        />
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleAdharImageUpload(
-                              { target: { files: [] } },
-                              container.id
-                            )
-                          }
-                          className="absolute top-2 right-2 p-1 bg-red-500 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    ) : (
-                      <div
-                        onClick={() =>
-                          document
-                            .getElementById(
-                              `adhar-image-upload-${container.id}`
-                            )
-                            .click()
-                        }
-                        className="h-full flex flex-col items-center justify-center cursor-pointer bg-gray-50"
-                      >
-                        <ImageUp className="w-8 h-8 text-gray-400" />
-                        <p className="mt-2 text-lg font-bold text-[#2E3192]">
-                          {container.id === "front"
-                            ? "Front Upload"
-                            : "Back Upload"}
-                        </p>
-                        <input
-                          id={`adhar-image-upload-${container.id}`}
-                          type="file"
-                          className="hidden"
-                          onChange={(e) =>
-                            handleAdharImageUpload(e, container.id)
-                          }
-                          accept="image/*"
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
 

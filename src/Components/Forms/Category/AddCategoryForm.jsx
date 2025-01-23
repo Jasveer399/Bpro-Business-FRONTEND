@@ -12,7 +12,7 @@ function AddCategoryForm({ closeDialog }) {
   const dispatch = useDispatch();
   const { status } = useSelector((state) => state.categories);
   const [iconImg, setIconImg] = useState({ file: null });
-  const [categoryImg, setCategoryImg] = useState({ file: null });
+  // const [categoryImg, setCategoryImg] = useState({ file: null });
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const {
     formState: { errors },
@@ -27,14 +27,12 @@ function AddCategoryForm({ closeDialog }) {
     if (iconImg.file) {
       formData.append("iconImgUrl", iconImg.file);
     }
-    if (categoryImg.file) {
-      formData.append("categoryImgUrl", categoryImg.file);
-    }
+    // if (categoryImg.file) {
+    //   formData.append("categoryImgUrl", categoryImg.file);
+    // }
 
     try {
       const response = await dispatch(addCategoryAsync(formData)).unwrap();
-      console.log("Category added successfully");
-      console.log("response", response);
       if (response.success) {
         setSnackbar({
           open: true,
@@ -65,14 +63,14 @@ function AddCategoryForm({ closeDialog }) {
     setIconImg({ file: null });
   };
 
-  const handleCategoryImgUpload = (e) => {
-    const file = e.target.files[0];
-    setCategoryImg({ file });
-  };
+  // const handleCategoryImgUpload = (e) => {
+  //   const file = e.target.files[0];
+  //   setCategoryImg({ file });
+  // };
 
-  const removeCategoryImg = () => {
-    setCategoryImg({ file: null });
-  };
+  // const removeCategoryImg = () => {
+  //   setCategoryImg({ file: null });
+  // };
   return (
     <>
       <FormHeading title="Add Category" closeDialog={closeDialog} />
@@ -90,8 +88,8 @@ function AddCategoryForm({ closeDialog }) {
             error={errors.title?.message}
             width="w-full"
           />
-          <p className="text-center">upload icon</p>
-          <div className="w-20 h-20 mx-auto border-dotted border-2 border-blue rounded-xl flex flex-col justify-center items-center relative">
+          <p className="text-center">Upload Icon</p>
+          <div className="w-40 h-40 mx-auto border-dotted border-2 border-blue rounded-xl flex flex-col justify-center items-center relative">
             {iconImg.file ? (
               <>
                 <img
@@ -128,7 +126,7 @@ function AddCategoryForm({ closeDialog }) {
             )}
           </div>
 
-          <p className=" mt-4">Upload Category Image</p>
+          {/* <p className=" mt-4">Upload Category Image</p>
           <div className="w-full h-52 mx-auto border-dotted border-2 border-blue rounded-xl flex flex-col justify-center items-center relative">
             {categoryImg.file ? (
               <>
@@ -164,7 +162,7 @@ function AddCategoryForm({ closeDialog }) {
                 />
               </>
             )}
-          </div>
+          </div> */}
           <div className="flex justify-center mt-4">
             <button className="bg-blue px-3 rounded-md font-semibold mb-4 text-white py-1">
               {status === "loading" ? <Loader /> : "Submit"}

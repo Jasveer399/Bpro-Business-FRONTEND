@@ -4,7 +4,7 @@ import Divider from "./Divider";
 
 function FormHeading({ title, closeDialog }) {
   return (
-    <>
+    <div className="sticky top-0 w-full z-10 bg-white">
       <div className="flex text-colorText2  justify-between px-5 py-3 w-full items-center">
         <h1 className="font-semibold">{title}</h1>
         <CgCloseO
@@ -13,7 +13,7 @@ function FormHeading({ title, closeDialog }) {
         />
       </div>
       <Divider />
-    </>
+    </div>
   );
 }
 

@@ -34,7 +34,7 @@ function CreateAccountForm() {
 
     console.log("response", response);
 
-    if (addDealerAsync.fulfilled.match(response)) {
+    if (response.payload.success) {
       setSnackbar({
         open: true,
         type: "success",
@@ -54,7 +54,7 @@ function CreateAccountForm() {
       setSnackbar({
         open: true,
         type: "error",
-        text: response.payload || response.error.message,
+        text: response.payload || response.error.message || "Error creating account",
       });
     }
   };
@@ -150,7 +150,7 @@ function CreateAccountForm() {
           <div className="flex justify-center w-full">
             <button
               type="submit"
-              className="bg-secondary w-full rounded-md text-white py-3 px-6 hover:bg-[#191A1F] transform duration-300 ease-in-out font-semibold shadow-md"
+              className="bg-secondary w-full flex items-center justify-center rounded-md text-white py-3 px-6 hover:bg-[#191A1F] transform duration-300 ease-in-out font-semibold shadow-md"
             >
               {dealerStatus === "loading" ? <Loader /> : "Signup"}
             </button>

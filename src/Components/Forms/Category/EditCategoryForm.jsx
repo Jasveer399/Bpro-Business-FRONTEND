@@ -10,9 +10,9 @@ import Snackbars from "../../../ui/Snackbars";
 
 function EditCategoryForm({ closeDialog, category }) {
   const dispatch = useDispatch();
-  const { status } = useSelector((state) => state.categories);
+  const { updateStatus } = useSelector((state) => state.categories);
   const [iconImg, setIconImg] = useState({ file: null });
-  const [categoryImg, setCategoryImg] = useState({ file: null });
+  // const [categoryImg, setCategoryImg] = useState({ file: null });
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const {
     formState: { errors },
@@ -26,7 +26,7 @@ function EditCategoryForm({ closeDialog, category }) {
       setValue('title', category.title)
       // setValue('iconImgUrl', category.iconImgUrl)
       setIconImg(category.iconImgUrl)
-      setCategoryImg(category.categoryImgUrl)
+      // setCategoryImg(category.categoryImgUrl)
       // setValue('categoryImgUrl', category.categoryImgUrl)
     }
   }, [category])
@@ -39,11 +39,11 @@ function EditCategoryForm({ closeDialog, category }) {
     } else {
       formData.append("iconImgUrl", category.iconImgUrl);
     }
-    if (categoryImg.file) {
-      formData.append("categoryImgUrl", categoryImg.file);
-    } else {
-      formData.append("categoryImgUrl", category.categoryImgUrl);
-    }
+    // if (categoryImg.file) {
+    //   formData.append("categoryImgUrl", categoryImg.file);
+    // } else {
+    //   formData.append("categoryImgUrl", category.categoryImgUrl);
+    // }
 
     try {
       const response = await dispatch(updateCategoryAsync({id: category.id, formData})).unwrap();
@@ -60,7 +60,7 @@ function EditCategoryForm({ closeDialog, category }) {
         setSnackbar({
           open: true,
           type: "error",
-          text: response?.payload || response?.error?.message || "Error adding banner",
+          text: response?.payload || response?.error?.message || "Error adding category",
         });
       }
     } catch (error) {
@@ -77,14 +77,14 @@ function EditCategoryForm({ closeDialog, category }) {
     setIconImg(null);
   };
 
-  const handleCategoryImgUpload = (e) => {
-    const file = e.target.files[0];
-    setCategoryImg({ file });
-  };
+  // const handleCategoryImgUpload = (e) => {
+  //   const file = e.target.files[0];
+  //   setCategoryImg({ file });
+  // };
 
-  const removeCategoryImg = () => {
-    setCategoryImg(null);
-  };
+  // const removeCategoryImg = () => {
+  //   setCategoryImg(null);
+  // };
   return (
     <>
       <FormHeading title="Edit Category" closeDialog={closeDialog} />
@@ -102,6 +102,7 @@ function EditCategoryForm({ closeDialog, category }) {
             error={errors.title?.message}
             width="w-full"
           />
+          <p className="text-center">Upload Icon</p>
           <div className="w-40 h-40 mx-auto border-dotted border-2 border-blue rounded-xl flex flex-col justify-center items-center relative">
             {iconImg ? (
               <>
@@ -139,7 +140,7 @@ function EditCategoryForm({ closeDialog, category }) {
               </>
             )}
           </div>
-          <div className="w-80 mx-auto border-dotted border-2 border-blue rounded-xl flex flex-col justify-center items-center relative">
+          {/* <div className="w-80 mx-auto border-dotted border-2 border-blue rounded-xl flex flex-col justify-center items-center relative">
             {categoryImg ? (
               <>
                 <img
@@ -175,10 +176,10 @@ function EditCategoryForm({ closeDialog, category }) {
                 />
               </>
             )}
-          </div>
+          </div> */}
           <div className="flex justify-center mt-4">
             <button className="bg-blue px-3 rounded-md font-semibold mb-4 text-white py-1">
-              {status === "loading" ? <Loader /> : "Save"}
+              {updateStatus === "loading" ? <Loader /> : "Save"}
             </button>
           </div>
         </form>
