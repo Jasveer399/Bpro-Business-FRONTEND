@@ -55,8 +55,6 @@ export const updatePlanAsync = createAsyncThunk(
   "plans/updatePlan",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-        console.log("data: ", data);
-        console.log("id: ", id);
       const response = await axios.put(
         updatePlan,
         { id, ...data },
@@ -97,6 +95,7 @@ const plansSlice = createSlice({
   initialState: {
     plans: [],
     plansStatus: "idle",
+    updateStatus: "idle",
     error: null,
   },
   reducers: {
@@ -132,10 +131,10 @@ const plansSlice = createSlice({
       })
       // Update plans cases
       .addCase(updatePlanAsync.pending, (state) => {
-        state.plansStatus = "loading";
+        state.updateStatus = "loading";
       })
       .addCase(updatePlanAsync.fulfilled, (state, action) => {
-        state.plansStatus = "succeeded";
+        state.updateStatus = "succeeded";
         const index = state.plans.findIndex(
           (plan) => plan.id === action.payload.data.id
         );
@@ -144,7 +143,7 @@ const plansSlice = createSlice({
         }
       })
       .addCase(updatePlanAsync.rejected, (state, action) => {
-        state.plansStatus = "failed";
+        state.updateStatus = "failed";
         state.error = action.payload;
       })
       // Delete plans cases

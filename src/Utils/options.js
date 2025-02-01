@@ -179,3 +179,11 @@ export const highlightColors = [
   '#8A2BE2', // Blue Violet
   '#EE82EE', // Violet
 ];
+
+export const planDurations = [
+  { label: "One Month", value: "One Month"},
+  { label: "Three Month", value: "Three Month"},
+  { label: "Six Month", value: "Six Month"},
+  { label: "One Year", value: "One Year"},
+  { label: "Three Year", value: "Three Year"},
+]

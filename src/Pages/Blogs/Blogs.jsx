@@ -19,7 +19,8 @@ function Blogs() {
 
 
     return (
-        <div className="w-full  h-full pt-20 dark:bg-darkPrimary dark:text-darkTextGreyColor text-neutral-800 px-5 overflow-y-auto">
+        <div className="w-full  h-full pt-16 dark:bg-darkPrimary dark:text-darkTextGreyColor text-neutral-800 px-5 overflow-y-auto font-montserrat
+        ">
             <div className='w-full flex justify-between pt-5 px-10'>
                 <h1 className='text-3xl font-bold'>Blogs</h1>
                 
@@ -34,7 +35,7 @@ function Blogs() {
                 </Dialog>
             </div>
             <div className="container mx-auto">
-                <BlogCardGrid data={blogs} />
+                <BlogCardGrid data={blogs} status={status} />
             </div>
         </div>
     )

@@ -66,22 +66,6 @@ export const updateBannerAsync = createAsyncThunk(
   }
 );
 
-// Thunk for deleting a banner
-export const deleteBannerAsync = createAsyncThunk(
-  "banners/deleteBanner",
-  async (id, { rejectWithValue }) => {
-    try {
-      await axios.delete(`${deleteBanner}/${id}`, { withCredentials: true });
-      return id;
-    } catch (error) {
-      console.error("Error in deleteBannerAsync:", error);
-      return rejectWithValue(
-        error.response ? error.response.data : error.message
-      );
-    }
-  }
-);
-
 const bannersSlice = createSlice({
   name: "banners",
   initialState: {
@@ -98,10 +82,7 @@ const bannersSlice = createSlice({
       })
       .addCase(addBannerAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        console.log("action.payload", action);
-        console.log("state.banners before", state.banners);
         state.banners.push(action.payload.data);
-        console.log("state.banners", state.banners);
       })
       .addCase(addBannerAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -135,22 +116,7 @@ const bannersSlice = createSlice({
       .addCase(updateBannerAsync.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
-      })
-      // Delete Banner cases
-      .addCase(deleteBannerAsync.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(deleteBannerAsync.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        console.log("action: >>", action);
-        state.banners = state.banners.filter(
-          (banner) => banner.id !== action.payload
-        );
-      })
-      .addCase(deleteBannerAsync.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
-      })
+      });
   },
 });
 

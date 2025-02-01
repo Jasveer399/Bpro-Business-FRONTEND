@@ -2,17 +2,30 @@ import React from "react";
 import { Calendar, ArrowUpRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DOMPurify from "dompurify";
+import Loader from "../../../ui/Loader";
 
-const BlogCardGrid = ({ data }) => {
+const BlogCardGrid = ({ data, status }) => {
   // Check if data exists and is in the correct format
   const blogs = data?.data ? [data.data] : Array.isArray(data) ? data : [];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5 mx-8">
-      {blogs.map((blog) => (
-        <BlogCard key={blog.id} blog={blog} />
-      ))}
-    </div>
+    <>
+      {status === "loading" ? (
+        <div className="flex items-center justify-center">
+          <Loader />
+        </div>
+      ) : blogs.length > 0 ? (
+        blogs.map((blog) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5 mx-8">
+            <BlogCard key={blog.id} blog={blog} />
+          </div>
+        ))
+      ) : (
+        <div className="flex items-center justify-center py-5 font-[600]">
+          <div>No blogs Available</div>
+        </div>
+      )}
+    </>
   );
 };
 

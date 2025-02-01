@@ -6,13 +6,13 @@ import axios from "axios";
 import { addBanner } from "../../../Utils/server";
 import Loader from "../../../ui/Loader";
 import { useDispatch, useSelector } from "react-redux";
-import { addBannerAsync } from "../../../Redux/Features/bannersSlice";
 import { ImageUp, X } from "lucide-react";
 import Snackbars from "../../../ui/Snackbars";
+import { addBannerAsync } from "../../../Redux/Features/bannersCategorySlice";
 
 function AddBannerForm({ closeDialog, categoryId }) {
   const dispatch = useDispatch();
-  const { status } = useSelector((state) => state.banners);
+  const { addBannerStatus } = useSelector((state) => state.bannersCategory);
   const [imageContainer, setImageContainer] = useState({ file: null });
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const {
@@ -29,7 +29,6 @@ function AddBannerForm({ closeDialog, categoryId }) {
   const watchStatus = watch("status");
 
   const addBannerHandler = async (data) => {
-    console.log("addBannerHandler: ", data);
     const formData = new FormData();
     formData.append("title", data.title);
     if (imageContainer.file) {
@@ -41,7 +40,6 @@ function AddBannerForm({ closeDialog, categoryId }) {
 
     try {
       const response = await dispatch(addBannerAsync(formData)).unwrap();
-      console.log("response", response);
       if (response.success) {
         setSnackbar({
           open: true,
@@ -183,7 +181,7 @@ function AddBannerForm({ closeDialog, categoryId }) {
           />
           <div className="flex justify-center mt-4">
             <button className="bg-blue px-3 rounded-md font-semibold text-white py-1 mb-4">
-              {status === "loading" ? <Loader /> : "Submit"}
+              {addBannerStatus === "loading" ? <Loader /> : "Submit"}
             </button>
           </div>
         </form>

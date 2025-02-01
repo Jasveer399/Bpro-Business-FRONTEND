@@ -11,6 +11,8 @@ function Banner() {
   const id = useParams().id
   const {currentBannerCategory, status} = useSelector(state => state.bannersCategory);
 
+  console.log("currentBannerCategory: ", currentBannerCategory);
+
   useEffect(() => {
     if (status === "idle") {
       dispatch(fetchBannerCategoryAsync());
@@ -43,7 +45,7 @@ function Banner() {
           <h2 className="font-semibold">TOTAL: {currentBannerCategory?.Banners?.length || 0}</h2>
           </div>
         </div>
-        <AllBanners banners={currentBannerCategory?.Banners} categoryId={currentBannerCategory?.id} />
+        <AllBanners banners={currentBannerCategory?.Banners} categoryId={currentBannerCategory?.id} status={status} />
       </div>
     </div>
   );

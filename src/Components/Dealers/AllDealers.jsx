@@ -47,14 +47,14 @@ const AllDealers = () => {
             <tbody>
               {status === "loading" ? (
                 <tr>
-                <td colSpan={6}>
-                  <div className="flex items-center justify-center my-5">
-                    <Loader />
-                  </div>
-                </td>
-              </tr>
-              ) : dealers && dealers?.length > 0 ? (
-                dealers?.map((dealer) => (
+                  <td colSpan={6}>
+                    <div className="flex items-center justify-center my-5">
+                      <Loader />
+                    </div>
+                  </td>
+                </tr>
+              ) : dealers && dealers.length > 0 ? (
+                dealers.map((dealer) => (
                   <tr
                     key={dealer.id}
                     className="border border-[rgba(0, 0, 0, 0.06)] text-[#565656] dark:text-lightPrimary"
@@ -95,10 +95,10 @@ const AllDealers = () => {
                 ))
               ) : (
                 <tr>
-                <td colSpan={6} className="text-center py-5 font-[600]">
-                  No Dealers Available
-                </td>
-              </tr>
+                  <td colSpan={6} className="text-center py-5 font-[600]">
+                    No Dealers Available
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>

@@ -6,13 +6,13 @@ import axios from "axios";
 import { addBanner } from "../../../Utils/server";
 import Loader from "../../../ui/Loader";
 import { useDispatch, useSelector } from "react-redux";
-import { updateBannerAsync } from "../../../Redux/Features/bannersSlice";
 import { ImageUp, X } from "lucide-react";
 import Snackbars from "../../../ui/Snackbars";
+import { updateBannerAsync } from "../../../Redux/Features/bannersCategorySlice";
 
 function EditBannerForm({ closeDialog, banner }) {
     const dispatch = useDispatch()
-    const { status } = useSelector((state) => state.banners)
+    const { updateBannerStatus } = useSelector((state) => state.bannersCategory)
     const [imageContainer, setImageContainer] = useState({ file: null });
     const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const {
@@ -38,8 +38,6 @@ function EditBannerForm({ closeDialog, banner }) {
     console.log("addBannerHandler: ", data);
     const formData = new FormData();
     formData.append("title", data.title);
-    // formData.append("bannerImgUrl", data.bannerImgUrl[0]);
-    // console.log("imageContainer", imageContainer);
     if (imageContainer.file) {
       formData.append("bannerImgUrl", imageContainer.file);
     } else {
@@ -50,7 +48,6 @@ function EditBannerForm({ closeDialog, banner }) {
 
     try {
       const res = await dispatch(updateBannerAsync({id: banner.id, formData})).unwrap();
-      console.log("Banner update successfully");
       if (res.success) {
         setSnackbar({
           open: true,
@@ -187,7 +184,7 @@ function EditBannerForm({ closeDialog, banner }) {
           />
           <div className="flex justify-center mt-4 ">
             <button className="bg-blue px-3 rounded-md font-semibold text-white py-1 mb-4">
-              {status === 'loading' ? <Loader /> : "Save"}
+              {updateBannerStatus === 'loading' ? <Loader /> : "Save"}
             </button>
           </div>
         </form>

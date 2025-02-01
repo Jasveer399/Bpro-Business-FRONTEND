@@ -16,7 +16,6 @@ export const store = configureStore({
     theme: themeReducer,
     blogs: blogsReducer,
     categories: categoriesReducer,
-    banners: bannersReducer,
     dealers: dealersReducer,
     workers: workersReducer,
     products: ProductReducer,
