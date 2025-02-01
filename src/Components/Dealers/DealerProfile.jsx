@@ -9,7 +9,6 @@ import {
 } from "../../Redux/Features/dealersSlice";
 import Snackbars from "../../ui/Snackbars";
 import ConfirmationDialog from "../../ui/ConfirmationDialog";
-import { set } from "react-hook-form";
 
 function DealerProfile() {
   const { id } = useParams();
@@ -83,7 +82,7 @@ function DealerProfile() {
           {dealer?.verified ? (
             <button
               className="bg-[#FE043C] text-white text-sm py-2 px-3 rounded-md font-semibold cursor-pointer"
-            //   onClick={() => setIsDeleteDialogOpen(true)}
+              //   onClick={() => setIsDeleteDialogOpen(true)}
             >
               Suspend
             </button>
@@ -228,37 +227,84 @@ function DealerProfile() {
           </table>
         </div>
         <div className="w-[50%]">
+          {/* Aadhar Card Section */}
           <h1 className="text-xl font-semibold">Adhaar Card</h1>
-          <div className="flex gap-4">
-            <img
-              src={dealer?.adhaarFrontUrl}
-              alt="Adhaar Card Front"
-              className="w-60"
-            />
-            <img
-              src={dealer?.adhaarBackUrl}
-              alt="Adhaar Card Back"
-              className="w-60"
-            />
+          <div className="flex gap-4 mt-2">
+            <div className="w-60 h-40 overflow-hidden rounded-lg border border-gray-200">
+              <img
+                src={dealer?.adhaarFrontUrl}
+                alt="Adhaar Card Front"
+                className="w-full h-full object-contain bg-gray-50"
+              />
+            </div>
+            <div className="w-60 h-40 overflow-hidden rounded-lg border border-gray-200">
+              <img
+                src={dealer?.adhaarBackUrl}
+                alt="Adhaar Card Back"
+                className="w-full h-full object-contain bg-gray-50"
+              />
+            </div>
           </div>
 
+          {/* PAN Card Section */}
           <h1 className="text-xl font-semibold mt-5">PAN Card</h1>
-          <div className="flex gap-4">
-            <img
-              src={dealer?.panFrontUrl}
-              alt="Adhaar Card Front"
-              className="w-60"
-            />
-            <img
-              src={dealer?.panBackUrl}
-              alt="Adhaar Card Back"
-              className="w-60"
-            />
+          <div className="flex gap-4 mt-2">
+            <div className="w-60 h-40 overflow-hidden rounded-lg border border-gray-200">
+              <img
+                src={dealer?.panFrontUrl}
+                alt="PAN Card Front"
+                className="w-full h-full object-contain bg-gray-50"
+              />
+            </div>
+            <div className="w-60 h-40 overflow-hidden rounded-lg border border-gray-200">
+              <img
+                src={dealer?.panBackUrl}
+                alt="PAN Card Back"
+                className="w-full h-full object-contain bg-gray-50"
+              />
+            </div>
           </div>
-          <h1 className="text-xl font-semibold mt-5">MSME / Visiting Card</h1>
-          <div className="grid grid-cols-2 gap-4">
-            {dealer?.docUrl.map((doc, index) => (
-              <img src={doc} alt="Doc" className="w-60" />
+
+          {/* Business Documents Section */}
+          <h1 className="text-xl font-semibold mt-5">Business Documents</h1>
+          <div className="grid grid-cols-2 gap-4 mt-2 mb-5">
+            {dealer?.docUrl?.map((doc, index) => (
+              <div
+                key={index}
+                className="w-60 h-40 overflow-hidden rounded-lg border border-gray-200"
+              >
+                {doc?.toLowerCase().endsWith(".pdf") ? (
+                  <a
+                    href={doc}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center w-full h-full bg-gray-50 hover:bg-gray-100"
+                  >
+                    <div className="text-center">
+                      <svg
+                        className="w-12 h-12 mx-auto text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
+                      </svg>
+                      <span className="text-sm text-blue-600">View PDF</span>
+                    </div>
+                  </a>
+                ) : (
+                  <img
+                    src={doc}
+                    alt={`Business Document ${index + 1}`}
+                    className="w-full h-full object-contain bg-gray-50"
+                  />
+                )}
+              </div>
             ))}
           </div>
         </div>

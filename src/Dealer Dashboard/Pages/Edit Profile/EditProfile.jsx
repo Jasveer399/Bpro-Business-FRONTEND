@@ -33,28 +33,44 @@ function EditProfile() {
   const location = useLocation();
   const dispatch = useDispatch();
   const { status: dealerStatus } = useSelector((state) => state.dealers);
-  const { categories, status: categoryStatus } = useSelector((state) => state.categories);
+  const { categories, status: categoryStatus } = useSelector(
+    (state) => state.categories
+  );
 
   console.log("categories", categories);
 
   const allCategories = categories?.map((cat) => {
-    return { value: cat.id, label: cat.title }
-  })
+    return { value: cat.id, label: cat.title };
+  });
 
   useEffect(() => {
-    if (categoryStatus === 'idle') {
-      dispatch(fetchCategoriesAsync())
+    if (categoryStatus === "idle") {
+      dispatch(fetchCategoriesAsync());
     }
-  }, [dispatch, categoryStatus])
+  }, [dispatch, categoryStatus]);
 
   if (location?.state?.data) {
     setValue("email", location?.state?.data?.email);
     setValue("mobileNo", location?.state?.data?.mobileNo);
   }
   const [selectedBusinessType, setSelectedBusinessType] = useState([]);
+
+  // Updated imageContainers for business documents
   const [imageContainers, setImageContainers] = useState([
-    { id: 0, file: null },
+    { id: "businessDocs", file: null },
   ]);
+
+  // Validate file type including PDF
+  const isValidFileType = (file) => {
+    const validTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "application/pdf",
+    ];
+    return validTypes.includes(file.type);
+  };
+
   // Initialize image containers specifically for Aadhaar card
   const [aadharImageContainers, setAadharImageContainers] = useState([
     { id: "front", file: null },
@@ -66,7 +82,7 @@ function EditProfile() {
   ]);
   const [tags, setTags] = useState([]);
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
-  
+
   const { status, error } = useSelector((state) => state.products);
   const isSubmitting = status === "loading";
 
@@ -95,7 +111,7 @@ function EditProfile() {
       formDataToSend.append("country", formData.country);
       formDataToSend.append("pincode", formData.pincode);
 
-      console.log("imagesContainers", imageContainers);
+      // console.log("imagesContainers", imageContainers);
 
       // Add images
       imageContainers.forEach((container, index) => {
@@ -178,17 +194,6 @@ function EditProfile() {
     }
   };
 
-  const handleImageUpload = (e, id) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageContainers((prev) =>
-        prev.map((container) =>
-          container.id === id ? { ...container, file } : container
-        )
-      );
-    }
-  };
-
   const handleAdharImageUpload = (e, id) => {
     const file = e.target.files[0];
     if (file) {
@@ -211,6 +216,28 @@ function EditProfile() {
     }
   };
 
+  const handleBusinessDocUpload = (e, containerId) => {
+    const file = e.target.files[0];
+    // console.log("Uploading file:", file);
+
+    if (file && isValidFileType(file)) {
+      setImageContainers((prev) =>
+        prev.map((container) =>
+          container.id === containerId
+            ? { ...container, file: file }
+            : container
+        )
+      );
+      // console.log("File uploaded successfully:", {
+      //   id: containerId,
+      //   type: file.type,
+      //   name: file.name,
+      // });
+    } else {
+      alert("Please upload a valid file (JPG, PNG, GIF, or PDF)");
+    }
+  };
+
   const addMoreImages = () => {
     if (imageContainers.length < 6) {
       setImageContainers((prev) => [...prev, { id: prev.length, file: null }]);
@@ -224,6 +251,63 @@ function EditProfile() {
         ? [{ id: 0, file: null }]
         : newContainers;
     });
+  };
+
+  // Add remove handlers for Aadhar and Pan
+  const removeAadharImage = (id) => {
+    setAadharImageContainers((prev) => {
+      const updatedContainers = prev.map((container) =>
+        container.id === id ? { ...container, file: null } : container
+      );
+      // console.log("Removed Aadhar image:", id);
+      return updatedContainers;
+    });
+  };
+
+  const removePanImage = (id) => {
+    setPanImageContainers((prev) => {
+      const updatedContainers = prev.map((container) =>
+        container.id === id ? { ...container, file: null } : container
+      );
+      // console.log("Removed Pan image:", id);
+      return updatedContainers;
+    });
+  };
+
+  // Add PDF preview component
+  const FilePreview = ({ file }) => {
+    if (!file) return null;
+
+    if (file.type === "application/pdf") {
+      return (
+        <div className="flex flex-col items-center justify-center w-full h-full bg-gray-100 rounded-lg p-4">
+          <svg
+            className="w-12 h-12 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+            />
+          </svg>
+          <p className="mt-2 text-sm text-gray-600 truncate max-w-full">
+            {file.name}
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <img
+        src={URL.createObjectURL(file)}
+        alt="Preview"
+        className="w-full h-full object-cover"
+      />
+    );
   };
 
   return (
@@ -519,18 +603,6 @@ function EditProfile() {
                           alt={`Preview ${container.id}`}
                           className="w-full h-full object-cover"
                         />
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleAdharImageUpload(
-                              { target: { files: [] } },
-                              container.id
-                            )
-                          }
-                          className="absolute top-2 right-2 p-1 bg-red-500 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          Remove
-                        </button>
                       </div>
                     ) : (
                       <div
@@ -561,6 +633,14 @@ function EditProfile() {
                       </div>
                     )}
                   </div>
+                  {container.file && (
+                    <button
+                      onClick={() => removeAadharImage(container.id)}
+                      className="absolute -top-2 -right-2 p-1 bg-red-500 rounded-full"
+                    >
+                      <X className="w-4 h-4 text-white" />
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
@@ -580,18 +660,6 @@ function EditProfile() {
                           alt={`Preview ${container.id}`}
                           className="w-full h-full object-cover"
                         />
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handlePanImageUpload(
-                              { target: { files: [] } },
-                              container.id
-                            )
-                          }
-                          className="absolute top-2 right-2 p-1 bg-red-500 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          Remove
-                        </button>
                       </div>
                     ) : (
                       <div
@@ -622,6 +690,14 @@ function EditProfile() {
                       </div>
                     )}
                   </div>
+                  {container.file && (
+                    <button
+                      onClick={() => removePanImage(container.id)}
+                      className="absolute -top-2 -right-2 p-1 bg-red-500 rounded-full"
+                    >
+                      <X className="w-4 h-4 text-white" />
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
@@ -638,11 +714,7 @@ function EditProfile() {
                   <div className="aspect-video rounded-xl shadow-[0_6px_15px_rgba(0,0,0,0.25)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.25)] overflow-hidden">
                     {container.file ? (
                       <div className="relative h-full">
-                        <img
-                          src={URL.createObjectURL(container.file)}
-                          alt="Preview"
-                          className="w-full h-full object-cover"
-                        />
+                        <FilePreview file={container.file} />
                         <button
                           type="button"
                           onClick={() => removeImage(container.id)}
@@ -655,21 +727,25 @@ function EditProfile() {
                       <div
                         onClick={() =>
                           document
-                            .getElementById(`image-upload-${container.id}`)
+                            .getElementById(
+                              `business-doc-upload-${container.id}`
+                            )
                             .click()
                         }
                         className="h-full flex flex-col items-center justify-center cursor-pointer bg-gray-50"
                       >
                         <ImageUp className="w-8 h-8 text-gray-400" />
-                        <p className="mt-2 text-sm text-gray-500">
-                          Upload Documents
+                        <p className="mt-2 text-lg font-bold text-[#2E3192]">
+                          Upload Document
                         </p>
                         <input
-                          id={`image-upload-${container.id}`}
+                          id={`business-doc-upload-${container.id}`}
                           type="file"
                           className="hidden"
-                          onChange={(e) => handleImageUpload(e, container.id)}
-                          accept="image/*"
+                          onChange={(e) =>
+                            handleBusinessDocUpload(e, container.id)
+                          }
+                          accept="image/*,.pdf"
                         />
                       </div>
                     )}
