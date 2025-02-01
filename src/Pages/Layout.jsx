@@ -19,7 +19,7 @@ function Layout() {
   const [isSideBarFull, setIsSideBarFull] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
-  const selectedTheme = useSelector((state) => state.theme.theme)
+  const selectedTheme = useSelector((state) => state.theme.theme);
 
   const navItems = [
     { name: "Dashboard", icon: TfiDashboard, link: "/dashboard" },
@@ -61,19 +61,22 @@ function Layout() {
     <div className="w-screen h-screen flex relative">
       {/* Mobile menu toggle button */}
       <button
-        className={`md:hidden fixed top-4 left-2 z-50 text-colorText2 dark:text-colorText ${isMobileMenuOpen ? "hidden" : "block"
-          }`}
+        className={`md:hidden fixed top-4 left-2 z-50 text-colorText2 dark:text-colorText ${
+          isMobileMenuOpen ? "hidden" : "block"
+        }`}
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       >
         {isMobileMenuOpen ? "" : <Menu size={25} />}
       </button>
 
       <div
-        className={`shadow-md ${isMobileMenuOpen ? "w-[50%]" : isSideBarFull ? "w-[22.3%]" : "w-[4%]"
-          } bg-white dark:bg-darkSideBar flex flex-col transform duration-300 ease-in-out
+        className={`shadow-md ${
+          isMobileMenuOpen ? "w-[50%]" : isSideBarFull ? "w-[22.3%]" : "w-[4%]"
+        } bg-white dark:bg-darkSideBar flex flex-col transform duration-300 ease-in-out
         md:relative md:translate-x-0
-        fixed left-0 top-0 h-full z-40 ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-[200%]"
-          }`}
+        fixed left-0 top-0 h-full z-40 ${
+          isMobileMenuOpen ? "translate-x-0" : "-translate-x-[200%]"
+        }`}
       >
         {/* Logo Section */}
         <div className="py-5 px-4 flex items-center gap-2">
@@ -106,10 +109,11 @@ function Layout() {
                   key={index}
                   ref={(el) => (navRefs.current[index] = el)}
                   onClick={() => handleNavClick(item.link, index)}
-                  className={`flex items-center text-sm font-semibold rounded-lg cursor-pointer ${location.pathname.startsWith(item.link)
-                    ? " bg-[#e5f6fe] dark:bg-[#1a3344] text-[#04a9f5] border border-[#0499f5]"
-                    : "text-neutral-800 dark:text-darkTextGreyColor hover:bg-gray-100 dark:hover:bg-[#343c45]"
-                    } ${isSideBarFull ? "px-3 py-2" : "px-2.5 py-2"}`}
+                  className={`flex items-center text-sm font-semibold rounded-lg cursor-pointer ${
+                    location.pathname.startsWith(item.link)
+                      ? " bg-[#e5f6fe] dark:bg-[#1a3344] text-[#04a9f5] border border-[#0499f5]"
+                      : "text-neutral-800 dark:text-darkTextGreyColor hover:bg-gray-100 dark:hover:bg-[#343c45]"
+                  } ${isSideBarFull ? "px-3 py-2" : "px-2.5 py-2"}`}
                 >
                   <item.icon
                     size={isSideBarFull ? 20 : 23}
@@ -119,7 +123,11 @@ function Layout() {
                 </div>
               ))}
             </nav>
-            <LogOut size={30} className="animate-pulse p-1 text-colorText2 dark:text-colorText hover:border hover:border-blue hover:bg-blue/30 rounded-md cursor-pointer" onClick={handleLogout}/>
+            <LogOut
+              size={30}
+              className="animate-pulse p-1 text-colorText2 dark:text-colorText hover:border hover:border-blue hover:bg-blue/30 rounded-md cursor-pointer"
+              onClick={handleLogout}
+            />
           </div>
         </div>
         <div className="w-full px-5 flex flex-col items-start mb-5 gap-5">
@@ -128,21 +136,27 @@ function Layout() {
               className="md:hidden flex px-1 w-full bg-[#e5f6fe] dark:bg-[#1a3344] text-[#04a9f5] border border-[#0499f5] rounded-lg"
               onClick={() => handleThemeToggle("light")}
             >
-              <PiSunDimDuotone size={23} className="dark:text-gray-300 text-neutral-800 animate-pulse hover:w-6 hover:h-6 transform duration-150 ease-in-out" />
+              <PiSunDimDuotone
+                size={23}
+                className="dark:text-gray-300 text-neutral-800 animate-pulse hover:w-6 hover:h-6 transform duration-150 ease-in-out"
+              />
               Light
             </button>
             <button
               className="md:hidden flex px-1 w-full bg-[#e5f6fe] dark:bg-[#1a3344] text-[#04a9f5] border border-[#0499f5] rounded-lg"
               onClick={() => handleThemeToggle("dark")}
             >
-              <PiMoonDuotone size={23} className="dark:text-gray-300 text-neutral-800 hover:w-6 hover:h-6 transform duration-150 ease-in-out" />
+              <PiMoonDuotone
+                size={23}
+                className="dark:text-gray-300 text-neutral-800 hover:w-6 hover:h-6 transform duration-150 ease-in-out"
+              />
               Dark
             </button>
           </div>
         </div>
       </div>
 
-      <div className="bg-lightPrimary w-full h-full custom-scrollbar">
+      <div className="bg-lightPrimary w-full h-full overflow-y-auto custom-scrollbar">
         <Header isSideBarFull={isSideBarFull} />
         <Outlet />
       </div>
