@@ -61,7 +61,7 @@ function App() {
             <Route path="/categories" element={<Category />} />
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/blogview/:id" element={<BlogView />} />
-            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/pricing" element={<Pricing />} /> 
           </Route>
         </Route>
         <Route element={<ProtectedDealerRoutes />}>

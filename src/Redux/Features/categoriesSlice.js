@@ -83,6 +83,7 @@ const categoriesSlice = createSlice({
     categories: [],
     status: "idle",
     updateStatus: "idle",
+    deleteStatus: "idle",
     error: null,
   },
   reducers: {},
@@ -129,14 +130,14 @@ const categoriesSlice = createSlice({
       })
       // Delete Category cases
       .addCase(deleteCategoryAsync.pending, (state) => {
-        state.status = "loading";
+        state.deleteStatus = "loading";
       })
       .addCase(deleteCategoryAsync.fulfilled, (state, action) => {
-        state.status = "succeeded";
+        state.deleteStatus = "succeeded";
         state.categories = state.categories.filter(cat => cat.id !== action.payload);
       })
       .addCase(deleteCategoryAsync.rejected, (state, action) => {
-        state.status = "failed";
+        state.deleteStatus = "failed";
         state.error = action.payload;
       });
   },

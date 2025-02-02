@@ -11,6 +11,7 @@ import { MdRemoveRedEye } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../ui/Loader";
 import Snackbars from "../../ui/Snackbars";
+import ConfirmationDialog from "../../ui/ConfirmationDialog";
 
 const AllWorkers = ({ selectedYear, selectedMonth }) => {
   const dispatch = useDispatch();
@@ -18,6 +19,8 @@ const AllWorkers = ({ selectedYear, selectedMonth }) => {
   const { workers, status, error } = useSelector((state) => state.workers);
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const [selectedWorker, setSelectedWorker] = useState(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [workerId, setWorkerId] = useState(null);
 
   useEffect(() => {
     if (status === "idle") {
@@ -28,7 +31,6 @@ const AllWorkers = ({ selectedYear, selectedMonth }) => {
   const deleteHandler = async (id) => {
     try {
       const res = await dispatch(deleteWorkerAsync(id)).unwrap();
-      console.log("Worker deleted successfully", res);
       if (res === id) {
         setSnackbar({
           open: true,
@@ -38,6 +40,10 @@ const AllWorkers = ({ selectedYear, selectedMonth }) => {
       }
     } catch (error) {
       console.error("Failed to delete worker:", error);
+    } finally {
+      setTimeout(() => {
+        setIsDeleteDialogOpen(false);
+      }, 500);
     }
   };
 
@@ -118,7 +124,10 @@ const AllWorkers = ({ selectedYear, selectedMonth }) => {
                       </Dialog>
                       <button
                         className="flex justify-center items-center gap-1 font-semibold text-white bg-[#FE043C] py-2 px-3 text-sm rounded-md"
-                        onClick={() => deleteHandler(worker.id)}
+                        onClick={() => {
+                          setIsDeleteDialogOpen(true);
+                          setWorkerId(worker.id);
+                        }}
                       >
                         <Trash2 size={14} />
                         <h1>Delete</h1>
@@ -142,6 +151,16 @@ const AllWorkers = ({ selectedYear, selectedMonth }) => {
         type={snackbar.type}
         text={snackbar.text}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
+      <ConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={() => {
+          deleteHandler(workerId);
+        }}
+        title="Confirm Action"
+        message={`Are you sure you want to delete this worker.`}
+        isLoading={status === "loading"}
       />
     </div>
   );

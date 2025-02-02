@@ -7,11 +7,14 @@ import EditBannerForm from "../Forms/Banner/EditBannerForm";
 import Snackbars from "../../ui/Snackbars";
 import Loader from "../../ui/Loader";
 import { deleteBannerAsync } from "../../Redux/Features/bannersCategorySlice";
+import ConfirmationDialog from "../../ui/ConfirmationDialog";
 
-const AllBanners = ({ banners, categoryId, status }) => {
+const AllBanners = ({ banners, categoryId, status, deleteBannerStatus}) => {
   const dispatch = useDispatch();
   const [selectedBanner, setSelectedBanner] = useState();
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
+  const [bannerId, setBannerId] = useState(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const deleteHandler = async (id) => {
     try {
@@ -34,6 +37,10 @@ const AllBanners = ({ banners, categoryId, status }) => {
           text: "Error Deleting Banner !!",
         });
       }
+    } finally {
+      setTimeout(() => {
+        setIsDeleteDialogOpen(false);
+      }, 500);
     }
   };
 
@@ -112,7 +119,10 @@ const AllBanners = ({ banners, categoryId, status }) => {
                       </Dialog>
                       <button
                         className="flex justify-center items-center gap-1 font-semibold text-white bg-[#FE043C] py-2 px-3 text-sm rounded-md"
-                        onClick={() => deleteHandler(banner.id)}
+                        onClick={() => {
+                          setIsDeleteDialogOpen(true);
+                          setBannerId(banner.id);
+                        }}
                       >
                         <Trash2 size={14} />
                         <h1>Delete</h1>
@@ -136,6 +146,16 @@ const AllBanners = ({ banners, categoryId, status }) => {
         type={snackbar.type}
         text={snackbar.text}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
+      <ConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={() => {
+          deleteHandler(bannerId);
+        }}
+        title="Confirm Action"
+        message={`Are you sure you want to delete this banner.`}
+        isLoading={deleteBannerStatus === "loading"}
       />
     </div>
   );

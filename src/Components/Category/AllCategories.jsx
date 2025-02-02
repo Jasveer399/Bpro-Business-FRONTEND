@@ -9,14 +9,17 @@ import Dialog from "../../ui/Dialog";
 import EditCategoryForm from "../Forms/Category/EditCategoryForm";
 import Snackbars from "../../ui/Snackbars";
 import Loader from "../../ui/Loader";
+import ConfirmationDialog from "../../ui/ConfirmationDialog";
 
 const AllCategories = () => {
   const dispatch = useDispatch();
-  const { categories, status, error } = useSelector(
+  const { categories, status, error, deleteStatus } = useSelector(
     (state) => state.categories
   );
   const [selectedCategory, setSelectedCategory] = useState();
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [categoryId, setCategoryId] = useState(null);
 
   useEffect(() => {
     if (status === "idle") {
@@ -42,6 +45,10 @@ const AllCategories = () => {
         type: "error",
         text: "Error Deleting Category !!",
       });
+    } finally {
+      setTimeout(() => {
+        setIsDeleteDialogOpen(false);
+      }, 500);
     }
   };
 
@@ -108,7 +115,10 @@ const AllCategories = () => {
                       </Dialog>
                       <button
                         className="flex justify-center items-center gap-1 font-semibold text-white bg-[#FE043C] py-2 px-3 text-sm rounded-md"
-                        onClick={() => deleteHandler(category.id)}
+                        onClick={() => {
+                          setIsDeleteDialogOpen(true);
+                          setCategoryId(category.id);
+                        }}
                       >
                         <Trash2 size={14} />
                         <h1>Delete</h1>
@@ -132,6 +142,16 @@ const AllCategories = () => {
         type={snackbar.type}
         text={snackbar.text}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
+      <ConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={() => {
+          deleteHandler(categoryId);
+        }}
+        title="Confirm Action"
+        message={`Are you sure you want to delete this category.`}
+        isLoading={deleteStatus === "loading"}
       />
     </div>
   );

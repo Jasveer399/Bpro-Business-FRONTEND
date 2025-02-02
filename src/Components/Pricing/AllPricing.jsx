@@ -11,12 +11,15 @@ import {
 } from "../../Redux/Features/PlansSlice";
 import EditPlan from "../Forms/Pricing/EditPlan";
 import Loader from "../../ui/Loader";
+import ConfirmationDialog from "../../ui/ConfirmationDialog";
 
 const AllPricing = () => {
   const dispatch = useDispatch();
   const { plans, plansStatus, error } = useSelector((state) => state.plans);
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [planId, setPlanId] = useState(null);
 
   useEffect(() => {
     if (plansStatus === "idle") {
@@ -42,6 +45,10 @@ const AllPricing = () => {
         type: "error",
         text: "Error Deleting Plan !!",
       });
+    } finally {
+      setTimeout(() => {
+        setIsDeleteDialogOpen(false);
+      }, 500);
     }
   };
 
@@ -100,7 +107,10 @@ const AllPricing = () => {
                       </Dialog>
                       <button
                         className="flex justify-center items-center gap-1 font-semibold text-white bg-[#FE043C] py-2 px-3 text-sm rounded-md"
-                        onClick={() => deleteHandler(plan.id)}
+                        onClick={() => {
+                          setIsDeleteDialogOpen(true);
+                          setPlanId(plan.id);
+                        }}
                       >
                         <Trash2 size={14} />
                         <h1>Delete</h1>
@@ -124,6 +134,16 @@ const AllPricing = () => {
         type={snackbar.type}
         text={snackbar.text}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
+      <ConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={() => {
+          deleteHandler(planId);
+        }}
+        title="Confirm Action"
+        message={`Are you sure you want to delete this plan.`}
+        isLoading={plansStatus === "loading"}
       />
     </div>
   );

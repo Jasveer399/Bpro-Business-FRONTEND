@@ -8,11 +8,14 @@ import {
 } from "../../Redux/Features/dealersSlice";
 import Loader from "../../ui/Loader";
 import Snackbars from "../../ui/Snackbars";
+import ConfirmationDialog from "../../ui/ConfirmationDialog";
 
 const AllDealers = () => {
   const dispatch = useDispatch();
-  const { dealers, fetchStatus, error } = useSelector((state) => state.dealers);
+  const { dealers, fetchStatus, error, status } = useSelector((state) => state.dealers);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
+  const [dealer, setDealer] = useState();
 
   useEffect(() => {
     if (fetchStatus === "idle") {
@@ -47,6 +50,10 @@ const AllDealers = () => {
         type: "error",
         text: "Error dealer suspending",
       });
+    } finally {
+      setTimeout(() => {
+        setIsDeleteDialogOpen(false)
+      }, 500)
     }
   };
 
@@ -87,7 +94,7 @@ const AllDealers = () => {
                     <td className="py-5 text-center">{dealer.fullName}</td>
                     <td className="py-5 text-center">{dealer.businessName}</td>
                     <td className="py-5 text-center">
-                      {dealer.Worker.workerId}
+                      {dealer?.Worker?.workerId}
                     </td>
                     <td className="py-5 text-center">
                       {dealer.city}, {dealer.state}
@@ -107,12 +114,21 @@ const AllDealers = () => {
                         VIEW PROFILE
                       </Link>
                       {dealer.verified ? (
-                        <div
-                          className="bg-[#FE043C] text-white text-sm py-2 px-3 rounded-md font-semibold cursor-pointer"
-                          onClick={() => deleteHandler(dealer.id)}
-                        >
-                          {dealer.isSuspend ? "SUSPENDED" : "SUSPEND"}
-                        </div>
+                        dealer.isSuspend ? (
+                          <div className="bg-[#FE043C] text-white text-sm py-2 px-3 rounded-md font-semibold cursor-pointer">
+                            SUSPENDED
+                          </div>
+                        ) : (
+                          <div
+                            className="bg-[#FE043C] text-white text-sm py-2 px-3 rounded-md font-semibold cursor-pointer"
+                            onClick={() => {
+                              setIsDeleteDialogOpen(true);
+                              setDealer(dealer.id);
+                            }}
+                          >
+                            SUSPEND
+                          </div>
+                        )
                       ) : (
                         <div className="bg-secondary text-white text-sm py-2 px-3 rounded-md font-semibold cursor-pointer">
                           PENDING
@@ -137,6 +153,16 @@ const AllDealers = () => {
         type={snackbar.type}
         text={snackbar.text}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
+      <ConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={() => {
+          deleteHandler(dealer);
+        }}
+        title="Confirm Action"
+        message={`Are you sure you want to suspend this Dealer.`}
+        isLoading={status === "loading"}
       />
     </>
   );

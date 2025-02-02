@@ -16,6 +16,7 @@ function DealerProfile() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { dealer, status, fetchStatus } = useSelector((state) => state.dealers);
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
+  const [action, setAction] = useState("");
 
   useEffect(() => {
     if (fetchStatus === "idle") {
@@ -48,22 +49,33 @@ function DealerProfile() {
     }
   };
 
-  const deleteDealer = async () => {
-    const response = await dispatch(deleteDealerAsync(id));
-    if (deleteDealerAsync.fulfilled.match(response)) {
-      setSnackbar({
-        open: true,
-        type: "success",
-        text: response.payload.message,
-      });
+  const suspendDealer = async () => {
+    try {
+      const response = await dispatch(deleteDealerAsync(id)).unwrap();
+      if (response === id) {
+        setSnackbar({
+          open: true,
+          type: "success",
+          text: "Dealer Suspended Successfully",
+        });
+      } else {
+        setSnackbar({
+          open: true,
+          type: "error",
+          text:
+            response?.payload ||
+            response?.error?.message ||
+            "Error dealer suspending",
+        });
+      }
       setTimeout(() => {
         setIsDeleteDialogOpen(false);
       }, 500);
-    } else {
+    } catch (error) {
       setSnackbar({
         open: true,
         type: "error",
-        text: response.error.message,
+        text: "Error dealer suspending",
       });
     }
   };
@@ -78,21 +90,39 @@ function DealerProfile() {
         </h1>
         <div className="flex items-center gap-4">
           {dealer?.verified ? (
-            <button
-              className="bg-[#FE043C] text-white text-sm py-2 px-3 rounded-md font-semibold cursor-pointer"
-              //   onClick={() => setIsDeleteDialogOpen(true)}
-            >
-              Suspend
-            </button>
+            dealer.isSuspend ? (
+              <button className="bg-[#FE043C] text-white text-sm py-2 px-3 rounded-md font-semibold cursor-pointer">
+                Suspended
+              </button>
+            ) : (
+              <button
+                className="bg-[#FE043C] text-white text-sm py-2 px-3 rounded-md font-semibold cursor-pointer"
+                onClick={() => {
+                  setIsDeleteDialogOpen(true);
+                  setAction("suspend");
+                }}
+              >
+                Suspend
+              </button>
+            )
           ) : (
             <>
               <button
                 className="bg-[#49B27A] text-white text-sm py-2 px-3 rounded-md font-semibold cursor-pointer"
-                onClick={() => setIsDeleteDialogOpen(true)}
+                onClick={() => {
+                  setIsDeleteDialogOpen(true);
+                  setAction("approve");
+                }}
               >
                 Approve
               </button>
-              <button className="bg-[#FE043C] text-white text-sm py-2 px-3 rounded-md font-semibold cursor-pointer">
+              <button
+                className="bg-[#FE043C] text-white text-sm py-2 px-3 rounded-md font-semibold cursor-pointer"
+                onClick={() => {
+                  setIsDeleteDialogOpen(true);
+                  setAction("reject");
+                }}
+              >
                 Reject
               </button>
             </>
@@ -310,9 +340,15 @@ function DealerProfile() {
       <ConfirmationDialog
         isOpen={isDeleteDialogOpen}
         onClose={() => setIsDeleteDialogOpen(false)}
-        onConfirm={() => approveDealer()}
+        onConfirm={() => {
+          if (action === "approve") {
+            approveDealer();
+          } else if (action === "suspend") {
+            suspendDealer();
+          }
+        }}
         title="Confirm Action"
-        message="Are you sure you want to Verified this Dealer."
+        message={`Are you sure you want to ${action} this Dealer.`}
         isLoading={status === "loading"}
       />
       <Snackbars

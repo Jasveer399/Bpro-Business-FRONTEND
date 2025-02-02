@@ -61,6 +61,12 @@ function AddPlan({ closeDialog }) {
       }
     } catch (error) {
       console.error("Failed to add plan:", error);
+      setSnackbar({
+        open: true,
+        type: "error",
+        text:
+          error?.message || "Error adding plan",
+      });
     }
   };
 
