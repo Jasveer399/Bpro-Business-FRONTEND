@@ -40,6 +40,7 @@ import Messages from "./Dealer Dashboard/Pages/Dashboard/Messages";
 import PricingPlan from "./Dealer Dashboard/Pages/PricingPlan/PricingPlan";
 import Pricing from "./Pages/Pricing/Pricing";
 import DealersDetails from "./Components/Workers/DealersDetails";
+import DealerProfilePage from "./Dealer Dashboard/Pages/DealerProfile/DealerProfile";
 
 function App() {
   return (
@@ -53,9 +54,15 @@ function App() {
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/dealers" element={<Dealers />} />
-            <Route path="/dealers/view-profile/:id" element={<DealerProfile />} />
+            <Route
+              path="/dealers/view-profile/:id"
+              element={<DealerProfile />}
+            />
             <Route path="/workers" element={<Workers />} />
-            <Route path="/workers/dealers-details/:id" element={<DealersDetails />} />
+            <Route
+              path="/workers/dealers-details/:id"
+              element={<DealersDetails />}
+            />
             <Route path="/banners" element={<BannersCategory />} />
             <Route path="/banners/:id" element={<Banner />} />
             <Route path="/categories" element={<Category />} />
@@ -76,11 +83,17 @@ function App() {
               element={<EditDealerProfile />}
             />
             <Route path="/my-dashboard/bookmarks" element={<Bookmark />} />
-          <Route path="/my-dashboard/messages" element={<Messages />} />
+            <Route path="/my-dashboard/messages" element={<Messages />} />
           </Route>
-          <Route path="/my-dashboard/product-detail/:id" element={<ProductDetail />} />
+          <Route
+            path="/my-dashboard/product-detail/:id"
+            element={<ProductDetail />}
+          />
           <Route path="/product-detail/:id" element={<ProductDetail />} />
-          <Route path="/my-dashboard/edit-product-detail/:id" element={<EditProductLisiting />} />
+          <Route
+            path="/my-dashboard/edit-product-detail/:id"
+            element={<EditProductLisiting />}
+          />
           <Route path="/product-listing" element={<ProductLisiting />} />
         </Route>
         <Route element={<RedirectIfDealerAuthenticated />}>
@@ -94,6 +107,7 @@ function App() {
         <Route path="/Allblogs" element={<Allblogs />} />
         <Route path="/BlogDetails/:id" element={<BlogDetails />} />
         <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="/dealerProfile/:id" element={<DealerProfilePage />} />
         <Route path="/editProfile" element={<EditProfile />} />
         <Route path="/thankyou" element={<Thankyou />} />
         <Route path="/edtior" element={<Edtior />} />

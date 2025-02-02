@@ -25,13 +25,14 @@ import {
   fetchProductsAsync,
   setProduct,
 } from "../../../../Redux/Features/productSlice";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { fetchCurrentDealerAsync } from "../../../../Redux/Features/dealersSlice";
 import { current } from "@reduxjs/toolkit";
 import { addReviewAsync } from "../../../../Redux/Features/reviewsSlice";
 import Snackbars from "../../../../ui/Snackbars";
 
 function ProductDetail() {
+  const navigate = useNavigate();
   const {
     register,
     formState: { errors },
@@ -318,13 +319,20 @@ function ProductDetail() {
             </h1>
           </div>
           <div className="text-center bg-white border border-gray-400 mt-5 rounded-lg px-4 py-6 flex flex-col justify-center items-center">
-            <img src="/mumbai.png" className="w-48 h-48 rounded-full" />
-            <h1 className="text-xl mt-3 font-bold">
-              {product?.Dealer?.username}
-            </h1>
-            <p className="text-gray-500 text-sm mb-3">
-              Member since {product?.Dealer?.created_at?.split("T")[0]}
-            </p>
+            <div
+              onClick={() => navigate(`/dealerProfile/${product?.Dealer?.id}`)}
+            >
+              <img
+                src={product?.Dealer?.profileUrl || "/dummy-profile.png"}
+                className="w-48 h-48 rounded-full"
+              />
+              <h1 className="text-xl mt-3 font-bold">
+                {product?.Dealer?.username}
+              </h1>
+              <p className="text-gray-500 text-sm mb-3">
+                Member since {product?.Dealer?.created_at?.split("T")[0]}
+              </p>
+            </div>
             <p className="font-semibold underline cursor-pointer text-[#4C7BE3] mb-3">
               View All Ads
             </p>

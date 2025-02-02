@@ -14,6 +14,7 @@ export const updateProfileImg = `${server}/api/v1/dealer/updateProfileImg`;
 export const requestUpdateProfile = `${server}/api/v1/dealer/requestUpdateProfile`;
 export const getAllUpdateApprovalRequests = `${server}/api/v1/dealer/getAllUpdateApprovalRequests`;
 export const changeStatusUpdateProfile = `${server}/api/v1/dealer/changeStatusUpdateProfile`;
+export const getSpecificDealer = `${server}/api/v1/dealer/getSpecificDealer`;
 
 // ALl Banners Route
 export const addBanner = `${server}/api/v1/banners/addBanner`;

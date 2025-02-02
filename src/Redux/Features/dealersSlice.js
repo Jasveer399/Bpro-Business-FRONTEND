@@ -13,6 +13,7 @@ import {
   requestUpdateProfile,
   getAllUpdateApprovalRequests,
   changeStatusUpdateProfile,
+  getSpecificDealer,
 } from "../../Utils/server";
 import { getAdminAccessToken, getDealerAccessToken } from "../../Utils/Helper";
 
@@ -73,6 +74,25 @@ export const fetchDealersAsync = createAsyncThunk(
     }
   }
 );
+
+// Thunk for fetch specific dealer
+export const fetchSpecificDealerAsync = createAsyncThunk(
+  "dealers/fetchSpecificDealerAsync",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${getSpecificDealer}/${id}`, {
+        withCredentials: true,
+      });
+      return response.data.data;
+    } catch (error) {
+      console.error("Error in fetchDealersAsync:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
 
 // Thunk for updating a dealer
 export const updateDealerAsync = createAsyncThunk(
@@ -268,6 +288,8 @@ const dealersSlice = createSlice({
     dealers: [],
     dealer: null,
     status: "idle",
+    specificDealer: null,
+    specificDealerStatus: "idle",
     approvalDismissStatus: "idle",
     fetchStatus: "idle",
     error: null,
@@ -314,6 +336,18 @@ const dealersSlice = createSlice({
       })
       .addCase(fetchDealersAsync.rejected, (state, action) => {
         state.fetchStatus = "failed";
+        state.error = action.payload;
+      })
+      // Fetch Specific dealer cases
+      .addCase(fetchSpecificDealerAsync.pending, (state) => {
+        state.specificDealerStatus = "loading";
+      })
+      .addCase(fetchSpecificDealerAsync.fulfilled, (state, action) => {
+        state.specificDealerStatus = "succeeded";
+        state.specificDealer = action.payload;
+      })
+      .addCase(fetchSpecificDealerAsync.rejected, (state, action) => {
+        state.specificDealerStatus = "failed";
         state.error = action.payload;
       })
       // Update Dealer cases
