@@ -67,10 +67,10 @@ function ProductDetail() {
   }, [allProductsStatus, dispatch]);
 
   useEffect(() => {
-    if (productStatus === "idle") {
+    if (allProductsStatus === "succeeded") {
       dispatch(setProduct(id));
     }
-  }, [productStatus, dispatch]);
+  }, [allProductsStatus, dispatch]);
 
   useEffect(() => {
     if (status === "idle") {

@@ -87,6 +87,8 @@ function EditProductLisiting() {
     dispatch(setProduct(id));
   }, [status, dispatch, id]);
 
+  console.log("product", product)
+
   useEffect(() => {
     if (product) {
       // Set form values
@@ -104,7 +106,7 @@ function EditProductLisiting() {
       if (product.categories) {
         const selectedCats = product.categories.map((cat) => ({
           label: cat,
-          value: cat,
+          value: id,
         }));
         setSelectedCategories(selectedCats);
       }
@@ -155,15 +157,15 @@ function EditProductLisiting() {
       formDataToSend.append("discount", formData.discount);
       formDataToSend.append("priceOption", formData.priceOption);
 
-      // Add payment methods
-      PaymentOptions.forEach((option) => {
-        if (formData[option.value]) {
-          formDataToSend.append(
-            "paymentMethods",
-            JSON.stringify(paymentMethods)
-          );
-        }
-      });
+      // // Add payment methods
+      // PaymentOptions.forEach((option) => {
+      //   if (formData[option.value]) {
+      //     formDataToSend.append(
+      //       "paymentMethods",
+      //       JSON.stringify(paymentMethods)
+      //     );
+      //   }
+      // });
 
       // Add description and summary
       formDataToSend.append("description", description);
@@ -389,7 +391,7 @@ function EditProductLisiting() {
                 />
               </div>
             </div>
-            <div className="w-[90%]">
+            {/* <div className="w-[90%]">
               <label className="text-lg">Payment Options</label>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full mt-5">
                 {PaymentOptions.map((option) => (
@@ -421,7 +423,7 @@ function EditProductLisiting() {
                   </div>
                 ))}
               </div>
-            </div>
+            </div> */}
             <div className="w-[90%]">
               <TextAreaEditor
                 initialContent={description}

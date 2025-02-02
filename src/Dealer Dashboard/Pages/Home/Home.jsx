@@ -15,6 +15,7 @@ import {
   deleteBookmarkAsync,
   fetchUserBookmarksAsync,
 } from "../../../Redux/Features/bookmarkSlice";
+import DealerProfileCard from "../../Components/Home/DealerProfileCard";
 
 function Home() {
   const dispatch = useDispatch();
@@ -187,6 +188,15 @@ function Home() {
           </h1>
           <div className="flex overflow-x-auto space-x-4 mx-2 md:mx-3">
             <LocationCarousel />
+          </div>
+        </div>
+
+        <div className="my-6 md:my-10">
+          <h1 className="font-montserrat font-extrabold text-xl md:text-2xl mx-3 md:mx-5 mb-3">
+            Our Dealers
+          </h1>
+          <div className="flex overflow-x-auto space-x-4 mx-2 md:mx-3">
+            <DealerProfileCard />
           </div>
         </div>
       </div>

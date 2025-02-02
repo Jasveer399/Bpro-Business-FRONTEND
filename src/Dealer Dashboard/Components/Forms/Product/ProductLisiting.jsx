@@ -116,12 +116,12 @@ function ProductLisiting() {
       formDataToSend.append("discount", formData.discount);
       formDataToSend.append("priceOption", formData.priceOption);
 
-      // Add payment methods
-      PaymentOptions.forEach((option) => {
-        if (formData[option.value]) {
-          formDataToSend.append(`paymentMethods[]`, option.value);
-        }
-      });
+      // // Add payment methods
+      // PaymentOptions.forEach((option) => {
+      //   if (formData[option.value]) {
+      //     formDataToSend.append(`paymentMethods[]`, option.value);
+      //   }
+      // });
 
       // Add contact information
       // formDataToSend.append("phone", formData.phone);
@@ -433,7 +433,7 @@ function ProductLisiting() {
                 />
               </div>
             </div>
-            <div className="w-[90%]">
+            {/* <div className="w-[90%]">
               <label className="text-lg">Payment Options</label>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full mt-5">
                 {PaymentOptions.map((option, index) => (
@@ -449,7 +449,7 @@ function ProductLisiting() {
                   </div>
                 ))}
               </div>
-            </div>
+            </div> */}
             <div className="w-[90%]">
               <TextAreaEditor
                 onContentChange={(description) =>

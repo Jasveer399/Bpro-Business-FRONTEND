@@ -54,8 +54,7 @@ export const editProductAsync = createAsyncThunk(
   "products/editProductAsync",
   async ({ productId, productData }, { rejectWithValue }) => {
     try {
-      console.log("productData", productData);
-      console.log("productId", productId);
+      console.log("access token", getDealerAccessToken());
       const response = await axios.put(
         `${editProduct}/${productId}`,
         productData,

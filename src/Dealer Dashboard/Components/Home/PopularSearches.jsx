@@ -9,10 +9,10 @@ function PopularSearches({ product, onBookmarkToggle }) {
   console.log("product", product);
   const navigate = useNavigate();
   return (
-    <div className="relative border border-[#E7E7E7] rounded-md font-montserrat p-2">
+    <div className="relative border bg-white border-[#E7E7E7] rounded-md font-montserrat p-2">
       {/* Bookmark Icon */}
       <div
-        className="cursor-pointer"
+        className="cursor-pointer "
         onClick={() => navigate(`/product-detail/${product.id}`)}
       >
         <div
@@ -40,7 +40,7 @@ function PopularSearches({ product, onBookmarkToggle }) {
         <div className="flex items-center justify-between my-2">
           <div className="flex items-center gap-1">
             <img src="/cardIcon.png" className="w-5" />
-            <p className="text-[#6A6A6A] mt-1 text-sm">{product.categories}</p>
+            <p className="text-[#6A6A6A] mt-1 text-sm">{product?.categories?.map((cat) => `${cat.title}`)}</p>
           </div>
           <div className="flex items-center text-[#00BCE7]">
             <VscVerifiedFilled size={20} />
