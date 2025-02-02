@@ -9,12 +9,9 @@ import { Checkbox } from "@mui/material";
 import { TextAreaEditor } from "../../../../ui/TextAreaEditor";
 import TextareaInput from "../../../../ui/TextareaInput";
 import { ImageUp, Plus, X } from "lucide-react";
-import TimeSelectorHour_Minutes from "../../../../ui/TimeSelectorHour_Minutes";
-import TimePicker from "../../../../ui/TimePicker";
 import ChipsInput from "../../../../Components/Forms/Blogs/ChipsInput";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  addProductAsync,
   editProductAsync,
   fetchProductsAsync,
   setProduct,
@@ -22,14 +19,13 @@ import {
 import Snackbars from "../../../../ui/Snackbars";
 import Loader from "../../../../ui/Loader";
 import {
-  CustomTiming,
   PaymentOptions,
   priceOptions,
   StatusOpstions,
-  weekDays,
 } from "../../../../Utils/options";
-import { FaRupeeSign } from "react-icons/fa";
+import { FaPercentage, FaRupeeSign } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
+import { fetchCategoriesAsync } from "../../../../Redux/Features/categoriesSlice";
 
 function EditProductLisiting() {
   const {
@@ -42,64 +38,68 @@ function EditProductLisiting() {
   } = useForm({
     defaultValues: {
       status: "active",
-      time: "",
-      dayStartTime: "",
-      dayEndTime: "",
     },
   });
+
   const id = useParams().id;
   const dispatch = useDispatch();
   const { product, status, error } = useSelector((state) => state.products);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [selectedDay, setSelectedDay] = useState();
   const [description, setDescription] = useState("");
   const [imageContainers, setImageContainers] = useState([
     { id: 0, file: null },
   ]);
   const [tags, setTags] = useState([]);
-  const [notification, setNotification] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const navigate = useNavigate();
   const [deletedImages, setDeletedImages] = useState([]);
+  const [categoriesOptions, setCategoriesOptions] = useState([]);
   const [paymentMethods, setPaymentMethods] = useState([]);
+  const {
+    status: categoryStatus,
+    error: categoryError,
+    categories,
+  } = useSelector((state) => state.categories);
+
   const isSubmitting = status === "loading";
+
+  useEffect(() => {
+    if (categoryStatus === "idle") {
+      dispatch(fetchCategoriesAsync());
+    }
+    if (categoryStatus === "succeeded") {
+      setCategoriesOptions(
+        categories.map((category) => ({
+          label: category.title,
+          value: category.id,
+        }))
+      );
+    }
+  }, [dispatch, categoryStatus, categories]);
 
   useEffect(() => {
     if (status === "idle") {
       dispatch(fetchProductsAsync());
     }
-  });
+  }, [dispatch, status]);
 
   useEffect(() => {
     dispatch(setProduct(id));
-  }, [status, dispatch]);
+  }, [status, dispatch, id]);
 
   useEffect(() => {
     if (product) {
       // Set form values
+
+      console.log("Product Data =>", product);
       setValue("title", product.title);
       setValue("status", product.status);
-      setValue(
-        "date",
-        product.expiryDate
-          ? new Date(product.expiryDate).toISOString().split("T")[0]
-          : ""
-      );
-      if (product.expiryDate) {
-        const expiryDate = new Date(product.expiryDate);
-        const hours = expiryDate.getHours().toString().padStart(2, "0");
-        const minutes = expiryDate.getMinutes().toString().padStart(2, "0");
-        const formattedTime = `${hours}:${minutes}`;
-
-        setValue("time", formattedTime);
-      }
       setValue("summary", product.summary);
       setValue("insertprice", product.insertPrice);
+      setValue("discount", product.discount);
       setValue("priceOption", product.priceOption);
-      setValue("dayStartTime", product.dayStartTime);
-      setValue("dayEndTime", product.dayEndTime);
-      setValue("customTiming", product.customTiming);
-      setTags(product.tags);
+      setTags(product.tags || []);
+
       // Set categories
       if (product.categories) {
         const selectedCats = product.categories.map((cat) => ({
@@ -109,13 +109,8 @@ function EditProductLisiting() {
         setSelectedCategories(selectedCats);
       }
 
-      // Set selected day
-      if (product.selectedDay) {
-        setSelectedDay(product.selectedDay);
-      }
-
       // Set description
-      setDescription(product.description);
+      setDescription(product.description || "");
 
       // Set payment methods
       if (product && product.paymentMethods) {
@@ -124,6 +119,7 @@ function EditProductLisiting() {
           product.paymentMethods.map((method) => method.toLowerCase())
         );
       }
+
       // Set images
       if (product.images && product.images.length > 0) {
         const imageContainers = product.images.map((image, index) => ({
@@ -136,29 +132,13 @@ function EditProductLisiting() {
     }
   }, [product, setValue]);
 
-  const PaymentOptionsWithChecked = PaymentOptions.map((option) => ({
-    ...option,
-    isChecked: product?.paymentMethods?.some(
-      (method) =>
-        method.toLowerCase() === option.value.toLowerCase() ||
-        method.toLowerCase() === option.name.toLowerCase()
-    ),
-  }));
-
-  const options = [
-    { label: "Hotel & Restaurant", value: "Hotel & Restaurant" },
-    { label: "Grocery", value: "Grocery" },
-    { label: "Lift & Elevators", value: "Lift & Elevators" },
-  ];
-  const addProductLisitingHandler = async (formData) => {
+  const editProductHandler = async (formData) => {
     try {
       const formDataToSend = new FormData();
 
       // Add basic form fields
       formDataToSend.append("title", formData.title);
       formDataToSend.append("status", formData.status);
-      formDataToSend.append("date", formData.date);
-      formDataToSend.append("time", formData.time);
 
       // Add tags
       tags.forEach((tag, index) => {
@@ -170,19 +150,20 @@ function EditProductLisiting() {
         formDataToSend.append(`categories[${index}]`, category.value);
       });
 
-      // Add timing details
-      formDataToSend.append("selectedDay", selectedDay);
-      formDataToSend.append("dayStartTime", formData.dayStartTime);
-      formDataToSend.append("dayEndTime", formData.dayEndTime);
-      formDataToSend.append("customTiming", formData.customTiming);
-
       // Add pricing details
-      // formDataToSend.append("currencySymbol", formData.currencysymbol);
       formDataToSend.append("insertprice", formData.insertprice);
+      formDataToSend.append("discount", formData.discount);
       formDataToSend.append("priceOption", formData.priceOption);
 
       // Add payment methods
-      formDataToSend.append("paymentMethods", JSON.stringify(paymentMethods));
+      PaymentOptions.forEach((option) => {
+        if (formData[option.value]) {
+          formDataToSend.append(
+            "paymentMethods",
+            JSON.stringify(paymentMethods)
+          );
+        }
+      });
 
       // Add description and summary
       formDataToSend.append("description", description);
@@ -199,30 +180,31 @@ function EditProductLisiting() {
           );
         }
       });
+
       if (deletedImages.length > 0) {
         deletedImages.forEach((image) => {
           formDataToSend.append(`deletedImages[]`, image);
         });
       }
+
       const response = await dispatch(
         editProductAsync({ productId: id, productData: formDataToSend })
       );
+
       if (editProductAsync.fulfilled.match(response)) {
         setSnackbar({
           open: true,
           type: "success",
           text: response.payload.message,
         });
-        setTimeout(() => {
-          navigate(-1);
-        }, 500);
+        setTimeout(() => navigate(-1), 500);
       } else {
         setSnackbar({
           open: true,
           type: "error",
           text: response.error.message,
         });
-        throw new Error(resultAction.error.message);
+        throw new Error(response.error.message);
       }
     } catch (error) {
       setSnackbar({
@@ -273,17 +255,21 @@ function EditProductLisiting() {
         alt="productLisiting"
         className="w-full h-72 object-cover relative"
       />
-      <h1 className="flex flex-col md:text-6xl text-4xl font-semibold text-white absolute top-56 md:left-20 left-5 gap-4">
-        Edit Product Lisiting{" "}
-        <span className="text-xl">Home | Edit Product Lisiting</span>
+      <h1 className="flex flex-col text-3xl sm:text-4xl md:text-6xl font-semibold text-white absolute top-80 sm:top-56 left-4 sm:left-5 md:left-20 gap-2 sm:gap-4">
+        Edit Product Listing{" "}
+        <span className="text-base sm:text-xl">
+          Home | Edit Product Listing
+        </span>
       </h1>
-      <div className="mx-52 mt-20">
-        <h1 className="text-4xl font-bold text-center">Edit listing</h1>
+      <div className="mx-4 sm:mx-8 md:mx-16 lg:mx-52 sm:mt-20 pb-10">
+        <h1 className="text-2xl sm:text-4xl font-bold text-center mb-8">
+          Edit listing
+        </h1>
         <form
           className="flex flex-col gap-10"
-          onSubmit={handleSubmit(addProductLisitingHandler)}
+          onSubmit={handleSubmit(editProductHandler)}
         >
-          <div className="w-full border border-gray-400 dark:border-gray-600 pb-4 sm:pb-6 mt-5 text-neutral-700 flex justify-center items-center flex-col gap-8 ">
+          <div className="w-full border border-gray-400 dark:border-gray-600 pb-4 sm:pb-6 mt-5 text-neutral-700 flex justify-center items-center flex-col gap-8">
             <h1 className="text-xl font-bold border-b border-gray-200 dark:border-gray-600 py-4 px-8 w-full">
               General Details
             </h1>
@@ -309,15 +295,12 @@ function EditProductLisiting() {
               <Controller
                 name="status"
                 control={control}
-                rules={{ required: "status is required" }}
+                rules={{ required: "Status is required" }}
                 render={({ field, fieldState: { error } }) => (
                   <SelectInput
                     label="Select Status"
                     options={StatusOpstions}
-                    onChange={(option) => {
-                      field.onChange(option.value);
-                      // handlePartyChange(option);
-                    }}
+                    onChange={(option) => field.onChange(option.value)}
                     error={error?.message}
                     width="w-full"
                     value={field.value}
@@ -325,48 +308,10 @@ function EditProductLisiting() {
                 )}
               />
             </div>
-            <h1 className="text-[17px] font-semibold dark:border-gray-600 px-16 w-full flex flex-col gap-4">
-              Listing expiration date
-              <span className="text-sm text-gray-400">
-                Regular users can not change expiration date. This option is
-                available only for admins.
-                <br /> <br />
-                Set new expiration date and time of the listing.
-                <br />
-                Be careful: If you'll set past date - listing will expire in
-                some minutes.
-              </span>
-            </h1>
-            <div className="w-[90%] flex gap-5">
-              <FormInput
-                label="Date"
-                type="date"
-                {...register("date", {
-                  required: "Status is required",
-                })}
-                error={errors.data?.message}
-                width="w-[50%]"
-              />
-              <TimeSelectorHour_Minutes
-                value={
-                  product?.expiryDate
-                    ? `${new Date(product.expiryDate)
-                        .getHours()
-                        .toString()
-                        .padStart(2, "0")}:${new Date(product.expiryDate)
-                        .getMinutes()
-                        .toString()
-                        .padStart(2, "0")}`
-                    : "00:00"
-                }
-                onChange={(value) => setValue("time", value)}
-                error={errors.time?.message}
-              />
-            </div>
             <div className="w-[90%] flex flex-col gap-2">
               <h1>Categories</h1>
               <MultiSelect
-                options={options}
+                options={categoriesOptions}
                 value={selectedCategories}
                 onChange={setSelectedCategories}
                 labelledBy="Categories"
@@ -374,61 +319,12 @@ function EditProductLisiting() {
               />
             </div>
           </div>
-          <div className="w-full border border-gray-400 dark:border-gray-600 pb-4 sm:pb-6 mt-5 text-neutral-700 flex justify-center items-center flex-col gap-8 ">
+
+          <div className="w-full border border-gray-400 dark:border-gray-600 pb-4 sm:pb-6 mt-5 text-neutral-700 flex justify-center items-center flex-col gap-8">
             <h1 className="text-xl font-bold border-b border-gray-200 dark:border-gray-600 py-4 px-8 w-full">
               Extra Details
             </h1>
-            <div className="flex flex-col gap-3 w-[90%]">
-              <label className="text-lg">Timeings</label>
-              <div className="w-full flex gap-2">
-                {weekDays.map((day, index) => (
-                  <div
-                    key={index}
-                    className={`text-lg border ${
-                      selectedDay === Object.values(day)[0]
-                        ? "bg-blue text-white"
-                        : "border-gray-500"
-                    } py-1 px-5 w-32 rounded-lg flex items-center justify-center`}
-                    onClick={() => setSelectedDay(Object.values(day)[0])}
-                  >
-                    {Object.values(day)[0]}
-                  </div>
-                ))}
-              </div>
-              <div className="w-full flex gap-5 items-centers relative">
-                <TimePicker
-                  label=""
-                  value={getValues("dayStartTime")}
-                  onChange={(value) => setValue("dayStartTime", value)}
-                  error={errors.time?.message}
-                />
-                <TimePicker
-                  label=""
-                  value={getValues("dayEndTime")}
-                  onChange={(value) => setValue("dayEndTime", value)}
-                  error={errors.time?.message}
-                />
-                <Controller
-                  name="customTiming"
-                  control={control}
-                  rules={{ required: "Custom Timing is required" }}
-                  render={({ field, fieldState: { error } }) => (
-                    <SelectInput
-                      label="Custom Timing"
-                      options={CustomTiming}
-                      onChange={(option) => {
-                        field.onChange(option.value);
-                        // handlePartyChange(option);
-                      }}
-                      error={error?.message}
-                      width="w-full"
-                      value={field.value}
-                    />
-                  )}
-                />
-              </div>
-            </div>
-            <div className="w-[90%] flex gap-5 items-centers relative mt-10">
+            <div className="w-[90%] flex flex-col md:flex-row gap-5 items-centers relative mt-10">
               <h1 className="text-lg absolute -top-8">Price</h1>
               <div className="w-full flex">
                 <FaRupeeSign
@@ -439,9 +335,38 @@ function EditProductLisiting() {
                   label="Insert Price"
                   type="number"
                   {...register("insertprice", {
-                    required: "Inser Price is required",
+                    required: "Insert Price is required",
                   })}
-                  error={errors.title?.message}
+                  error={errors.insertprice?.message}
+                  width="w-[90%]"
+                  className="border-l-0 rounded-r rounded-l-none"
+                />
+              </div>
+              <div className="w-full flex">
+                <FaPercentage
+                  size={50}
+                  className="border-2 border-y p-3.5 border-gray-400 rounded-l-md mt-[1.46rem] text-gray-500"
+                />
+                <FormInput
+                  label="Discount"
+                  type="tel"
+                  onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  onInput={(e) => {
+                    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                    let value = parseInt(e.target.value);
+                    if (value > 100) {
+                      e.target.value = "100";
+                    }
+                    if (value < 0) {
+                      e.target.value = "0";
+                    }
+                  }}
+                  {...register("discount")}
+                  error={errors.discount?.message}
                   width="w-[90%]"
                   className="border-l-0 rounded-r rounded-l-none"
                 />
@@ -455,10 +380,7 @@ function EditProductLisiting() {
                     <SelectInput
                       label="Price Option"
                       options={priceOptions}
-                      onChange={(option) => {
-                        field.onChange(option.value);
-                        // handlePartyChange(option);
-                      }}
+                      onChange={(option) => field.onChange(option.value)}
                       error={error?.message}
                       width="w-full"
                       value={field.value}
@@ -469,7 +391,7 @@ function EditProductLisiting() {
             </div>
             <div className="w-[90%]">
               <label className="text-lg">Payment Options</label>
-              <div className="grid grid-cols-3 gap-5 w-full mt-5">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full mt-5">
                 {PaymentOptions.map((option) => (
                   <div
                     key={option.value}
@@ -502,8 +424,9 @@ function EditProductLisiting() {
             </div>
             <div className="w-[90%]">
               <TextAreaEditor
-                onContentChange={(description) =>
-                  setValue("description", description)
+                initialContent={description}
+                onContentChange={(newDescription) =>
+                  setDescription(newDescription)
                 }
               />
             </div>

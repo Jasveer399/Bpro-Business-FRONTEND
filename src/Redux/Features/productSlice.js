@@ -14,7 +14,6 @@ export const addProductAsync = createAsyncThunk(
   "products/addProduct",
   async (productData, { rejectWithValue }) => {
     try {
-      console.log("getDealerAccessToken =======>", getDealerAccessToken());
       const response = await axios.post(createProduct, productData, {
         withCredentials: true,
         headers: {
@@ -180,8 +179,9 @@ const productSlice = createSlice({
       .addCase(editProductAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
         // Update product in both data and products arrays
-        const updatedProduct = action.payload;
+        const updatedProduct = action.payload.data;
 
+        console.log("updatedProduct ===>", updatedProduct);
         // Update in data.data if exists
         if (state.data && state.data.data) {
           const dataIndex = state.data.data.findIndex(

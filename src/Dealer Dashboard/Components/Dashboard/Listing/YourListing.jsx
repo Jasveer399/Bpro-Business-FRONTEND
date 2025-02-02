@@ -13,15 +13,10 @@ import ConfirmationDialog from "../../../../ui/ConfirmationDialog";
 import Snackbars from "../../../../ui/Snackbars";
 import { createPortal } from "react-dom";
 
-function YourListing(
-  {
-    status,
-    products
-  }
-) {
+function YourListing({ status, products }) {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const buttonRef = useRef(null);
-  
+
   const toggleDropdown = (id) => {
     setActiveDropdown(activeDropdown === id ? null : id);
   };
@@ -63,14 +58,20 @@ function YourListing(
                   </td>
                   <td className="py-3">
                     <div className=" flex justify-center">
-                      <p className="font-semibold">{listing.title.slice(0, 20) + "..."}</p>
+                      <p className="font-semibold">
+                        {listing.title.slice(0, 20) + "..."}
+                      </p>
                     </div>
                   </td>
                   <td className="py-3">
                     <div className="flex items-center justify-center">
                       <p className="text-green-800 font-semibold text-lg flex items-center">
                         <FaRupeeSign size={15} />
-                        {`${listing?.insertPriceAfterDiscount > 0 ? listing?.insertPriceAfterDiscount : listing?.insertPrice}`}
+                        {`${
+                          listing?.insertPriceAfterDiscount > 0
+                            ? listing?.insertPriceAfterDiscount.toFixed(2)
+                            : listing?.insertPrice.toFixed(2)
+                        }`}
                       </p>
                     </div>
                   </td>
@@ -81,27 +82,37 @@ function YourListing(
                     <div className="flex items-center justify-center">
                       {/* <p className="text-green-800 font-semibold text-lg flex items-center"> */}
                       <FaRupeeSign size={15} />
-                      {`${listing?.insertPriceAfterDiscount > 0 ? listing.insertPrice - listing?.insertPriceAfterDiscount : 0}`}
+                      {`${
+                        listing?.insertPriceAfterDiscount > 0
+                          ? Number(
+                              listing.insertPrice -
+                                listing?.insertPriceAfterDiscount
+                            ).toFixed(2)
+                          : 0
+                      }`}
                       {/* </p> */}
                     </div>
                   </td>
                   <td className="py-3 text-center text-[#ef5d50] font-semibold">
                     <div className="flex items-center justify-center">
                       <FaRupeeSign size={15} />
-                      {`${listing?.insertPrice}`}
+                      {`${listing?.insertPrice.toFixed(2)}`}
                     </div>
                   </td>
                   <td className="py-3 text-center">
                     <span
-                      className={`px-2 py-1 rounded-full text-xs capitalize font-semibold dark:text-black ${listing.status === "active"
-                        ? "bg-green-200"
-                        : "bg-red-200"
-                        }`}
+                      className={`px-2 py-1 rounded-full text-xs capitalize font-semibold dark:text-black ${
+                        listing.status === "active"
+                          ? "bg-green-200"
+                          : "bg-red-200"
+                      }`}
                     >
                       {listing.status}
                     </span>
                   </td>
-                  <td className="py-3 text-center uppercase">{listing.id.slice(0, 5)}</td>
+                  <td className="py-3 text-center uppercase">
+                    {listing.id.slice(0, 5)}
+                  </td>
                   <td className="py-3">
                     <div className="flex justify-center space-x-2 relative">
                       <button
@@ -176,12 +187,13 @@ const ConfigureDialog = ({ status, setActiveDropdown, product, buttonRef }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [dialogPosition, setDialogPosition] = useState({ top: 0, left: 0 });
   useEffect(() => {
     if (buttonRef.current) {
-      const { top, left, width, height } = buttonRef.current.getBoundingClientRect();
+      const { top, left, width, height } =
+        buttonRef.current.getBoundingClientRect();
       setDialogPosition({ top: top + height + 8, left: left - width / 2 });
     }
   }, [buttonRef]);
@@ -205,22 +217,33 @@ const ConfigureDialog = ({ status, setActiveDropdown, product, buttonRef }) => {
       });
       throw new Error(response.error.message);
     }
-  }
+  };
   const options = [
-    { label: "Edit Listing", icon: <AiOutlineEdit />, onClick: () => navigate(`/my-dashboard/edit-product-detail/${product.id}`) },
+    {
+      label: "Edit Listing",
+      icon: <AiOutlineEdit />,
+      onClick: () =>
+        navigate(`/my-dashboard/edit-product-detail/${product.id}`),
+    },
     { label: "Upgrade", icon: <BiBarChart /> },
     { label: "BumpUp To Top", icon: <FiTrendingUp /> },
     { label: "Performance", icon: <HiOutlineChartSquareBar /> },
-    { label: "Preview", icon: <AiOutlineEye />, onClick: () => navigate(`/my-dashboard/product-detail/${product.id}`) },
+    {
+      label: "Preview",
+      icon: <AiOutlineEye />,
+      onClick: () => navigate(`/my-dashboard/product-detail/${product.id}`),
+    },
     { label: "Publish/Private", icon: <HiOutlineLockClosed /> },
     { label: "Note To Admin", icon: <RiAdminLine /> },
     {
-      label: "Delete", icon: <AiOutlineDelete />, onClick: () => {
+      label: "Delete",
+      icon: <AiOutlineDelete />,
+      onClick: () => {
         console.log("Delete clicked");
         setIsDeleteDialogOpen(true);
         // setActiveDropdown(false);
-        setIdToDelete(product.id)
-      }
+        setIdToDelete(product.id);
+      },
     },
   ];
 
@@ -242,7 +265,8 @@ const ConfigureDialog = ({ status, setActiveDropdown, product, buttonRef }) => {
             {option.icon}
             <span>{option.label}</span>
           </div>
-        ))}</div>
+        ))}
+      </div>
 
       <ConfirmationDialog
         isOpen={isDeleteDialogOpen}
