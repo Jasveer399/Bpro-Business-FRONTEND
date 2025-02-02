@@ -269,6 +269,7 @@ const dealersSlice = createSlice({
     dealer: null,
     status: "idle",
     approvalDismissStatus: "idle",
+    fetchStatus: "idle",
     error: null,
   },
   reducers: {
@@ -284,7 +285,7 @@ const dealersSlice = createSlice({
       })
       .addCase(addDealerAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        console.log(action)
+        console.log(action);
         state.dealers.push(action.payload.data);
       })
       .addCase(addDealerAsync.rejected, (state, action) => {
@@ -305,14 +306,14 @@ const dealersSlice = createSlice({
       })
       // Fetch Dealers cases
       .addCase(fetchDealersAsync.pending, (state) => {
-        state.status = "loading";
+        state.fetchStatus = "loading";
       })
       .addCase(fetchDealersAsync.fulfilled, (state, action) => {
-        state.status = "succeeded";
+        state.fetchStatus = "succeeded";
         state.dealers = action.payload;
       })
       .addCase(fetchDealersAsync.rejected, (state, action) => {
-        state.status = "failed";
+        state.fetchStatus = "failed";
         state.error = action.payload;
       })
       // Update Dealer cases
@@ -339,9 +340,7 @@ const dealersSlice = createSlice({
       })
       .addCase(deleteDealerAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.dealers = state.dealers.filter(
-          (dealer) => dealer.id !== action.payload
-        );
+        state.dealers.find((d) => d.id === action.payload).isSuspend = true;
       })
       .addCase(deleteDealerAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -419,7 +418,9 @@ const dealersSlice = createSlice({
       })
       .addCase(changeStatusUpdateProfileAsync.fulfilled, (state, action) => {
         state.approvalDismissStatus = "succeeded";
-        state.requests = state.requests.filter((req) => req.id !== action.payload.data.id);
+        state.requests = state.requests.filter(
+          (req) => req.id !== action.payload.data.id
+        );
       })
       .addCase(changeStatusUpdateProfileAsync.rejected, (state, action) => {
         state.approvalDismissStatus = "failed";

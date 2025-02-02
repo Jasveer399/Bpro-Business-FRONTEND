@@ -14,11 +14,11 @@ function DealerProfile() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const { dealer, status } = useSelector((state) => state.dealers);
+  const { dealer, status, fetchStatus } = useSelector((state) => state.dealers);
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
 
   useEffect(() => {
-    if (status === "idle") {
+    if (fetchStatus === "idle") {
       dispatch(fetchDealersAsync());
     }
   }, []);
@@ -47,8 +47,6 @@ function DealerProfile() {
       });
     }
   };
-
-  console.log("dealer", dealer);
 
   const deleteDealer = async () => {
     const response = await dispatch(deleteDealerAsync(id));

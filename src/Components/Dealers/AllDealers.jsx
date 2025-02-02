@@ -1,29 +1,54 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { PencilIcon, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchDealersAsync } from "../../Redux/Features/dealersSlice";
+import {
+  deleteDealerAsync,
+  fetchDealersAsync,
+} from "../../Redux/Features/dealersSlice";
 import Loader from "../../ui/Loader";
+import Snackbars from "../../ui/Snackbars";
 
 const AllDealers = () => {
   const dispatch = useDispatch();
-  const { dealers, status, error } = useSelector((state) => state.dealers);
+  const { dealers, fetchStatus, error } = useSelector((state) => state.dealers);
+  const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
 
   useEffect(() => {
-    if (status === "idle") {
+    if (fetchStatus === "idle") {
       dispatch(fetchDealersAsync());
     }
-  }, [status, dispatch]);
+  }, [fetchStatus, dispatch]);
 
-  //   const deleteHandler = async (id) => {
-  //     try {
-  //       await dispatch(deleteBannerAsync(id)).unwrap();
-  //       console.log("Banner deleted successfully");
-  //       closeDialog();
-  //     } catch (error) {
-  //       console.error("Failed to delete banner:", error);
-  //     }
-  //   }
+  const deleteHandler = async (id) => {
+    try {
+      const response = await dispatch(deleteDealerAsync(id)).unwrap();
+
+      if (response === id) {
+        setSnackbar({
+          open: true,
+          type: "success",
+          text: "Dealer Suspended Successfully",
+        });
+      } else {
+        setSnackbar({
+          open: true,
+          type: "error",
+          text:
+            response?.payload ||
+            response?.error?.message ||
+            "Error dealer suspending",
+        });
+      }
+    } catch (error) {
+      console.error("Failed to suspend dealer:", error);
+      setSnackbar({
+        open: true,
+        type: "error",
+        text: "Error dealer suspending",
+      });
+    }
+  };
 
   return (
     <>
@@ -45,7 +70,7 @@ const AllDealers = () => {
               </tr>
             </thead>
             <tbody>
-              {status === "loading" ? (
+              {fetchStatus === "loading" ? (
                 <tr>
                   <td colSpan={6}>
                     <div className="flex items-center justify-center my-5">
@@ -82,8 +107,11 @@ const AllDealers = () => {
                         VIEW PROFILE
                       </Link>
                       {dealer.verified ? (
-                        <div className="bg-[#FE043C] text-white text-sm py-2 px-3 rounded-md font-semibold cursor-pointer">
-                          SUSPEND
+                        <div
+                          className="bg-[#FE043C] text-white text-sm py-2 px-3 rounded-md font-semibold cursor-pointer"
+                          onClick={() => deleteHandler(dealer.id)}
+                        >
+                          {dealer.isSuspend ? "SUSPENDED" : "SUSPEND"}
                         </div>
                       ) : (
                         <div className="bg-secondary text-white text-sm py-2 px-3 rounded-md font-semibold cursor-pointer">
@@ -104,6 +132,12 @@ const AllDealers = () => {
           </table>
         </div>
       </div>
+      <Snackbars
+        open={snackbar.open}
+        type={snackbar.type}
+        text={snackbar.text}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
     </>
   );
 };
