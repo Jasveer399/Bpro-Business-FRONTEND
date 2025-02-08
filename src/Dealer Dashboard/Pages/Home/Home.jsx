@@ -8,7 +8,7 @@ import LatestArticles from "../../Components/Home/LatestArticles";
 import ShopsCategory from "../../Components/Home/ShopsCategory";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBannerCategoryAsync } from "../../../Redux/Features/bannersCategorySlice";
-import { fetchProductsAsync } from "../../../Redux/Features/productSlice";
+import { fetchAllProductsAsync } from "../../../Redux/Features/productSlice";
 import LocationCarousel from "../../Components/Home/LocationCard";
 import {
   addBookmarkAsync,
@@ -25,18 +25,32 @@ function Home() {
   const [updatedProducts, setUpdatedProducts] = useState([])
   
   // Fetch products from the listings
-  const { data: products, status: productStatus } = useSelector(
+  const { allProducts, status: productStatus, allProductStatus } = useSelector(
     (state) => state.products
   );
   const { items: bookmarkedItems, bookmarkStatus } = useSelector((state) => state.bookmarks);
-  
+
   useEffect(() => {
-    const updatedData = products?.data?.map((product) => ({
+    if (status === "idle") {
+      dispatch(fetchBannerCategoryAsync());
+    }
+
+    if (allProductStatus === "idle") {
+      dispatch(fetchAllProductsAsync());
+    }
+    
+    if (bookmarkStatus === "idle") {
+      dispatch(fetchUserBookmarksAsync());
+    }
+  }, [status, allProductStatus, bookmarkStatus, dispatch]);
+
+  useEffect(() => {
+    const updatedData = allProducts?.map((product) => ({
       ...product,
       bookmark: bookmarkedItems.some((item) => item.productId === product.id),
     }));
     setUpdatedProducts(updatedData);
-  }, [products, bookmarkedItems]);
+  }, [allProducts, bookmarkedItems]);
   
   const handleBookmarkToggle = (product) => {
     const isBookmarked = product.bookmark;
@@ -56,19 +70,6 @@ function Home() {
       dispatch(addBookmarkAsync(product.id));
     }
   };
-
-  useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchBannerCategoryAsync());
-    }
-
-    if (productStatus === "idle") {
-      dispatch(fetchProductsAsync({ page: 1, limit: 8 }));
-    }
-    if (bookmarkStatus === "idle") {
-      dispatch(fetchUserBookmarksAsync());
-    }
-  }, [status, productStatus,bookmarkStatus, dispatch]);
 
   const articleData = [
     {
@@ -93,7 +94,7 @@ function Home() {
     const nextPage = products.currentPage + 1;
     if (nextPage <= products.totalPages) {
       dispatch(
-        fetchProductsAsync({
+        fetchAllProductsAsync({
           page: nextPage,
           limit: 8,
         })
@@ -160,7 +161,7 @@ function Home() {
               />
             ))}
           </div>
-          {products?.data?.length >= 8 && (
+          {allProducts?.length >= 8 && (
             <div className="flex items-center justify-center">
               <button
                 onClick={handleLoadMore}

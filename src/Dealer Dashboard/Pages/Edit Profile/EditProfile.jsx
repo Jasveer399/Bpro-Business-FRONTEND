@@ -128,6 +128,16 @@ function EditProfile() {
         (container) => container.id === "back"
       );
 
+      if (!adhaarFrontContainer.file || !adhaarBackContainer.file) {
+        console.log("working...")
+        setSnackbar({
+          open: true,
+          type: "error",
+          text: "Aadhaar Card images are required",
+        });
+        return
+      }
+
       const panFrontContainer = panImageContainers.find(
         (container) => container.id === "panfront"
       );

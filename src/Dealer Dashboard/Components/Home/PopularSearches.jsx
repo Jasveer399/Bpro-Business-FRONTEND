@@ -40,7 +40,9 @@ function PopularSearches({ product, onBookmarkToggle }) {
         <div className="flex items-center justify-between my-2">
           <div className="flex items-center gap-1">
             <img src="/cardIcon.png" className="w-5" />
-            <p className="text-[#6A6A6A] mt-1 text-sm">{product?.categories?.map((cat) => `${cat.title}`)}</p>
+            <p className="text-[#6A6A6A] mt-1 text-sm">
+              {product?.categories?.map((cat) => `${cat.title}`)}
+            </p>
           </div>
           <div className="flex items-center text-[#00BCE7]">
             <VscVerifiedFilled size={20} />
@@ -61,12 +63,12 @@ function PopularSearches({ product, onBookmarkToggle }) {
         <div className="flex items-center gap-2 my-2">
           <div className="flex items-center gap-1 bg-secondary py-[2px] px-2 rounded-md">
             <p className="font-semibold text-sm mt-px">
-              {product.rating || "4.0"}
+              {product.averageRatings || "0.0"}
             </p>
             <FaStar className="text-white" size={14} />
           </div>
           <p className="text-[#6A6A6A] text-sm">
-            {product.ratingCount || "0"} Ratings
+            {product.Reviews?.length || "0"} Ratings
           </p>
         </div>
       </div>

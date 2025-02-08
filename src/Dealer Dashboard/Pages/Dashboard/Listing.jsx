@@ -22,8 +22,7 @@ function Listing() {
       dispatch(getProductsStatsAsync());
     }
   }, [dispatch, productsStatsStatus]);
-
-  console.log("products", products);
+  
   console.log("products stats", productsStats);
   return (
     <>

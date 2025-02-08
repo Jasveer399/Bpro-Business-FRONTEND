@@ -2,8 +2,10 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import {
   createProduct,
+  createReview,
   deleteProduct,
   editProduct,
+  getAllProducts,
   getProducts,
   getProductsStats,
 } from "../../Utils/server";
@@ -24,6 +26,27 @@ export const addProductAsync = createAsyncThunk(
       return response.data;
     } catch (error) {
       console.error("Error in addProductAsync:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
+export const fetchAllProductsAsync = createAsyncThunk(
+  "products/allProducts",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(getAllProducts, {
+        withCredentials: true,
+        // headers: {
+        //   Authorization: `Bearer ${getDealerAccessToken()}`,
+        //   "Content-Type": "multipart/form-data",
+        // },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error in allProducts async:", error);
       return rejectWithValue(
         error.response ? error.response.data : error.message
       );
@@ -114,15 +137,38 @@ export const getProductsStatsAsync = createAsyncThunk(
   }
 );
 
+export const addReviewAsync = createAsyncThunk(
+  "review/addReview",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(createReview, data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getDealerAccessToken()}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error in add Review:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
 const productSlice = createSlice({
   name: "products",
   initialState: {
     data: null,
     products: [],
+    allProducts: [],
+    allProductStatus: "idle",
     productsStats: null,
     productsStatsStatus: "idle",
     product: null,
     productStatus: "idle",
+    addReviewStatus: "idle",
     status: "idle",
     error: null,
     currentPage: 1,
@@ -152,6 +198,8 @@ const productSlice = createSlice({
         if (state.products) {
           state.products.push(action.payload.data);
         }
+        state.productsStats.totalProducts = state.productsStats.totalProducts + 1
+        state.productsStats.activeProducts = state.productsStats.activeProducts + 1
       })
       .addCase(addProductAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -169,6 +217,18 @@ const productSlice = createSlice({
       })
       .addCase(fetchProductsAsync.rejected, (state, action) => {
         state.status = "failed";
+        state.error = action.payload;
+      })
+      // fetch all products
+      .addCase(fetchAllProductsAsync.pending, (state) => {
+        state.allProductStatus = "loading";
+      })
+      .addCase(fetchAllProductsAsync.fulfilled, (state, action) => {
+        state.allProductStatus = "succeeded";
+        state.allProducts = action.payload.data || [];
+      })
+      .addCase(fetchAllProductsAsync.rejected, (state, action) => {
+        state.allProductStatus = "failed";
         state.error = action.payload;
       })
       // Update Product Cases
@@ -219,6 +279,8 @@ const productSlice = createSlice({
         state.products = state.products.filter(
           (p) => p.id !== action.payload.data.id
         );
+        state.productsStats.totalProducts = state.productsStats.totalProducts - 1
+        state.productsStats.activeProducts = state.productsStats.activeProducts - 1
       })
       .addCase(deleteProductAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -233,6 +295,18 @@ const productSlice = createSlice({
       })
       .addCase(getProductsStatsAsync.rejected, (state, action) => {
         state.productsStatsStatus = "failed";
+        state.error = action.payload;
+      })
+      // Add Review Status
+      .addCase(addReviewAsync.pending, (state) => {
+        state.addReviewStatus = "loading";
+      })
+      .addCase(addReviewAsync.fulfilled, (state, action) => {
+        state.addReviewStatus = "succeeded";
+        state.product.Reviews.push(action.payload.data);
+      })
+      .addCase(addReviewAsync.rejected, (state, action) => {
+        state.addReviewStatus = "failed";
         state.error = action.payload;
       });
   },

@@ -2,16 +2,17 @@ import React from "react";
 import LocationSelector from "./LocationSelector";
 import SearchBar from "./SearchBar";
 import { MdOutlineHelpOutline } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getDealerAccessToken } from "../../../Utils/Helper";
 
 function Header() {
   const token = getDealerAccessToken()
+  const navigate = useNavigate()
   return (
     <>
       <div className="flex flex-col md:flex-row items-center justify-between px-4 py-3 font-montserrat space-y-4 md:space-y-0">
         <div className="flex flex-col w-full md:flex-row md:w-auto items-center gap-4 md:gap-2">
-          <div className="w-full md:w-auto flex justify-center">
+          <div className="w-full md:w-auto flex justify-center cursor-pointer" onClick={() => navigate("/home")}>
             <img
               src="/BproBusiness.png"
               className="w-48 md:w-64"

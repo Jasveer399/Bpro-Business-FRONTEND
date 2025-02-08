@@ -50,6 +50,7 @@ export const getProducts = `${server}/api/v1/product/getProducts`;
 export const editProduct = `${server}/api/v1/product/editProduct`;
 export const deleteProduct = `${server}/api/v1/product/deleteProduct`;
 export const getProductsStats = `${server}/api/v1/product/getProductsStats`;
+export const getAllProducts = `${server}/api/v1/product/getAllProducts`;
 
 //All BookMarks Routes
 // export const getAllBookmarks = `${server}/api/v1/bookmarks/getAllBookmarks`;

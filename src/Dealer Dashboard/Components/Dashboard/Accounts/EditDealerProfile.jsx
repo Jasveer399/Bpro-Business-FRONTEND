@@ -14,36 +14,34 @@ import {
 import Snackbars from "../../../../ui/Snackbars";
 import { businessTypesOptions } from "../../../../Utils/options";
 import ProfileImage from "./ProfileImage";
+import Loader from "../../../../ui/Loader";
+import ConfirmationDialog from "../../../../ui/ConfirmationDialog";
 
 function EditDealerProfile() {
-  // const {
-  //   editProfileForm.register,
-  //   formState: { editProfileForm.formState.errors },
-  //   control,
-  //   setValue,
-  //   handleSubmit,
-  //   reset,
-  //   getValues,
-  // } = useForm();
-
   // Separate useForm hooks for edit profile and change password
   const editProfileForm = useForm();
   const changePasswordForm = useForm();
 
   const dispatch = useDispatch();
-  const { currentDealer, status } = useSelector((state) => state.dealers);
+  const {
+    currentDealer,
+    status,
+    changePassStatus,
+    updateStatus,
+    sendReqStatus,
+  } = useSelector((state) => state.dealers);
   const [displayToPublicOptions, setDisplayToPublicOptions] = useState([]);
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const [profileImageUrl, setProfileImageUrl] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [buttonState, setButtonState] = useState(null);
 
   console.log("currentDealer", currentDealer);
 
   const handleImageUpload = async (file) => {
-    console.log("file", file);
     const formData = new FormData();
     formData.append("profileImgUrl", file);
     const response = await dispatch(updateProfileImgAsync(formData));
-    console.log("response", response);
     if (updateProfileImgAsync.fulfilled.match(response)) {
       setSnackbar({
         open: true,
@@ -116,6 +114,10 @@ function EditDealerProfile() {
         type: "error",
         text: error.message,
       });
+    } finally {
+      setTimeout(() => {
+        setIsDialogOpen(false);
+      }, 500);
     }
   };
 
@@ -134,15 +136,14 @@ function EditDealerProfile() {
 
     try {
       const response = await dispatch(changePasswordAsync(data)).unwrap();
-      console.log("response", response);
       if (response.success) {
         setSnackbar({
           open: true,
           type: "success",
           text: response.message,
         });
-        setValue("currentPassword", "");
-        setValue("newPassword", "");
+        changePasswordForm.setValue("currentPassword", "");
+        changePasswordForm.setValue("newPassword", "");
       }
     } catch (error) {
       console.error("Failed to change password:", error);
@@ -151,11 +152,14 @@ function EditDealerProfile() {
         type: "error",
         text: error.message,
       });
+    } finally {
+      setTimeout(() => {
+        setIsDialogOpen(false);
+      }, 500);
     }
   };
 
   const handleRequestSend = async () => {
-    console.log("handleRequestSend");
     try {
       const res = await dispatch(sendRequestAsync()).unwrap();
       if (res.success) {
@@ -172,12 +176,16 @@ function EditDealerProfile() {
         type: "error",
         text: error?.message || "Error sending request",
       });
+    } finally {
+      setTimeout(() => {
+        setIsDialogOpen(false);
+      }, 500);
     }
   };
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row h-screen bg-gray-100">
+      <div className="flex flex-col md:flex-row h-[calc(100vh-9rem)] bg-gray-100">
         {/* Left Section: Image and Account Settings */}
         <div className="w-full md:w-1/3 h-full bg-white p-6 flex flex-col items-center">
           <div>
@@ -227,9 +235,13 @@ function EditDealerProfile() {
               </div>
               <button
                 type="submit"
-                className="bg-[#EB6752] w-full py-2 mt-4 rounded-md text-white font-semibold hover:bg-[#191A1F] transition-colors duration-300"
+                className="bg-[#EB6752] w-full py-2 mt-4 rounded-md flex items-center justify-center text-white font-semibold hover:bg-[#191A1F] transition-colors duration-300"
               >
-                Change Password
+                {changePassStatus === "loading" ? (
+                  <Loader />
+                ) : (
+                  "Change Password"
+                )}
               </button>
             </form>
           </div>
@@ -257,7 +269,7 @@ function EditDealerProfile() {
           <h1 className="text-3xl font-bold mb-6 text-gray-800">
             Edit Profile
           </h1>
-          <form onSubmit={editProfileForm.handleSubmit(editProfileHandler)}>
+          <form>
             {/* Row 1: First Name & Last Name */}
             <div className="flex flex-col md:flex-row items-center gap-6 mb-3">
               <FormInput
@@ -493,32 +505,59 @@ function EditDealerProfile() {
               />
             </div>
 
-            {currentDealer?.isReqSent ? (
-              <button
-                type="button"
-                className="bg-[#EB6752] w-full py-3 mb-5 rounded-md text-white font-semibold hover:bg-[#191A1F] transition-colors duration-300 cursor-not-allowed"
-                disabled={true}
-              >
-                Request Sent. Wait For Approval !!
-              </button>
-            ) : currentDealer?.isProfileUpdate ? (
-              <button
-                type="submit"
-                className="bg-[#EB6752] w-full py-3 mb-5 rounded-md text-white font-semibold hover:bg-[#191A1F] transition-colors duration-300"
-              >
-                Update Profile
-              </button>
-            ) : (
-              <div
-                className="bg-[#EB6752] w-full py-3 mb-5 rounded-md text-white text-center font-semibold hover:bg-[#191A1F] transition-colors duration-300"
-                onClick={handleRequestSend}
-              >
-                Request Profile Update
-              </div>
-            )}
+            <div className="pb-5">
+              {currentDealer?.isReqSent ? (
+                <button
+                  type="button"
+                  className="bg-[#EB6752] w-full py-3 rounded-md text-white font-semibold hover:bg-[#191A1F] transition-colors duration-300 cursor-not-allowed"
+                  disabled={true}
+                >
+                  Request Sent. Wait For Approval !!
+                </button>
+              ) : currentDealer?.isProfileUpdate ? (
+                <button
+                  type="submit"
+                  className="bg-[#EB6752] w-full py-3 rounded-md text-white font-semibold hover:bg-[#191A1F] transition-colors duration-300"
+                  onClick={() => {
+                    setIsDialogOpen(true);
+                    setButtonState("update");
+                  }}
+                >
+                  Update Profile
+                </button>
+              ) : (
+                <div
+                  className="bg-[#EB6752] w-full cursor-pointer py-3 rounded-md text-white text-center font-semibold hover:bg-[#191A1F] transition-colors duration-300"
+                  onClick={() => {
+                    setIsDialogOpen(true);
+                    setButtonState("req");
+                  }}
+                >
+                  Request Profile Update
+                </div>
+              )}
+            </div>
           </form>
         </div>
       </div>
+      <ConfirmationDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onConfirm={() => {
+          if (buttonState === "update") {
+            editProfileForm.handleSubmit(editProfileHandler)();
+          } else if (buttonState === "req") {
+            handleRequestSend();
+          }
+        }}
+        title="Confirm Action"
+        message={`Are you sure you want to ${
+          buttonState === "update"
+            ? "update this profile?"
+            : "send a request for profile update?"
+        }`}
+        isLoading={updateStatus === "loading" || sendReqStatus === "loading"}
+      />
       <Snackbars
         open={snackbar.open}
         type={snackbar.type}

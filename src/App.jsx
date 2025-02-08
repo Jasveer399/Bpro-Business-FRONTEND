@@ -41,6 +41,8 @@ import PricingPlan from "./Dealer Dashboard/Pages/PricingPlan/PricingPlan";
 import Pricing from "./Pages/Pricing/Pricing";
 import DealersDetails from "./Components/Workers/DealersDetails";
 import DealerProfilePage from "./Dealer Dashboard/Pages/DealerProfile/DealerProfile";
+import Cashfree from "./Dealer Dashboard/Pages/Cashfree";
+import PaymentStatus from "./Dealer Dashboard/Pages/PaymentStatus";
 
 function App() {
   return (
@@ -111,7 +113,10 @@ function App() {
         <Route path="/editProfile" element={<EditProfile />} />
         <Route path="/thankyou" element={<Thankyou />} />
         <Route path="/edtior" element={<Edtior />} />
+        <Route path="/payment" element={<Cashfree />} />
+        <Route path="/payment-status" element={<PaymentStatus />} />
       </Routes>
+
     </>
   );
 }

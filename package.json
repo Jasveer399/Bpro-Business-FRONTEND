@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@cashfreepayments/cashfree-js": "^1.0.5",
     "@ckeditor/ckeditor5-build-classic": "^44.0.0",
     "@ckeditor/ckeditor5-react": "^9.3.1",
     "@emotion/react": "^11.13.3",

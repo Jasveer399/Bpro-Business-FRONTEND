@@ -30,6 +30,8 @@ import { fetchCurrentDealerAsync } from "../../../../Redux/Features/dealersSlice
 import { current } from "@reduxjs/toolkit";
 import { addReviewAsync } from "../../../../Redux/Features/reviewsSlice";
 import Snackbars from "../../../../ui/Snackbars";
+import ImagesSwiper from "./ImagesSwiper";
+import { formatDateString } from "../../../../Utils/Helper";
 
 function ProductDetail() {
   const navigate = useNavigate();
@@ -47,9 +49,8 @@ function ProductDetail() {
     status: allProductsStatus,
     productStatus,
     error,
+    addReviewStatus
   } = useSelector((state) => state.products);
-
-  const { addReviewStatus } = useSelector((state) => state.reviews);
 
   const { categories, status } = useSelector((state) => state.categories);
   const [productRating, setProductRating] = useState(4);
@@ -58,7 +59,7 @@ function ProductDetail() {
 
   const reviewsToShow = showAll
     ? product?.Reviews
-    : product?.Reviews.slice(0, 2);
+    : product?.Reviews?.slice(0, 2);
 
   useEffect(() => {
     if (allProductsStatus === "idle") {
@@ -85,7 +86,6 @@ function ProductDetail() {
       ratings: productRating,
     };
 
-    console.log("fullData:>>", fullData);
     const response = await dispatch(addReviewAsync(fullData));
     console.log("res:>>", response);
     if (response.payload.success) {
@@ -111,6 +111,9 @@ function ProductDetail() {
   console.log("product", product);
   return (
     <>
+      {allProductsStatus !== "succeeded" && productStatus !== "succeeded" && (
+        <div className="w-screen h-screen bg-black/10 flex items-center justify-center absolute"><Loader /></div>
+      )}
       <Navbar />
       <Header />
       <div className="w-full h-full flex my-4 gap-5 font-montserrat">
@@ -120,16 +123,16 @@ function ProductDetail() {
             <h1 className="flex items-center gap-1">
               <ClockIcon size={14} /> {product?.createdAt?.split("T")[0]} |{" "}
             </h1>
-            <h1 className="flex items-center gap-1">
+            {/* <h1 className="flex items-center gap-1">
               <EyeIcon size={14} /> Views: 75 |{" "}
-            </h1>
-            <h1 className="flex items-center gap-1">
+            </h1> */}
+            <h1 className="flex items-center gap-1 uppercase">
               <Bookmark size={14} /> Id: {product?.id?.slice(0, 5)}
             </h1>
           </div>
           <h1 className="text-3xl font-semibold mt-1">{product?.title}</h1>
           <div className=" my-6">
-            <img src={product?.images[0]} className="rounded-lg" />
+            <ImagesSwiper images={product?.images} />
           </div>
           <div>
             <h2 className="font-bold text-2xl mb-3">Contact Information</h2>
@@ -205,7 +208,7 @@ function ProductDetail() {
                       <h3 className="font-semibold">
                         {review?.Dealer?.fullName}
                       </h3>
-                      <small>{review?.createdAt}</small>
+                      <small>{formatDateString(review?.createdAt)}</small>
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
@@ -223,7 +226,7 @@ function ProductDetail() {
               <p className="font-semibold text-[20px]">No Reviews</p>
             </div>
           )}
-          {product?.Reviews.length > 2 && (
+          {product?.Reviews?.length > 2 && (
             <div className="flex justify-center mt-4">
               <button
                 onClick={() => setShowAll(!showAll)}
@@ -333,7 +336,7 @@ function ProductDetail() {
                 Member since {product?.Dealer?.created_at?.split("T")[0]}
               </p>
             </div>
-            <p className="font-semibold underline cursor-pointer text-[#4C7BE3] mb-3">
+            <p className="font-semibold underline cursor-pointer text-[#4C7BE3] mb-3" onClick={() => navigate(`/dealerProfile/${product?.Dealer?.id}`)}>
               View All Ads
             </p>
             <div className="flex gap-5 my-3">
@@ -382,7 +385,7 @@ function ProductDetail() {
                   className="w-[80%] py-2"
                   href={`tel:+91${product?.Dealer?.mobileNo}`}
                 >
-                  <small>Click To Show Number</small>
+                  <small>Click To Call</small>
                   <h1 className="font-bold text-2xl">
                     +91 {product?.Dealer?.mobileNo}
                   </h1>
@@ -428,7 +431,7 @@ function ProductDetail() {
                 categories.map((category) => (
                   <div className="group flex items-center justify-between border-b-2 border-gray-400 py-3 hover:border-[#EB6752] cursor-pointer">
                     <div className="flex items-center gap-5">
-                      <img src={category.iconImgUrl} className="w-10 h-10" />
+                      <img src={category.iconImgUrl} className="w-10 h-10 object-cover" />
                       <h1 className="text-lg font-bold">{category.title}</h1>
                     </div>
                     <h2 className="font-bold border border-gray-400 flex items-center px-3 rounded-lg py-1 text-gray-600 group-hover:bg-[#EB6752] group-hover:text-white group-hover:border-[#EB6752]">

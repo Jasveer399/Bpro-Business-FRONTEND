@@ -291,6 +291,8 @@ const dealersSlice = createSlice({
     specificDealer: null,
     specificDealerStatus: "idle",
     approvalDismissStatus: "idle",
+    changePassStatus: "idle",
+    updateStatus: "idle",
     fetchStatus: "idle",
     error: null,
   },
@@ -352,10 +354,10 @@ const dealersSlice = createSlice({
       })
       // Update Dealer cases
       .addCase(updateDealerAsync.pending, (state) => {
-        state.status = "loading";
+        state.updateStatus = "loading";
       })
       .addCase(updateDealerAsync.fulfilled, (state, action) => {
-        state.status = "succeeded";
+        state.updateStatus = "succeeded";
         const index = state.dealers.findIndex(
           (dealer) => dealer.id === action.payload.data.id
         );
@@ -365,7 +367,7 @@ const dealersSlice = createSlice({
         state.currentDealer = action.payload.data;
       })
       .addCase(updateDealerAsync.rejected, (state, action) => {
-        state.status = "failed";
+        state.updateStatus = "failed";
         state.error = action.payload;
       })
       // Delete Dealer cases
@@ -395,14 +397,14 @@ const dealersSlice = createSlice({
       })
       // ... change dealer password...
       .addCase(changePasswordAsync.pending, (state) => {
-        state.status = "loading";
+        state.changePassStatus = "loading";
       })
       .addCase(changePasswordAsync.fulfilled, (state, action) => {
-        state.status = "succeeded";
+        state.changePassStatus = "succeeded";
         state.changePass = action.payload;
       })
       .addCase(changePasswordAsync.rejected, (state, action) => {
-        state.status = "failed";
+        state.changePassStatus = "failed";
         state.error = action.payload;
         state.changePass = null;
       })
@@ -423,15 +425,14 @@ const dealersSlice = createSlice({
       })
       // ... send request ...
       .addCase(sendRequestAsync.pending, (state) => {
-        state.status = "loading";
+        state.sendReqStatus = "loading";
       })
       .addCase(sendRequestAsync.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        console.log("action:>>>", action);
+        state.sendReqStatus = "succeeded";
         state.currentDealer.isReqSent = true;
       })
       .addCase(sendRequestAsync.rejected, (state, action) => {
-        state.status = "failed";
+        state.sendReqStatus = "failed";
         state.error = action.payload;
       })
       // ... fetch requests ...

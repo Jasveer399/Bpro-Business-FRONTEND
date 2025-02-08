@@ -105,8 +105,8 @@ function EditProductLisiting() {
       // Set categories
       if (product.categories) {
         const selectedCats = product.categories.map((cat) => ({
-          label: cat,
-          value: id,
+          label: cat.title,
+          value: cat.id,
         }));
         setSelectedCategories(selectedCats);
       }
@@ -315,6 +315,7 @@ function EditProductLisiting() {
               <MultiSelect
                 options={categoriesOptions}
                 value={selectedCategories}
+
                 onChange={setSelectedCategories}
                 labelledBy="Categories"
                 className="w-full h-15"
@@ -524,7 +525,7 @@ function EditProductLisiting() {
           </div>
           <button
             disabled={isSubmitting}
-            className="w-32 bg-blue border-2 border-white shadow-2xl hover:shadow-inner px-6 py-3 text-lg font-bold rounded-lg text-white mb-10"
+            className="w-32 bg-blue border-2 flex items-center justify-center border-white shadow-2xl hover:shadow-inner px-6 py-3 text-lg font-bold rounded-lg text-white mb-10"
           >
             {isSubmitting ? <Loader /> : "Submit"}
           </button>
