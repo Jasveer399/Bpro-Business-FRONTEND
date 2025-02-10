@@ -9,6 +9,7 @@ import {
 import Loader from "../../ui/Loader";
 import Snackbars from "../../ui/Snackbars";
 import ConfirmationDialog from "../../ui/ConfirmationDialog";
+import { calculateRemainingDays } from "../../Utils/Helper";
 
 const AllDealers = () => {
   const dispatch = useDispatch();
@@ -103,7 +104,7 @@ const AllDealers = () => {
                       <span
                         className={`px-2 py-1 rounded-full font-semibold text-[#49B27A]`}
                       >
-                        200 Days Left
+                          {calculateRemainingDays(dealer.created_at  , dealer.Plan.planDuration)}
                       </span>
                     </td>
                     <td className="py-5 flex justify-center gap-4">

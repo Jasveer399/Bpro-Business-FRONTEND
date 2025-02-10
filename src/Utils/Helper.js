@@ -98,6 +98,44 @@ export function formatDateString(dateString) {
   }
 }
 
+function calculateRemainingDays(createdAt, planDuration) {
+  // Convert creation date to Date object
+  const startDate = new Date(createdAt);
+  const today = new Date();
+  
+  // Calculate end date based on plan duration
+  let endDate = new Date(startDate);
+  
+  switch(planDuration) {
+    case "One Month":
+      endDate.setMonth(endDate.getMonth() + 1);
+      break;
+    case "Three Month":
+      endDate.setMonth(endDate.getMonth() + 3);
+      break;
+    case "Six Month":
+      endDate.setMonth(endDate.getMonth() + 6);
+      break;
+    case "One Year":
+      endDate.setFullYear(endDate.getFullYear() + 1);
+      break;
+    case "Three Year":
+      endDate.setFullYear(endDate.getFullYear() + 3);
+      break;
+    default:
+      throw new Error("Invalid plan duration");
+  }
+  
+  // Calculate remaining time in milliseconds
+  const remainingTime = endDate.getTime() - today.getTime();
+  
+  // Convert to days and round up
+  const remainingDays = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
+  
+  // Return 0 if plan has expired
+  return Math.max(0, remainingDays);
+}
+
 export {
   storeDealerAccessToken,
   removeDealerAccessToken,
@@ -106,4 +144,5 @@ export {
   isColorDark,
   uploadFile,
   deleteFile,
+  calculateRemainingDays
 };
