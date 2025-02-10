@@ -195,7 +195,7 @@ function YourListing({ status, products }) {
                 <tr>
                   <td colSpan={9}>
                     <div className="flex items-center justify-center my-5">
-                      <h1 className="text-2xl font-semibold">
+                      <h1 className="text-lg font-bold">
                         No Listings Found
                       </h1>
                     </div>

@@ -18,7 +18,7 @@ function Pricing() {
               </button>
             }
             width="w-[35%]"
-            height="h-[70%]"
+            height="h-[76%]"
           >
             <AddPlan />
           </Dialog>

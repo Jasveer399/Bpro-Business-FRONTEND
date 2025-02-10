@@ -129,7 +129,7 @@ function DealerProfile() {
           )}
         </div>
       </div>
-      <div className="w-full flex font-montserrat">
+      <div className="w-full flex font-montserrat mb-8">
         <div className="w-[50%] px-5">
           <table className="border border-collapse">
             <tr>
@@ -169,7 +169,7 @@ function DealerProfile() {
                 Website
               </th>
               <td className="py-[6px] px-3 border border-gray-400 text-left w-56">
-                {dealer?.website}
+                {dealer?.website || "N/A"}
               </td>
             </tr>
             <tr>
@@ -201,7 +201,7 @@ function DealerProfile() {
                 VAT No.
               </th>
               <td className="py-[6px] px-3 border border-gray-400 text-left w-56">
-                {dealer?.vatNo}
+                {dealer?.vatNo || "N/A"}
               </td>
             </tr>
             <tr>
@@ -252,6 +252,30 @@ function DealerProfile() {
                 {dealer?.country}
               </td>
             </tr>
+            <tr>
+              <th className="py-[6px] px-3 border border-gray-400 text-left w-52">
+                Plan Name
+              </th>
+              <td className="py-[6px] px-3 border border-gray-400 text-left w-56">
+                {dealer?.Plan?.planName}
+              </td>
+            </tr>
+            <tr>
+              <th className="py-[6px] px-3 border border-gray-400 text-left w-52">
+                Plan Duration
+              </th>
+              <td className="py-[6px] px-3 border border-gray-400 text-left w-56">
+                {dealer?.Plan?.planDuration}
+              </td>
+            </tr>
+            <tr>
+              <th className="py-[6px] px-3 border border-gray-400 text-left w-52">
+                Plan Price
+              </th>
+              <td className="py-[6px] px-3 border border-gray-400 text-left w-56">
+                {dealer?.Plan?.planPrice}
+              </td>
+            </tr>
           </table>
         </div>
         <div className="w-[50%]">
@@ -275,66 +299,77 @@ function DealerProfile() {
           </div>
 
           {/* PAN Card Section */}
-          <h1 className="text-xl font-semibold mt-5">PAN Card</h1>
-          <div className="flex gap-4 mt-2">
-            <div className="w-60 h-40 overflow-hidden rounded-lg border border-gray-200">
-              <img
-                src={dealer?.panFrontUrl}
-                alt="PAN Card Front"
-                className="w-full h-full object-contain bg-gray-50"
-              />
-            </div>
-            <div className="w-60 h-40 overflow-hidden rounded-lg border border-gray-200">
-              <img
-                src={dealer?.panBackUrl}
-                alt="PAN Card Back"
-                className="w-full h-full object-contain bg-gray-50"
-              />
-            </div>
-          </div>
+          {dealer?.panFrontUrl ||
+            (dealer?.panBackUrl && (
+              <>
+                <h1 className="text-xl font-semibold mt-5">PAN Card</h1>
+                <div className="flex gap-4 mt-2">
+                  <div className="w-60 h-40 overflow-hidden rounded-lg border border-gray-200">
+                    <img
+                      src={dealer?.panFrontUrl}
+                      alt="PAN Card Front"
+                      className="w-full h-full object-contain bg-gray-50"
+                    />
+                  </div>
+                  <div className="w-60 h-40 overflow-hidden rounded-lg border border-gray-200">
+                    <img
+                      src={dealer?.panBackUrl}
+                      alt="PAN Card Back"
+                      className="w-full h-full object-contain bg-gray-50"
+                    />
+                  </div>
+                </div>
+              </>
+            ))}
 
           {/* Business Documents Section */}
-          <h1 className="text-xl font-semibold mt-5">Business Documents</h1>
-          <div className="grid grid-cols-2 gap-4 mt-2 mb-5">
-            {dealer?.docUrl?.map((doc, index) => (
-              <div
-                key={index}
-                className="w-60 h-40 overflow-hidden rounded-lg border border-gray-200"
-              >
-                {doc?.toLowerCase().endsWith(".pdf") ? (
-                  <a
-                    href={doc}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center w-full h-full bg-gray-50 hover:bg-gray-100"
+          {dealer?.docUrl?.length > 0 && (
+            <>
+              <h1 className="text-xl font-semibold mt-5">Business Documents</h1>
+              <div className="grid grid-cols-2 gap-4 mt-2 mb-5">
+                {dealer?.docUrl?.map((doc, index) => (
+                  <div
+                    key={index}
+                    className="w-60 h-40 overflow-hidden rounded-lg border border-gray-200"
                   >
-                    <div className="text-center">
-                      <svg
-                        className="w-12 h-12 mx-auto text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+                    {doc?.toLowerCase().endsWith(".pdf") ? (
+                      <a
+                        href={doc}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center w-full h-full bg-gray-50 hover:bg-gray-100"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                        />
-                      </svg>
-                      <span className="text-sm text-blue-600">View PDF</span>
-                    </div>
-                  </a>
-                ) : (
-                  <img
-                    src={doc}
-                    alt={`Business Document ${index + 1}`}
-                    className="w-full h-full object-contain bg-gray-50"
-                  />
-                )}
+                        <div className="text-center">
+                          <svg
+                            className="w-12 h-12 mx-auto text-gray-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                            />
+                          </svg>
+                          <span className="text-sm text-blue-600">
+                            View PDF
+                          </span>
+                        </div>
+                      </a>
+                    ) : (
+                      <img
+                        src={doc}
+                        alt={`Business Document ${index + 1}`}
+                        className="w-full h-full object-contain bg-gray-50"
+                      />
+                    )}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          )}
         </div>
       </div>
       <ConfirmationDialog

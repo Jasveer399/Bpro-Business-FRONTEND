@@ -30,7 +30,6 @@ function EditProfile() {
       dayEndTime: "",
     },
   });
-  const location = useLocation();
   const dispatch = useDispatch();
   const { status: dealerStatus } = useSelector((state) => state.dealers);
   const { categories, status: categoryStatus } = useSelector(
@@ -49,9 +48,9 @@ function EditProfile() {
     }
   }, [dispatch, categoryStatus]);
 
-  if (location?.state?.data) {
-    setValue("email", location?.state?.data?.email);
-    setValue("mobileNo", location?.state?.data?.mobileNo);
+  if (sessionStorage.getItem("email") && sessionStorage.getItem("mobileNo")) {
+    setValue("email", sessionStorage.getItem("email"));
+    setValue("mobileNo", sessionStorage.getItem("mobileNo"));
   }
   const [selectedBusinessType, setSelectedBusinessType] = useState([]);
 
@@ -129,13 +128,13 @@ function EditProfile() {
       );
 
       if (!adhaarFrontContainer.file || !adhaarBackContainer.file) {
-        console.log("working...")
+        console.log("working...");
         setSnackbar({
           open: true,
           type: "error",
           text: "Aadhaar Card images are required",
         });
-        return
+        return;
       }
 
       const panFrontContainer = panImageContainers.find(
@@ -172,11 +171,12 @@ function EditProfile() {
           type: "success",
           text: "Profile Updated Successfully !!",
         });
-        if (location?.state?.data?.email) {
+        sessionStorage.clear()
+        // if (location?.state?.data?.email) {
           setTimeout(() => {
             navigate("/thankyou", { replace: true });
           }, 500);
-        }
+        // }
         reset(); // Reset form
         setTags([]); // Reset tags
         setImageContainers([{ id: 0, file: null }]); // Reset images

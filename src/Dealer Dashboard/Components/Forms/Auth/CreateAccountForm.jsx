@@ -8,6 +8,8 @@ import { fetchWorkerIdAndNameAsync } from "../../../../Redux/Features/workersSli
 import { addDealerAsync } from "../../../../Redux/Features/dealersSlice";
 import Loader from "../../../../ui/Loader";
 import Snackbars from "../../../../ui/Snackbars";
+import { load } from "@cashfreepayments/cashfree-js";
+import { getSessionId } from "../../../../Utils/getSessionId";
 
 function CreateAccountForm() {
   const {
@@ -22,6 +24,16 @@ function CreateAccountForm() {
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [cashfree, setCashfree] = useState(null);
+
+  useEffect(() => {
+    const initializeSDK = async () => {
+      const instance = await load({ mode: "sandbox" });
+      setCashfree(instance);
+    };
+
+    initializeSDK();
+  }, []); // Run only once on component mount
 
   useEffect(() => {
     if (status === "idle") {
@@ -30,34 +42,94 @@ function CreateAccountForm() {
   }, [status, dispatch]);
 
   const registerDealer = async (data) => {
-    const response = await dispatch(addDealerAsync(data));
-
-    console.log("response", response);
+    if (
+      !sessionStorage.getItem("planName") ||
+      !sessionStorage.getItem("planDuration") ||
+      !sessionStorage.getItem("planPrice")
+    ) {
+      setSnackbar({
+        open: true,
+        type: "error",
+        text: "Please select a plan",
+      });
+      return;
+    }
+    const fullData = {
+      ...data,
+      planId: sessionStorage.getItem("planId"),
+    }
+    const response = await dispatch(addDealerAsync(fullData));
 
     if (response.payload.success) {
       setSnackbar({
         open: true,
         type: "success",
-        text: response.payload.message,
+        text: "Redirecting to payment page...",
       });
-      setTimeout(() => {
-        navigate("/editProfile", {
-          state: {
-            data: {
-              email: getValues("email"),
-              mobileNo: getValues("mobileNo"),
-            },
-          },
-        });
-      }, 500);
+      sessionStorage.setItem("email", getValues("email"));
+      sessionStorage.setItem("mobileNo", getValues("mobileNo"));
+      sessionStorage.setItem("dealerId", response.payload.data.id);
+      handlePayment();
+      // setTimeout(() => {
+      //   navigate("/editProfile", {
+      //     state: {
+      //       data: {
+      //         email: getValues("email"),
+      //         mobileNo: getValues("mobileNo"),
+      //       },
+      //     },
+      //   });
+      // }, 500);
     } else {
       setSnackbar({
         open: true,
         type: "error",
-        text: response.payload || response.error.message || "Error creating account",
+        text:
+          response.payload ||
+          response.error.message ||
+          "Error creating account",
       });
     }
   };
+
+  const handlePayment = async () => {
+    try {
+      const { sessionId, orderId } = await getSessionId();
+
+      if (!cashfree) {
+        setSnackbar({
+          open: true,
+          type: "error",
+          text: "Cashfree SDK not loaded yet",
+        });
+        return;
+      }
+
+      const checkOutOptions = {
+        paymentSessionId: sessionId,
+        container: document.getElementById("cashfree-modal"),
+        redirectTarget: "_self", // Keep user on the same page
+      };
+
+      cashfree
+        .checkout(checkOutOptions)
+        .then(async (res) => {
+          console.log("Payment Initialized", res);
+        })
+        .catch((err) => {
+          console.log("Payment Error", err);
+        });
+    } catch (error) {
+      console.error("Payment Error:", error);
+      setSnackbar({
+        open: true,
+        type: "error",
+        text: error?.response?.data?.message || "Payment Error",
+      });
+    }
+  };
+
+  console.log("workers", workers);
 
   return (
     <>
@@ -71,10 +143,10 @@ function CreateAccountForm() {
       </div>
       <div className="max-w-lg mx-auto font-montserrat px-5">
         <div className="text-center">
-          <h1 className="font-semibold text-4xl my-6">Create Account</h1>
-          {/* <p className="text-[#777] text-lg mt-2 mb-4">
-            Sign in with this accoss the following sites.
-          </p> */}
+          <h1 className="font-semibold text-4xl mt-6 mb-2">Create Account</h1>
+          <p className="text-[#777] text-base mb-4">
+            After creating account you will redirect to payment page
+          </p>
         </div>
         <form onSubmit={handleSubmit(registerDealer)} className="space-y-6">
           <AuthInput
@@ -147,6 +219,46 @@ function CreateAccountForm() {
               />
             )}
           />
+          {sessionStorage.getItem("planName") ||
+          sessionStorage.getItem("planDuration") ||
+          sessionStorage.getItem("planPrice") ? (
+            <div className="border border-gray-400 rounded-md p-3">
+              <h1 className="text-center text-lg font-[700] underline mb-2">
+                Plan Overview
+              </h1>
+              <div className="flex items-center justify-between">
+                <h1 className="font-[600]">Plan Name</h1>
+                <h1 className="font-[400]">
+                  {sessionStorage.getItem("planName")}
+                </h1>
+              </div>
+              <div className="flex items-center justify-between">
+                <h1 className="font-[600]">Plan Price</h1>
+                <h1 className="font-[400]">
+                  Rs. {sessionStorage.getItem("planPrice")}
+                </h1>
+              </div>
+              <div className="flex items-center justify-between">
+                <h1 className="font-[600]">Duration</h1>
+                <h1 className="font-[400]">
+                  {sessionStorage.getItem("planDuration")}
+                </h1>
+              </div>
+            </div>
+          ) : (
+            <div className="text-sm">
+              <div>
+                No Plan Selected.{" "}
+                <Link
+                  to={"/pricing-plan"}
+                  className="font-semibold text-blue hover:underline"
+                >
+                  Select a plan{" "}
+                </Link>
+                first to complete registeration.
+              </div>
+            </div>
+          )}
           <div className="flex justify-center w-full">
             <button
               type="submit"

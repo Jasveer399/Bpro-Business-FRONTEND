@@ -35,7 +35,9 @@ function PricingPlan() {
       </div>
       <div className="bg-white flex items-center justify-center mb-5 p-4 font-maven">
         {plansStatus === "loading" ? (
-          <div className="py-10"><Loader /></div>
+          <div className="py-10">
+            <Loader />
+          </div>
         ) : plans && plans.length > 0 ? (
           plans.map((plan, index) => (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -70,10 +72,13 @@ function PricingPlan() {
                   {plan.planDuration}
                 </h2>
 
-
                 <h2 className="text-5xl text-[#605e7e] mb-3 p-2 mt-2 flex flex-col">
                   <span className="text-lg font-[500]">Features</span>
-                  <span className="text-base">{plan.planFeatures?.map((feature, i) => <p key={i}>{feature}</p>)}</span>
+                  <span className="text-base">
+                    {plan.planFeatures?.map((feature, i) => (
+                      <p key={i}>{feature}</p>
+                    ))}
+                  </span>
                 </h2>
                 {/* Features */}
                 {/* <ul className="text-gray-600 space-y-2 mb-7">
@@ -100,9 +105,13 @@ function PricingPlan() {
                   style={{
                     boxShadow: "0 -1px 0px rgba(50, 50, 50, 0.2) inset",
                   }}
-                  onClick={() =>
-                    navigate(`${token ? "/product-listing" : "/register"}`)
-                  }
+                  onClick={() => {
+                    sessionStorage.setItem("planName", plan.planName);
+                    sessionStorage.setItem("planDuration", plan.planDuration);
+                    sessionStorage.setItem("planPrice", plan.planPrice);
+                    sessionStorage.setItem("planId", plan.id);
+                    navigate(`${token ? "/product-listing" : "/register"}`);
+                  }}
                 >
                   Choose Plan
                 </button>
