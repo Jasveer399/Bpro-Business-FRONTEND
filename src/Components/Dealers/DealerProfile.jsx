@@ -81,8 +81,8 @@ function DealerProfile() {
   };
   return (
     <>
-      <div className="flex justify-between items-center bg-transparent pt-24 pb-5 px-5 font-montserrat">
-        <h1 className="text-xl font-bold">
+      <div className="flex justify-between items-center bg-transparent pt-24 pb-5 px-5 font-montserrat dark:bg-darkPrimary">
+        <h1 className="text-xl font-bold dark:text-colorText">
           <span className="uppercase">Dealer - {dealer?.fullName} </span>
           <span className="text-base">
             {dealer?.verified ? "" : "(Pending Approval)"}
@@ -129,7 +129,7 @@ function DealerProfile() {
           )}
         </div>
       </div>
-      <div className="w-full flex font-montserrat mb-8">
+      <div className="w-full flex font-montserrat pb-8 dark:bg-darkPrimary dark:text-white">
         <div className="w-[50%] px-5">
           <table className="border border-collapse">
             <tr>
@@ -273,7 +273,7 @@ function DealerProfile() {
                 Plan Price
               </th>
               <td className="py-[6px] px-3 border border-gray-400 text-left w-56">
-                {dealer?.Plan?.planPrice}
+                Rs. {dealer?.Plan?.planPrice}
               </td>
             </tr>
           </table>

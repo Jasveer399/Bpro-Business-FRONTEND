@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCategoriesAsync } from "../../../../Redux/Features/categoriesSlice";
 import Loader from "../../../../ui/Loader";
 import {
+  fetchAllProductsAsync,
   fetchProductsAsync,
   setProduct,
 } from "../../../../Redux/Features/productSlice";
@@ -49,7 +50,8 @@ function ProductDetail() {
     status: allProductsStatus,
     productStatus,
     error,
-    addReviewStatus
+    addReviewStatus,
+    allProducts
   } = useSelector((state) => state.products);
 
   const { categories, status } = useSelector((state) => state.categories);
@@ -63,15 +65,20 @@ function ProductDetail() {
 
   useEffect(() => {
     if (allProductsStatus === "idle") {
-      dispatch(fetchProductsAsync());
+      dispatch(fetchAllProductsAsync());
     }
   }, [allProductsStatus, dispatch]);
 
+  console.log("allproduct sttaus", allProductsStatus)
+  console.log("allproducts", categories )
+
   useEffect(() => {
-    if (allProductsStatus === "succeeded") {
-      dispatch(setProduct(id));
+    if (allProducts?.length > 0) {
+      if (productStatus === "idle") {
+        dispatch(setProduct(id));
+      }
     }
-  }, [allProductsStatus, dispatch]);
+  }, [allProducts, dispatch, productStatus]);
 
   useEffect(() => {
     if (status === "idle") {
@@ -111,7 +118,7 @@ function ProductDetail() {
   console.log("product", product);
   return (
     <>
-      {allProductsStatus !== "succeeded" && productStatus !== "succeeded" && (
+      {!allProducts || !product && (
         <div className="w-screen h-screen bg-black/10 flex items-center justify-center absolute"><Loader /></div>
       )}
       <Navbar />
@@ -150,11 +157,11 @@ function ProductDetail() {
                 </tr>
                 <tr className="text-lg border-b border-gray-400">
                   <th className="w-44 text-left pt-5 pb-3">Categories:</th>
-                  <td className="pt-5 pb-3">Cleaning</td>
+                  <td className="pt-5 pb-3">{product?.categories?.map((cat) => cat.title + ", ")}</td>
                 </tr>
                 <tr className="text-lg border-b border-gray-400">
                   <th className="w-44 text-left pt-5 pb-3">Phone:</th>
-                  <td className="pt-5 pb-3">{product?.Dealer?.mobileNo}</td>
+                  <td className="pt-5 pb-3">+91 {product?.Dealer?.mobileNo}</td>
                 </tr>
                 <tr className="text-lg border-b border-gray-400">
                   <th className="w-44 text-left pt-5 pb-3">Address:</th>
@@ -279,7 +286,7 @@ function ProductDetail() {
               {addReviewStatus === "loading" ? <Loader /> : "Post Review"}
             </button>
           </form>
-          <h2 className="font-bold text-2xl my-5">Related Listings</h2>
+          {/* <h2 className="font-bold text-2xl my-5">Related Listings</h2>
           <div className="flex gap-4 relative border p-3 rounded-lg border-gray-400">
             <img src="/mumbai.png" className="rounded-lg w-80" />
             <div className="mt-2">
@@ -304,7 +311,7 @@ function ProductDetail() {
             <div className="absolute top-3 right-3 cursor-pointer">
               <IoBookmarkOutline size={24} className="" />
             </div>
-          </div>
+          </div> */}
         </div>
         <div className="w-[25%]">
           <div className="bg-white border border-gray-400 flex items-center gap-4 px-4 py-6 rounded-lg">
@@ -368,14 +375,14 @@ function ProductDetail() {
                 </a>
               )}
             </div>
-            <div className="flex justify-center w-full gap-4 mb-4">
+            {/* <div className="flex justify-center w-full gap-4 mb-4">
               <button className="w-[50%] border border-gray-400 text-gray-600 font-semibold py-2 rounded-md">
                 Send Message
               </button>
               <button className="w-[50%] border border-gray-400 text-gray-600 font-semibold py-2 rounded-md">
                 Send Offer
               </button>
-            </div>
+            </div> */}
             {product?.Dealer?.mobileNo && (
               <div className="flex w-full bg-[#4C7BE3] text-white h-full rounded-lg shadow-md mb-4">
                 <div className="w-[20%] bg-[#4171d9] flex items-center justify-center rounded-l-lg">
@@ -424,7 +431,7 @@ function ProductDetail() {
             <h2 className="font-bold text-2xl">CATEGORIES</h2>
             <div>
               {status === "loading" ? (
-                <div>
+                <div className="flex items-center justify-center">
                   <Loader />
                 </div>
               ) : categories.length > 0 ? (
@@ -435,7 +442,7 @@ function ProductDetail() {
                       <h1 className="text-lg font-bold">{category.title}</h1>
                     </div>
                     <h2 className="font-bold border border-gray-400 flex items-center px-3 rounded-lg py-1 text-gray-600 group-hover:bg-[#EB6752] group-hover:text-white group-hover:border-[#EB6752]">
-                      0
+                      {category?._count?.products || 0}
                     </h2>
                   </div>
                 ))

@@ -5,6 +5,8 @@ import { useSelector } from "react-redux";
 function Bookmark() {
   const bookmarkedItems = useSelector((state) => state.bookmarks.items);
 
+  console.log("bookmarkedItems: ", bookmarkedItems);
+
   return (
     <div className="my-6 md:my-10">
       {bookmarkedItems.length > 0 ? (
@@ -14,7 +16,7 @@ function Bookmark() {
           </h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 m-2 md:m-4 gap-3 md:gap-5">
             {bookmarkedItems.map((item) => (
-              <BookmarkCard key={item.id} item={item} />
+              <BookmarkCard key={item.id} product={item.Product} />
             ))}
           </div>
         </>

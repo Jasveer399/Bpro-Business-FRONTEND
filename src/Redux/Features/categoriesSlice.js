@@ -1,6 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { addCategory, deleteCategory, getAllCategories, updateCategory } from "../../Utils/server";
+import {
+  addCategory,
+  deleteCategory,
+  getAllCategories,
+  getSpecificCategory,
+  updateCategory,
+} from "../../Utils/server";
 
 export const addCategoryAsync = createAsyncThunk(
   "categories/addCategory",
@@ -22,65 +28,85 @@ export const addCategoryAsync = createAsyncThunk(
   }
 );
 
-
 // New thunk for fetching categories
 export const fetchCategoriesAsync = createAsyncThunk(
-    "categories/fetchCategories",
-    async (_, { rejectWithValue }) => {
-      try {
-        const response = await axios.get(getAllCategories, { withCredentials: true });
-        return response.data.data;
-      } catch (error) {
-        console.error("Error in fetchCategoriesAsync:", error);
-        return rejectWithValue(
-          error.response ? error.response.data : error.message
-        );
-      }
+  "categories/fetchCategories",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(getAllCategories, {
+        withCredentials: true,
+      });
+      return response.data.data;
+    } catch (error) {
+      console.error("Error in fetchCategoriesAsync:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
     }
-  );
-  
-  // New thunk for updating a category
-  export const updateCategoryAsync = createAsyncThunk(
-    "categories/updateCategory",
-    async ({id, formData}, { rejectWithValue }) => {
-      try {
-        console.log(id, formData)
-        const response = await axios.put(`${updateCategory}/${id}`, formData, {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        return response.data;
-      } catch (error) {
-        console.error("Error in updateCategoryAsync:", error);
-        return rejectWithValue(
-          error.response ? error.response.data : error.message
-        );
-      }
+  }
+);
+
+export const fetchSpecificCategoryAsync = createAsyncThunk(
+  "categories/fetchSpecificCategory",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${getSpecificCategory}/${id}`, {
+        withCredentials: true,
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error in fetchCategoriesAsync:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
     }
-  );
-  
-  // New thunk for deleting a category
-  export const deleteCategoryAsync = createAsyncThunk(
-    "categories/deleteCategory",
-    async (id, { rejectWithValue }) => {
-      try {
-        await axios.delete(`${deleteCategory}/${id}`, { withCredentials: true });
-        return id;
-      } catch (error) {
-        console.error("Error in deleteCategoryAsync:", error);
-        return rejectWithValue(
-          error.response ? error.response.data : error.message
-        );
-      }
+  }
+);
+
+// New thunk for updating a category
+export const updateCategoryAsync = createAsyncThunk(
+  "categories/updateCategory",
+  async ({ id, formData }, { rejectWithValue }) => {
+    try {
+      console.log(id, formData);
+      const response = await axios.put(`${updateCategory}/${id}`, formData, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error in updateCategoryAsync:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
     }
-  );
+  }
+);
+
+// New thunk for deleting a category
+export const deleteCategoryAsync = createAsyncThunk(
+  "categories/deleteCategory",
+  async (id, { rejectWithValue }) => {
+    try {
+      await axios.delete(`${deleteCategory}/${id}`, { withCredentials: true });
+      return id;
+    } catch (error) {
+      console.error("Error in deleteCategoryAsync:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
 
 const categoriesSlice = createSlice({
   name: "categories",
   initialState: {
     categories: [],
+    specificCategory: null,
+    specificCategoryStatus: "idle",
     status: "idle",
     updateStatus: "idle",
     deleteStatus: "idle",
@@ -119,7 +145,9 @@ const categoriesSlice = createSlice({
       })
       .addCase(updateCategoryAsync.fulfilled, (state, action) => {
         state.updateStatus = "succeeded";
-        const index = state.categories.findIndex(cat => cat.id === action.payload.data.id);
+        const index = state.categories.findIndex(
+          (cat) => cat.id === action.payload.data.id
+        );
         if (index !== -1) {
           state.categories[index] = action.payload.data;
         }
@@ -134,10 +162,24 @@ const categoriesSlice = createSlice({
       })
       .addCase(deleteCategoryAsync.fulfilled, (state, action) => {
         state.deleteStatus = "succeeded";
-        state.categories = state.categories.filter(cat => cat.id !== action.payload);
+        state.categories = state.categories.filter(
+          (cat) => cat.id !== action.payload
+        );
       })
       .addCase(deleteCategoryAsync.rejected, (state, action) => {
         state.deleteStatus = "failed";
+        state.error = action.payload;
+      })
+      // Fetch Specific Category cases
+      .addCase(fetchSpecificCategoryAsync.pending, (state) => {
+        state.specificCategoryStatus = "loading";
+      })
+      .addCase(fetchSpecificCategoryAsync.fulfilled, (state, action) => {
+        state.specificCategoryStatus = "succeeded";
+        state.specificCategory = action.payload.data;
+      })
+      .addCase(fetchSpecificCategoryAsync.rejected, (state, action) => {
+        state.specificCategoryStatus = "failed";
         state.error = action.payload;
       });
   },

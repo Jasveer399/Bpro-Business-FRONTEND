@@ -16,19 +16,24 @@ import {
   fetchUserBookmarksAsync,
 } from "../../../Redux/Features/bookmarkSlice";
 import DealerProfileCard from "../../Components/Home/DealerProfileCard";
+import Loader from "../../../ui/Loader";
 
 function Home() {
   const dispatch = useDispatch();
   const { bannersCategory, status, error } = useSelector(
     (state) => state.bannersCategory
   );
-  const [updatedProducts, setUpdatedProducts] = useState([])
-  
+  const [updatedProducts, setUpdatedProducts] = useState([]);
+
   // Fetch products from the listings
-  const { allProducts, status: productStatus, allProductStatus } = useSelector(
-    (state) => state.products
+  const {
+    allProducts,
+    status: productStatus,
+    allProductStatus,
+  } = useSelector((state) => state.products);
+  const { items: bookmarkedItems, bookmarkStatus } = useSelector(
+    (state) => state.bookmarks
   );
-  const { items: bookmarkedItems, bookmarkStatus } = useSelector((state) => state.bookmarks);
 
   useEffect(() => {
     if (status === "idle") {
@@ -38,7 +43,7 @@ function Home() {
     if (allProductStatus === "idle") {
       dispatch(fetchAllProductsAsync());
     }
-    
+
     if (bookmarkStatus === "idle") {
       dispatch(fetchUserBookmarksAsync());
     }
@@ -51,7 +56,7 @@ function Home() {
     }));
     setUpdatedProducts(updatedData);
   }, [allProducts, bookmarkedItems]);
-  
+
   const handleBookmarkToggle = (product) => {
     const isBookmarked = product.bookmark;
 
@@ -59,9 +64,11 @@ function Home() {
       p.id === product.id ? { ...p, bookmark: !isBookmarked } : p
     );
     setUpdatedProducts(updatedProductList);
-  
-    const bookmarkedItem = bookmarkedItems.find((item) => item.productId === product.id);
-  
+
+    const bookmarkedItem = bookmarkedItems.find(
+      (item) => item.productId === product.id
+    );
+
     if (isBookmarked && bookmarkedItem) {
       // Remove bookmark using the item's ID
       dispatch(deleteBookmarkAsync(bookmarkedItem.id));
@@ -102,6 +109,7 @@ function Home() {
     }
   };
 
+  console.log("updatedProducts:", updatedProducts);
   return (
     <>
       <Navbar />
@@ -152,15 +160,25 @@ function Home() {
           <h1 className="font-montserrat font-extrabold text-xl md:text-2xl mx-3 md:mx-5">
             Popular Searches
           </h1>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 m-2 md:m-4 gap-3 md:gap-5">
-            {updatedProducts?.map((product) => (
-              <PopularSearches
-                key={product.id}
-                product={product}
-                onBookmarkToggle={handleBookmarkToggle}
-              />
-            ))}
-          </div>
+          {allProductStatus === "loading" ? (
+            <div className="flex items-center justify-center my-4">
+              <Loader />
+            </div>
+          ) : updatedProducts && updatedProducts.length > 0 ? (
+            updatedProducts?.map((product) => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 m-2 md:m-4 gap-3 md:gap-5">
+                <PopularSearches
+                  key={product.id}
+                  product={product}
+                  onBookmarkToggle={handleBookmarkToggle}
+                />
+              </div>
+            ))
+          ) : (
+            <div className="font-[600] text-lg flex justify-center items-center">
+              No Products Available
+            </div>
+          )}
           {allProducts?.length >= 8 && (
             <div className="flex items-center justify-center">
               <button

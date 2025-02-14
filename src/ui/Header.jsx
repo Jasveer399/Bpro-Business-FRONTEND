@@ -116,28 +116,6 @@ function Header({ isSideBarFull }) {
           }`}
         >
           <div className="relative theme-dropdown">
-            <button
-              className="p-2.5 hover:bg-gray-700/20 rounded-lg"
-              // onClick={(e) => {
-              //   e.stopPropagation();
-              //   setShowThemeDropdown(!showThemeDropdown);
-              // }}
-            >
-              {theme === "light" ? (
-                <PiSunDimDuotone
-                  size={23}
-                  className="dark:text-gray-300 text-neutral-800 animate-pulse hover:w-6 hover:h-6 transform duration-150 ease-in-out"
-                  onClick={() => handleThemeToggle("Light")}
-                />
-              ) : (
-                <PiMoonDuotone
-                  size={23}
-                  className="dark:text-gray-300 text-neutral-800 hover:w-6 hover:h-6 transform duration-150 ease-in-out"
-                  onClick={() => handleThemeToggle("Dark")}
-                />
-              )}
-            </button>
-
             {showThemeDropdown && (
               <DropdownPortal>
                 <div
@@ -244,7 +222,29 @@ function Header({ isSideBarFull }) {
               ))}
           </div>
 
-          {headerIcons.map((iconData, index) => (
+          <button
+            className="p-2.5 hover:bg-gray-700/20 rounded-lg"
+            // onClick={(e) => {
+            //   e.stopPropagation();
+            //   setShowThemeDropdown(!showThemeDropdown);
+            // }}
+          >
+            {theme === "light" ? (
+              <PiSunDimDuotone
+                size={23}
+                className="dark:text-gray-300 text-neutral-800 animate-pulse hover:w-6 hover:h-6 transform duration-150 ease-in-out"
+                onClick={() => handleThemeToggle("Light")}
+              />
+            ) : (
+              <PiMoonDuotone
+                size={23}
+                className="dark:text-gray-300 text-neutral-800 hover:w-6 hover:h-6 transform duration-150 ease-in-out"
+                onClick={() => handleThemeToggle("Dark")}
+              />
+            )}
+          </button>
+
+          {/* {headerIcons.map((iconData, index) => (
             <button
               key={index}
               className="p-2.5 h-10 hover:bg-gray-700/20 rounded-lg"
@@ -262,7 +262,7 @@ function Header({ isSideBarFull }) {
               alt="user-image"
               className="rounded-full w-8 h-8"
             />
-          </button>
+          </button> */}
         </div>
 
         {/* Mobile Menu */}

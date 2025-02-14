@@ -60,6 +60,8 @@ function CreateAccountForm() {
     }
     const response = await dispatch(addDealerAsync(fullData));
 
+    console.log("response", response);
+
     if (response.payload.success) {
       setSnackbar({
         open: true,

@@ -157,7 +157,7 @@ function DealerProfilePage() {
             </div>
 
             <div className="listingContainer">
-              <h1 className="text-3xl font-semibold">
+              <h1 className="text-3xl font-semibold mb-5">
                 Listings By - {specificDealer?.fullName}
               </h1>
 

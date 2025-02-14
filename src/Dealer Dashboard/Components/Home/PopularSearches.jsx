@@ -68,7 +68,7 @@ function PopularSearches({ product, onBookmarkToggle }) {
             <FaStar className="text-white" size={14} />
           </div>
           <p className="text-[#6A6A6A] text-sm">
-            {product.Reviews?.length || "0"} Ratings
+            {(product.Reviews?.length || product?._count?.Reviews) || "0"} Ratings
           </p>
         </div>
       </div>

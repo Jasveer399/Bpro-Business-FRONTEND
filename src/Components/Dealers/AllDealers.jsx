@@ -60,8 +60,8 @@ const AllDealers = () => {
 
   return (
     <>
-      <div className="flex justify-between items-center bg-transparent pb-5 px-5 font-montserrat">
-        <h1 className="text-xl font-bold">Dealers</h1>
+      <div className="flex justify-between items-center dark:text-colorText bg-transparent pb-5 px-5 font-montserrat">
+        <h1 className="text-xl font-bold ">Dealers</h1>
         <h2 className="font-semibold">TOTAL: {dealers?.length || 0}</h2>
       </div>
       <div className="bg-white rounded-xl shadow-lg mx-3 dark:bg-darkgrey overflow-hidden font-montserrat h-[33rem] overflow-y-auto">
@@ -104,7 +104,7 @@ const AllDealers = () => {
                       <span
                         className={`px-2 py-1 rounded-full font-semibold text-[#49B27A]`}
                       >
-                          {calculateRemainingDays(dealer.created_at  , dealer.Plan.planDuration)}
+                          {calculateRemainingDays(dealer.created_at  , dealer.Plan.planDuration)} Days Left
                       </span>
                     </td>
                     <td className="py-5 flex justify-center gap-4">

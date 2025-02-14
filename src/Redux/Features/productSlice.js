@@ -181,11 +181,9 @@ const productSlice = createSlice({
       state.error = null;
     },
     setProduct: (state, action) => {
+      console.log("id: ",action.payload)
       state.product =
-        state.products.find((p) => p.id === action.payload) || null;
-      if (!action.payload) {
-        state.productStatus = "idle";
-      }
+        state.allProducts.find((p) => p.id === action.payload) || null;
     },
   },
   extraReducers: (builder) => {
@@ -213,7 +211,6 @@ const productSlice = createSlice({
         state.status = "succeeded";
         state.data = action.payload;
         state.products = action.payload.data || action.payload || [];
-        state.productStatus = "idle";
       })
       .addCase(fetchProductsAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -239,8 +236,6 @@ const productSlice = createSlice({
         state.status = "succeeded";
         // Update product in both data and products arrays
         const updatedProduct = action.payload.data;
-
-        console.log("updatedProduct ===>", updatedProduct);
         // Update in data.data if exists
         if (state.data && state.data.data) {
           const dataIndex = state.data.data.findIndex(

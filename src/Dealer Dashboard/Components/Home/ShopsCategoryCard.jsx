@@ -1,12 +1,21 @@
-import React from 'react'
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
-function ShopsCategoryCard({ imageUrl, title }) {
-    return (
-        <div className='flex flex-col gap-2 items-center'>
-            <img src={imageUrl} className='px-5 py-5 bg-[#ebeaff] rounded-lg w-20 h-20' alt="" />
-            <h1>{title}</h1>
-        </div>
-    )
+function ShopsCategoryCard({ imageUrl, title, id }) {
+  const navigate = useNavigate();
+  return (
+    <div
+      onClick={() => navigate(`/category/${title.toLowerCase()}/${id}`)}
+      className="flex flex-col gap-2 items-center cursor-pointer"
+    >
+      <img
+        src={imageUrl}
+        className="px-2 py-2 bg-[#ebeaff] rounded-lg w-20 h-20 object-contain"
+        alt={title}
+      />
+      <h1>{title}</h1>
+    </div>
+  );
 }
 
-export default ShopsCategoryCard
+export default ShopsCategoryCard;

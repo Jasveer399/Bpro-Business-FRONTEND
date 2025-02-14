@@ -27,6 +27,7 @@ export const getAllBannerCategory = `${server}/api/v1/banners/getAllBannerCatego
 export const addCategory = `${server}/api/v1/categories/addCategory`;
 export const updateCategory = `${server}/api/v1/categories/updateCategory`;
 export const deleteCategory = `${server}/api/v1/categories/deleteCategory`;
+export const getSpecificCategory = `${server}/api/v1/categories/getSpecificCategory`;
 
 // All Blogs Route
 export const createBlogs = `${server}/api/v1/blogs/createBlogs`;

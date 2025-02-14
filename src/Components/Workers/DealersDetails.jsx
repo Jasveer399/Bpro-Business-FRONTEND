@@ -10,6 +10,7 @@ import { FaDownload } from "react-icons/fa6";
 import * as XLSX from "xlsx";
 import Loader from "../../ui/Loader";
 import Snackbars from "../../ui/Snackbars";
+import { calculateRemainingDays } from "../../Utils/Helper";
 
 const DealersDetails = () => {
   const dispatch = useDispatch();
@@ -135,7 +136,7 @@ const DealersDetails = () => {
                       <span
                         className={`px-2 py-1 rounded-full font-semibold text-[#49B27A]`}
                       >
-                        200 Days Left
+                        {calculateRemainingDays(dealer.created_at  , dealer.Plan.planDuration)} Days Left
                       </span>
                     </td>
                   </tr>

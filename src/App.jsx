@@ -43,6 +43,7 @@ import DealersDetails from "./Components/Workers/DealersDetails";
 import DealerProfilePage from "./Dealer Dashboard/Pages/DealerProfile/DealerProfile";
 import Cashfree from "./Dealer Dashboard/Pages/Cashfree";
 import PaymentStatus from "./Dealer Dashboard/Pages/PaymentStatus";
+import CategoriesProduct from "./Dealer Dashboard/Pages/Categories Products/CategoriesProduct";
 
 function App() {
   return (
@@ -110,6 +111,7 @@ function App() {
         <Route path="/BlogDetails/:id" element={<BlogDetails />} />
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/dealerProfile/:id" element={<DealerProfilePage />} />
+        <Route path="/category/:title/:id" element={<CategoriesProduct />} />
         <Route path="/editProfile" element={<EditProfile />} />
         <Route path="/thankyou" element={<Thankyou />} />
         <Route path="/edtior" element={<Edtior />} />

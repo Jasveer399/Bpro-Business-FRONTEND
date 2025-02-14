@@ -72,7 +72,7 @@ function Workers() {
             >
               <AddWorkerForm />
             </Dialog>
-            <h2 className="font-semibold">TOTAL: {workers?.length || 0}</h2>
+            <h2 className="font-semibold dark:text-colorText">TOTAL: {workers?.length || 0}</h2>
           </div>
         </div>
         <AllWorkers selectedYear={selectedYear} selectedMonth={selectedMonth} />
