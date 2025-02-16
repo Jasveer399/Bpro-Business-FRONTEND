@@ -10,10 +10,10 @@ function ShopsCategoryCard({ imageUrl, title, id }) {
     >
       <img
         src={imageUrl}
-        className="px-2 py-2 bg-[#ebeaff] rounded-lg w-20 h-20 object-contain"
+        className="p-5 bg-[#ebeaff] rounded-lg w-20 h-20 object-contain"
         alt={title}
       />
-      <h1>{title}</h1>
+      <h1 className="text-sm">{title}</h1>
     </div>
   );
 }
