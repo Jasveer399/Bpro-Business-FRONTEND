@@ -55,7 +55,7 @@ const AllCategories = () => {
   return (
     <div className="bg-white rounded-xl shadow-lg dark:bg-darkgrey overflow-hidden h-[33rem] overflow-y-auto">
       <div className="overflow-x-auto">
-        <table className="w-full h-full">
+        <table className="w-full h-full table-fixed">
           <thead>
             <tr className="text-base text-white uppercase bg-blue border">
               <th className="py-5 px-3">Title</th>
@@ -84,7 +84,7 @@ const AllCategories = () => {
                     <div className="flex justify-center">
                       <img
                         src={category.iconImgUrl}
-                        className="w-28 h-14 rounded-md"
+                        className="w-16 h-16 rounded-md object-contain"
                       />
                     </div>
                   </td>

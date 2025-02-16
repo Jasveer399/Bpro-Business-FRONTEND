@@ -136,6 +136,17 @@ function calculateRemainingDays(createdAt, planDuration) {
   return Math.max(0, remainingDays);
 }
 
+function formatIndianCurrency(number) {
+  // Convert to string and split into integer and decimal parts
+  const [integer, decimal] = number.toString().split(".");
+
+  // Add commas according to Indian number system
+  const formattedNumber = integer.replace(/(\d)(?=(\d\d)+\d$)/g, "$1,");
+
+  // Return with decimal if exists, otherwise just the formatted integer
+  return decimal ? `${formattedNumber}.${decimal}` : formattedNumber;
+}
+
 export {
   storeDealerAccessToken,
   removeDealerAccessToken,
@@ -144,5 +155,6 @@ export {
   isColorDark,
   uploadFile,
   deleteFile,
-  calculateRemainingDays
+  calculateRemainingDays,
+  formatIndianCurrency
 };

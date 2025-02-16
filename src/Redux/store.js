@@ -2,7 +2,6 @@ import { configureStore } from "@reduxjs/toolkit";
 import themeReducer from "../Redux/Features/themeSlice.js";
 import blogsReducer from "../Redux/Features/blogsSlice.js";
 import categoriesReducer from "../Redux/Features/categoriesSlice.js";
-import bannersReducer from "../Redux/Features/bannersSlice.js";
 import dealersReducer from "../Redux/Features/dealersSlice.js";
 import workersReducer from "../Redux/Features/workersSlice.js";
 import bannersCategoryReducer from "../Redux/Features/bannersCategorySlice.js";
@@ -10,6 +9,7 @@ import ProductReducer from "../Redux/Features/productSlice.js";
 import bookmarkReducer from "../Redux/Features/bookmarkSlice.js";
 import reviewReducer from "../Redux/Features/reviewsSlice.js";
 import plansReducer from "../Redux/Features/PlansSlice.js";
+import dashboardSlice from "../Redux/Features/dashboardSlice.js";
 
 export const store = configureStore({
   reducer: {
@@ -23,5 +23,6 @@ export const store = configureStore({
     bookmarks: bookmarkReducer,
     reviews: reviewReducer,
     plans: plansReducer,
+    dashboard: dashboardSlice,
   },
 });

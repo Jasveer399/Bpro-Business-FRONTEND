@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { LogOut, Menu, UserCircle, X } from "lucide-react";
-import { PiMoonDuotone, PiSunDimDuotone } from "react-icons/pi";
+import { PiImagesFill, PiMoonDuotone, PiSunDimDuotone } from "react-icons/pi";
 import { TfiDashboard } from "react-icons/tfi";
 import Header from "../ui/Header";
 import { useTheme } from "../Context/ThemeContext";
@@ -10,6 +10,8 @@ import { ImBlogger } from "react-icons/im";
 import { useSelector } from "react-redux";
 import { BiCategoryAlt } from "react-icons/bi";
 import { IoPricetagsOutline } from "react-icons/io5";
+import { GrUserWorker } from "react-icons/gr";
+import { FaUserTie } from "react-icons/fa";
 
 function Layout() {
   const navigate = useNavigate();
@@ -23,10 +25,10 @@ function Layout() {
 
   const navItems = [
     { name: "Dashboard", icon: TfiDashboard, link: "/dashboard" },
-    { name: "Dealers", icon: BsFillPersonVcardFill, link: "/dealers" },
-    { name: "Workers", icon: UserCircle, link: "/workers" },
+    { name: "Dealers", icon: FaUserTie, link: "/dealers" },
+    { name: "Workers", icon: GrUserWorker, link: "/workers" },
     { name: "Blogs", icon: ImBlogger, link: "/blogs" },
-    { name: "Banner", icon: UserCircle, link: "/banners" },
+    { name: "Banner", icon: PiImagesFill , link: "/banners" },
     { name: "Category", icon: BiCategoryAlt, link: "/categories" },
     { name: "Pricing", icon: IoPricetagsOutline, link: "/pricing" },
   ];

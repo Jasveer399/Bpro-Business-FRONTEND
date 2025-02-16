@@ -1,13 +1,14 @@
 import React from 'react';
+import { formatIndianCurrency } from '../../Utils/Helper';
 
 const ShowDealerData = ({ icon, title, count }) => {
     return (
-        <div className="bg-brand-color-3 h-1/2 rounded-lg p-4 text-white shadow-md relative overflow-hidden">
+        <div className="bg-brand-color-3 h-1/2 rounded-2xl p-4 text-white shadow-md relative overflow-hidden">
             <div className="flex items-center space-x-3">
                 <div className="bg-blue-600 p-2 rounded-md">
                    {icon}
                    <div className='text-white'>
-                   <p className="text-4xl font-bold ">{count}</p>
+                   <p className="text-4xl font-bold ">{formatIndianCurrency(count)}</p>
                    <p className="text-xl font-semibold">{title}</p>
                    </div>
                 </div>
