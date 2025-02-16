@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
+import { server } from "../../Utils/server";
 
 function PaymentStatus() {
   const [searchParams] = useSearchParams();
@@ -12,7 +13,7 @@ function PaymentStatus() {
     const checkPaymentStatus = async () => {
       try {
         const res = await axios.post(
-          "http://localhost:3000/api/v1/payment/verify",
+          `${server}/api/v1/payment/verify`,
           { orderId, id: sessionStorage.getItem("dealerId") }
         );
         console.log("res", res);

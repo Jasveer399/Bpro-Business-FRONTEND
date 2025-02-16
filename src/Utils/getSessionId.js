@@ -1,4 +1,5 @@
 import axios from "axios";
+import { server } from "./server";
 
 export async function getSessionId() {
   try {
@@ -7,7 +8,7 @@ export async function getSessionId() {
       amt: sessionStorage.getItem("planPrice"),
     };
     const res = await axios.post(
-      `http://localhost:3000/api/v1/payment/create-order`,
+      `${server}/api/v1/payment/create-order`,
       data
     );
 
