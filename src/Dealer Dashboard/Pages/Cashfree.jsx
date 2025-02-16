@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { load } from "@cashfreepayments/cashfree-js";
 import { getSessionId } from "../../Utils/getSessionId";
+import { server } from "../../Utils/server";
 
 function Cashfree() {
   const [cashfree, setCashfree] = useState(null);
@@ -36,10 +37,9 @@ function Cashfree() {
           console.log("Payment Initialized", res);
 
           try {
-            const res = await axios.post(
-              "http://localhost:3000/api/v1/payment/verify",
-              { orderId }
-            );
+            const res = await axios.post(`${server}/api/v1/payment/verify`, {
+              orderId,
+            });
 
             if (res.data.success) {
               alert("Payment successful!");
