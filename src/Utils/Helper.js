@@ -147,6 +147,19 @@ function formatIndianCurrency(number) {
   return decimal ? `${formattedNumber}.${decimal}` : formattedNumber;
 }
 
+const calculateDiscount = (price, discount) => {
+  // Calculate discounted price
+  const discountedPrice = price - (price * discount) / 100;
+
+  // Calculate discount amount
+  const discountAmount = price - discountedPrice;
+
+  return {
+    discountedPrice,
+    discountAmount,
+  };
+}
+
 export {
   storeDealerAccessToken,
   removeDealerAccessToken,
@@ -156,5 +169,6 @@ export {
   uploadFile,
   deleteFile,
   calculateRemainingDays,
-  formatIndianCurrency
+  formatIndianCurrency,
+  calculateDiscount
 };

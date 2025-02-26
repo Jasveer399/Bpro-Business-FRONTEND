@@ -10,7 +10,7 @@ import Loader from "../../../ui/Loader";
 import SelectInput from "../../../ui/SelectInput";
 import { businessTypesOptions } from "../../../Utils/options";
 import { updateDealerAsync } from "../../../Redux/Features/dealersSlice";
-import { replace, useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { fetchCategoriesAsync } from "../../../Redux/Features/categoriesSlice";
 
 function EditProfile() {
@@ -36,8 +36,6 @@ function EditProfile() {
     (state) => state.categories
   );
 
-  console.log("categories", categories);
-
   const allCategories = categories?.map((cat) => {
     return { value: cat.id, label: cat.title };
   });
@@ -52,7 +50,6 @@ function EditProfile() {
     setValue("email", sessionStorage.getItem("email"));
     setValue("mobileNo", sessionStorage.getItem("mobileNo"));
   }
-  const [selectedBusinessType, setSelectedBusinessType] = useState([]);
 
   // Updated imageContainers for business documents
   const [imageContainers, setImageContainers] = useState([
@@ -587,7 +584,7 @@ function EditProfile() {
                 }
                 placeholder="Enter your pincode"
                 className="border border-[#BFBCFF]"
-                type="text"
+                type="tel"
                 {...register("pincode", {
                   required: "pincode is required",
                 })}

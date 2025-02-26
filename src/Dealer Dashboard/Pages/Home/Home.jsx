@@ -144,13 +144,19 @@ function Home() {
           </div>
 
           {/* Right side content */}
-          <div className="w-full md:w-1/4">
+          <div className="w-full md:w-1/4 space-y-2">
             <LatestArticles articles={articleData} />
             <Advertisement
               className="w-full md:w-[100%] h-auto"
               isLeft={true}
               isButtonShow={true}
               banners={bannersCategory[3]?.Banners}
+            />
+            <Advertisement
+              className="w-full md:w-[100%] h-auto"
+              isLeft={true}
+              isButtonShow={true}
+              banners={bannersCategory[4]?.Banners}
             />
           </div>
         </div>

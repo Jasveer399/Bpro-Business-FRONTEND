@@ -8,11 +8,13 @@ import Snackbars from "../../../ui/Snackbars";
 import { updatePlanAsync } from "../../../Redux/Features/PlansSlice";
 import SelectInput from "../../../ui/SelectInput";
 import { planDurations } from "../../../Utils/options";
+import { calculateDiscount } from "../../../Utils/Helper";
 
 function EditPlan({ closeDialog, plan }) {
   const dispatch = useDispatch();
   const { updateStatus } = useSelector((state) => state.plans);
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
+  const [discountAmount, setDiscountAmount] = useState(0);
 
   const {
     formState: { errors },
@@ -20,6 +22,7 @@ function EditPlan({ closeDialog, plan }) {
     register,
     setValue,
     control,
+    watch
   } = useForm({
     defaultValues: {
       planFeatures: [],
@@ -31,11 +34,25 @@ function EditPlan({ closeDialog, plan }) {
     name: "planFeatures",
   });
 
+  const watchPlanPrice = watch("planPrice") || 0;
+  const watchPlanDiscount = watch("planDiscount") || 0;
+
+  useEffect(() => {
+    if (watchPlanPrice && watchPlanDiscount) {
+      const discountAmount = calculateDiscount(
+        watchPlanPrice || 0,
+        watchPlanDiscount || 0
+      ).discountedPrice.toFixed(2);
+      setDiscountAmount(discountAmount);
+    }
+  }, [watchPlanPrice, watchPlanDiscount]);
+
   useEffect(() => {
     if (plan) {
       setValue("planName", plan.planName);
       setValue("planPrice", plan.planPrice);
       setValue("planDuration", plan.planDuration);
+      setValue("planDiscount", plan.planDiscount);
 
       // Set the planFeatures directly using setValue instead of append
       if (plan.planFeatures && Array.isArray(plan.planFeatures)) {
@@ -104,13 +121,27 @@ function EditPlan({ closeDialog, plan }) {
           />
           <FormInput
             label="Enter Plan Price"
-            type="number"
+            type="tel"
             {...register("planPrice", {
               required: "Plan Price is required",
             })}
             error={errors.planPrice?.message}
             width="w-full"
           />
+          <FormInput
+            label="Enter Plan Discount (%)"
+            type="tel"
+            {...register("planDiscount", {
+              required: "Plan Discount is required",
+            })}
+            error={errors.planDiscount?.message}
+            width="w-full"
+          />
+          {discountAmount > 0 && (
+            <p className="text-xs underline">
+              Your Plan Total Becomes <span className="text-green-500 font-bold">Rs. {discountAmount}</span>
+            </p>
+          )}
           <div>
             <h1 className="text-sm ml-2 mb-px text-gray-600">Plan Duration</h1>
             <Controller

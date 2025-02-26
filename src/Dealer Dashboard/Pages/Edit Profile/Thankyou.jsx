@@ -1,8 +1,15 @@
 import React from "react";
 import Navbar from "../../Components/Home/Navbar";
 import Header from "../../Components/Home/Header";
+import { useNavigate } from "react-router-dom";
 
 function Thankyou() {
+  const navigate = useNavigate();
+
+  setTimeout(() => {
+    navigate("/home");
+  }, 15000);
+
   return (
     <>
       <Navbar />
@@ -23,7 +30,9 @@ function Thankyou() {
         </h2>
         <h2 className="font-semibold text-xl mt-6">
           If you have any more query contact to support team <br />{" "}
-          <a href="tel:+9185625124512" className="text-secondary">+91 85625124512</a>
+          <a href="tel:+9185625124512" className="text-secondary">
+            +91 85625124512
+          </a>
         </h2>
       </div>
       <img src="banner.png" className="w-full" />

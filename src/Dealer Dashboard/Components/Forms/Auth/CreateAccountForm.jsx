@@ -10,6 +10,7 @@ import Loader from "../../../../ui/Loader";
 import Snackbars from "../../../../ui/Snackbars";
 import { load } from "@cashfreepayments/cashfree-js";
 import { getSessionId } from "../../../../Utils/getSessionId";
+import { calculateDiscount } from "../../../../Utils/Helper";
 
 function CreateAccountForm() {
   const {
@@ -45,7 +46,8 @@ function CreateAccountForm() {
     if (
       !sessionStorage.getItem("planName") ||
       !sessionStorage.getItem("planDuration") ||
-      !sessionStorage.getItem("planPrice")
+      !sessionStorage.getItem("planPrice") ||
+      !sessionStorage.getItem("planDiscount")
     ) {
       setSnackbar({
         open: true,
@@ -57,7 +59,7 @@ function CreateAccountForm() {
     const fullData = {
       ...data,
       planId: sessionStorage.getItem("planId"),
-    }
+    };
     const response = await dispatch(addDealerAsync(fullData));
 
     console.log("response", response);
@@ -237,7 +239,11 @@ function CreateAccountForm() {
               <div className="flex items-center justify-between">
                 <h1 className="font-[600]">Plan Price</h1>
                 <h1 className="font-[400]">
-                  Rs. {sessionStorage.getItem("planPrice")}
+                  Rs.{" "}
+                  {calculateDiscount(
+                    sessionStorage.getItem("planPrice"),
+                    sessionStorage.getItem("planDiscount")
+                  ).discountedPrice.toFixed(2)}
                 </h1>
               </div>
               <div className="flex items-center justify-between">

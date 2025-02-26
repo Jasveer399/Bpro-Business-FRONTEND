@@ -14,12 +14,13 @@ import { fetchCurrentDealerAsync } from "../../../Redux/Features/dealersSlice";
 function DealerLayout() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { currentDealer, status } = useSelector((state) => state.dealers);
+  const { currentDealer, currentDealerStatus } = useSelector((state) => state.dealers);
+  console.log("currentDealerStatus: ", currentDealerStatus);
   useEffect(() => {
-    if (status === "idle") {
+    if (currentDealerStatus === "idle") {
       dispatch(fetchCurrentDealerAsync());
     }
-  }, [dispatch, status]);
+  }, [dispatch, currentDealerStatus]);
 
   const navItems = [
     { name: "Listing", icon: PiDiamondsFour, link: "/my-dashboard/listing" },
@@ -28,7 +29,7 @@ function DealerLayout() {
       icon: MdOutlineManageAccounts,
       link: "/my-dashboard/accounts",
     },
-    { name: "Messages", icon: TbMessages, link: "/my-dashboard/messages" },
+    // { name: "Messages", icon: TbMessages, link: "/my-dashboard/messages" },
     {
       name: "Add New Listing",
       icon: IoAddCircleOutline,

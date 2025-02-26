@@ -60,6 +60,7 @@ const AllPricing = () => {
             <tr className="text-base text-white uppercase bg-blue border">
               <th className="py-5 px-3">Plan Title</th>
               <th className="py-5 px-3">Plan Price</th>
+              <th className="py-5 px-3">Plan Discount</th>
               <th className="py-5 px-3">Plan Duration</th>
               <th className="py-5 px-3">Features</th>
               <th className="py-5 px-3">Action</th>
@@ -82,6 +83,7 @@ const AllPricing = () => {
                 >
                   <td className="py-3 px-3 text-center">{plan.planName}</td>
                   <td className="py-3 px-3 text-center">₹ {plan.planPrice}</td>
+                  <td className="py-3 px-3 text-center">{plan.planDiscount}%</td>
                   <td className="py-3 px-3 text-center">{plan.planDuration}</td>
                   <td className="py-3 px-3 text-center">
                     {plan.planFeatures.map((feature) => (

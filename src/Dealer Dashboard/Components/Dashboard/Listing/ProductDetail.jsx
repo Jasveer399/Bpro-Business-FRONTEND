@@ -27,8 +27,6 @@ import {
   setProduct,
 } from "../../../../Redux/Features/productSlice";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchCurrentDealerAsync } from "../../../../Redux/Features/dealersSlice";
-import { current } from "@reduxjs/toolkit";
 import { addReviewAsync } from "../../../../Redux/Features/reviewsSlice";
 import Snackbars from "../../../../ui/Snackbars";
 import ImagesSwiper from "./ImagesSwiper";

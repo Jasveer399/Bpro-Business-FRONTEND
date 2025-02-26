@@ -13,7 +13,9 @@ import { calculateRemainingDays } from "../../Utils/Helper";
 
 const AllDealers = () => {
   const dispatch = useDispatch();
-  const { dealers, fetchStatus, error, status } = useSelector((state) => state.dealers);
+  const { dealers, fetchStatus, error, status } = useSelector(
+    (state) => state.dealers
+  );
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const [dealer, setDealer] = useState();
@@ -53,8 +55,8 @@ const AllDealers = () => {
       });
     } finally {
       setTimeout(() => {
-        setIsDeleteDialogOpen(false)
-      }, 500)
+        setIsDeleteDialogOpen(false);
+      }, 500);
     }
   };
 
@@ -102,9 +104,18 @@ const AllDealers = () => {
                     </td>
                     <td className="py-5 text-center">
                       <span
-                        className={`px-2 py-1 rounded-full font-semibold text-[#49B27A]`}
+                        className={`px-2 py-1 rounded-full font-semibold ${
+                          dealer.approvalDateTime
+                            ? "text-[#49B27A]"
+                            : "text-secondary"
+                        } `}
                       >
-                          {calculateRemainingDays(dealer.created_at  , dealer.Plan.planDuration)} Days Left
+                        {dealer.approvalDateTime
+                          ? calculateRemainingDays(
+                              dealer.approvalDateTime,
+                              dealer.Plan.planDuration
+                            ) + " Days Left"
+                          : "Pending Approval"}
                       </span>
                     </td>
                     <td className="py-5 flex justify-center gap-4">

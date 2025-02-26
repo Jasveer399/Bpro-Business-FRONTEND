@@ -86,7 +86,7 @@ function AddWorkerForm({ closeDialog }) {
           />
           <FormInput
             label="Adhaar No."
-            type="number"
+            type="tel"
             {...register("adhaarNo", {
               required: "Adhaar Number is required",
               pattern: {

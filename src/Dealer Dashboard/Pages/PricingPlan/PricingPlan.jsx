@@ -5,7 +5,7 @@ import Footer from "../../Components/Home/Footer";
 import { GoCheck, GoX } from "react-icons/go";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPlansAsync } from "../../../Redux/Features/PlansSlice";
-import { getDealerAccessToken } from "../../../Utils/Helper";
+import { calculateDiscount, getDealerAccessToken } from "../../../Utils/Helper";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../../ui/Loader";
 
@@ -43,7 +43,7 @@ function PricingPlan() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               <div
                 key={plan.id}
-                className="bg-white relative rounded-md p-0 flex flex-col items-center text-center mx-auto w-72"
+                className="bg-white relative rounded-md p-0 flex flex-col items-center text-center mx-auto w-72 shadow-lg"
                 style={{
                   border: "1px solid #e8ebf3",
                   borderTop:
@@ -63,9 +63,22 @@ function PricingPlan() {
                   {plan.planName}
                 </div>
 
+                <div className="text-sm mt-3 flex items-center justify-center gap-2">
+                  <span className="line-through text-slate-400">
+                    Rs.{plan.planPrice}
+                  </span>
+                  <span className="bg-slate-300 px-2 py-1 rounded-full font-[500]">
+                    SAVE {plan.planDiscount}%
+                  </span>
+                </div>
+
                 {/* planPrice */}
-                <h2 className="text-5xl font-normal text-[#605e7e] mb-3 p-2 mt-2">
-                  Rs.{plan.planPrice}
+                <h2 className="text-5xl font-normal text-[#605e7e] mb-3 p-2">
+                  Rs.
+                  {calculateDiscount(
+                    plan.planPrice,
+                    plan.planDiscount
+                  ).discountedPrice.toFixed(2)}
                 </h2>
 
                 <h2 className="text-xl font-[600] text-[#605e7e] mt-2">
@@ -109,6 +122,7 @@ function PricingPlan() {
                     sessionStorage.setItem("planName", plan.planName);
                     sessionStorage.setItem("planDuration", plan.planDuration);
                     sessionStorage.setItem("planPrice", plan.planPrice);
+                    sessionStorage.setItem("planDiscount", plan.planDiscount);
                     sessionStorage.setItem("planId", plan.id);
                     navigate(`${token ? "/product-listing" : "/register"}`);
                   }}

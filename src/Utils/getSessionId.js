@@ -5,12 +5,9 @@ export async function getSessionId() {
   try {
     const data = {
       id: sessionStorage.getItem("dealerId"),
-      amt: sessionStorage.getItem("planPrice"),
+      planId: sessionStorage.getItem("planId"),
     };
-    const res = await axios.post(
-      `${server}/api/v1/payment/create-order`,
-      data
-    );
+    const res = await axios.post(`${server}/api/v1/payment/create-order`, data);
 
     console.log("res", res);
     return {

@@ -175,6 +175,10 @@ function AddBannerForm({ closeDialog, categoryId }) {
             type="text"
             {...register("externalUrl", {
               required: "External Url is required",
+              pattern: {
+                value: /^(ftp|http|https):\/\/[^ "]+$/,
+                message: "Invalid URL. URL must start with http://, https://, or ftp://",
+              }
             })}
             error={errors.externalUrl?.message}
             width="w-full"

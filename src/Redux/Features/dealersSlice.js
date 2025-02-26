@@ -14,6 +14,7 @@ import {
   getAllUpdateApprovalRequests,
   changeStatusUpdateProfile,
   getSpecificDealer,
+  removeProfileImg,
 } from "../../Utils/server";
 import { getAdminAccessToken, getDealerAccessToken } from "../../Utils/Helper";
 
@@ -280,7 +281,26 @@ export const updateProfileImgAsync = createAsyncThunk(
       );
     }
   }
-);
+)
+
+export const removeProfileImgAsync = createAsyncThunk(
+  "dealers/removeProfileImg",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.patch(removeProfileImg, {}, {
+        headers: {
+          Authorization: `Bearer ${getDealerAccessToken()}`,
+        },
+      });
+      return response.data.data;
+    } catch (error) {
+      console.error("Error in removing profile:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+)
 
 const dealersSlice = createSlice({
   name: "dealers",
@@ -295,6 +315,8 @@ const dealersSlice = createSlice({
     updateStatus: "idle",
     fetchStatus: "idle",
     error: null,
+    currentDealer: null,
+    currentDealerStatus: "idle",
   },
   reducers: {
     setDealer: (state, action) => {
@@ -384,14 +406,14 @@ const dealersSlice = createSlice({
       })
       // ... fetch current dealer ...
       .addCase(fetchCurrentDealerAsync.pending, (state) => {
-        state.status = "loading";
+        state.currentDealerStatus = "loading";
       })
       .addCase(fetchCurrentDealerAsync.fulfilled, (state, action) => {
-        state.status = "succeeded";
+        state.currentDealerStatus = "succeeded";
         state.currentDealer = action.payload;
       })
       .addCase(fetchCurrentDealerAsync.rejected, (state, action) => {
-        state.status = "failed";
+        state.currentDealerStatus = "failed";
         state.error = action.payload;
         state.currentDealer = null;
       })
@@ -414,10 +436,12 @@ const dealersSlice = createSlice({
       })
       .addCase(approveDealerAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        console.log("action.payload.id", action.payload);
         state.dealers.find(
           (d) => d.id === action.payload.data.id
         ).verified = true;
+        state.dealers.find(
+          (d) => d.id === action.payload.data.id
+        ).approvalDateTime = new Date();
       })
       .addCase(approveDealerAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -467,11 +491,21 @@ const dealersSlice = createSlice({
       })
       .addCase(updateProfileImgAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        console.log("action.payload.data.id", action.payload);
-        // state.dealers.find((d) => d.id === action.payload.id).profileUrl =
-        //   action.payload.profileUrl;
+        state.currentDealer = action.payload;
       })
       .addCase(updateProfileImgAsync.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      // ... remove dealer profile....
+      .addCase(removeProfileImgAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(removeProfileImgAsync.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.currentDealer = action.payload;
+      })
+      .addCase(removeProfileImgAsync.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });

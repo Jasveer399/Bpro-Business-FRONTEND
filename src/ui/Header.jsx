@@ -12,11 +12,14 @@ import {
 } from "../Redux/Features/dealersSlice";
 import Loader from "./Loader";
 import Snackbars from "./Snackbars";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { IoChevronBackCircleSharp } from "react-icons/io5";
+import { IoMdArrowBack } from "react-icons/io";
 // import { useTheme } from "../Context/ThemeContext";
 
 function Header({ isSideBarFull }) {
-  const location = useLocation()
+  const location = useLocation();
+  const navigate = useNavigate();
   const [showThemeDropdown, setShowThemeDropdown] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [notificationDropDown, setNotificationDropDown] = useState(false);
@@ -102,14 +105,17 @@ function Header({ isSideBarFull }) {
   return (
     <>
       <div className="bg-transparent shadow-md backdrop-blur-md h-[10%] py-2 px-4 sm:px-10 flex justify-between items-center z-10 fixed w-full">
-        <div className="flex h-10 w-[80%] sm:w-64 items-center ml-10 md:ml-0">
-          {/* <Search className="w-6 h-6 text-gray-400 mr-3" />
-          <input
-            type="text"
-            placeholder="Search..."
-            className="bg-transparent outline-none text-gray-300 w-full"
-          /> */}
-          <h4 className="uppercase text-lg font-[600]">{location.pathname.split("/")[1]}</h4>
+        <div className="flex h-10 w-[80%] sm:w-64 items-center ml-10 md:ml-0 gap-2">
+          {location.pathname.split("/")[2] && (
+            <IoMdArrowBack
+              className="cursor-pointer hover:bg-gray-200 p-1 rounded-full mt-px"
+              size={28}
+              onClick={() => navigate(-1)}
+            />
+          )}
+          <h4 className="uppercase text-lg font-[600]">
+            {location.pathname.split("/")[1]}
+          </h4>
         </div>
 
         {/* Desktop Menu */}

@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   changePasswordAsync,
   fetchCurrentDealerAsync,
+  removeProfileImgAsync,
   sendRequestAsync,
   updateDealerAsync,
   updateProfileImgAsync,
@@ -29,6 +30,7 @@ function EditDealerProfile() {
     changePassStatus,
     updateStatus,
     sendReqStatus,
+    currentDealerStatus,
   } = useSelector((state) => state.dealers);
   const [displayToPublicOptions, setDisplayToPublicOptions] = useState([]);
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
@@ -58,16 +60,30 @@ function EditDealerProfile() {
     setProfileImageUrl(URL.createObjectURL(file));
   };
 
-  const handleImageRemove = () => {
+  const handleImageRemove = async() => {
     // Remove the image from the server and reset the profileImageUrl state
+    const response = await dispatch(removeProfileImgAsync());
+    if (removeProfileImgAsync.fulfilled.match(response)) {
+      setSnackbar({
+        open: true,
+        type: "success",
+        text: "Profile Image Removed Successfully",
+      });
+    } else {
+      setSnackbar({
+        open: true,
+        type: "error",
+        text: response.error.message,
+      });
+    }
     setProfileImageUrl(null);
   };
 
   useEffect(() => {
-    if (status === "idle") {
+    if (currentDealerStatus === "idle") {
       dispatch(fetchCurrentDealerAsync());
     }
-  }, [dispatch, status]);
+  }, [dispatch, currentDealerStatus]);
 
   useEffect(() => {
     if (currentDealer) {
@@ -298,23 +314,60 @@ function EditDealerProfile() {
             <div className="flex flex-col md:flex-row items-center gap-6 mb-3">
               <FormInput
                 label="Mobile Number"
-                type="number"
+                type="tel"
                 {...editProfileForm.register("mobileNo", {
                   required: "Mobile Number is required",
+                  pattern: {
+                    value: /^\d{10}$/,
+                    message: "Mobile Number must be exactly 10 digits",
+                  },
+                  validate: (value) => {
+                    const cleanedValue = value.replace(/\D/g, "");
+                    return (
+                      cleanedValue.length === 10 ||
+                      "Mobile Number must be 10 digits"
+                    );
+                  },
                 })}
                 error={editProfileForm.formState.errors.mobileNo?.message}
+                // width="w-96"
+                maxLength={10}
+                onChange={(e) => {
+                  // Only allow digits
+                  e.target.value = e.target.value
+                    .replace(/\D/g, "")
+                    .slice(0, 10);
+                }}
                 width="w-full"
                 readOnly={true}
               />
               <FormInput
                 label="WhatsApp Number"
-                type="number"
+                type="tel"
                 {...editProfileForm.register("whatsappNo", {
                   required: "WhatsApp Number is required",
+                  pattern: {
+                    value: /^\d{10}$/,
+                    message: "Mobile Number must be exactly 10 digits",
+                  },
+                  validate: (value) => {
+                    const cleanedValue = value.replace(/\D/g, "");
+                    return (
+                      cleanedValue.length === 10 ||
+                      "Mobile Number must be 10 digits"
+                    );
+                  },
                 })}
                 error={editProfileForm.formState.errors.whatsappNo?.message}
                 width="w-full"
                 readOnly={!currentDealer?.isProfileUpdate}
+                maxLength={10}
+                onChange={(e) => {
+                  // Only allow digits
+                  e.target.value = e.target.value
+                    .replace(/\D/g, "")
+                    .slice(0, 10);
+                }}
               />
             </div>
 
@@ -515,16 +568,15 @@ function EditDealerProfile() {
                   Request Sent. Wait For Approval !!
                 </button>
               ) : currentDealer?.isProfileUpdate ? (
-                <button
-                  type="submit"
-                  className="bg-[#EB6752] w-full py-3 rounded-md text-white font-semibold hover:bg-[#191A1F] transition-colors duration-300"
+                <div
+                  className="bg-[#EB6752] flex items-center justify-center cursor-pointer w-full py-3 rounded-md text-white font-semibold hover:bg-[#191A1F] transition-colors duration-300"
                   onClick={() => {
                     setIsDialogOpen(true);
                     setButtonState("update");
                   }}
                 >
                   Update Profile
-                </button>
+                </div>
               ) : (
                 <div
                   className="bg-[#EB6752] w-full cursor-pointer py-3 rounded-md text-white text-center font-semibold hover:bg-[#191A1F] transition-colors duration-300"

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FormHeading from "../../../ui/FormHeading";
 import FormInput from "../../../ui/FormInput";
 import { Controller, useForm, useFieldArray } from "react-hook-form";
@@ -8,33 +8,50 @@ import Snackbars from "../../../ui/Snackbars";
 import { addPlanAsync } from "../../../Redux/Features/PlansSlice";
 import SelectInput from "../../../ui/SelectInput";
 import { planDurations } from "../../../Utils/options";
+import { calculateDiscount } from "../../../Utils/Helper";
 
 function AddPlan({ closeDialog }) {
   const dispatch = useDispatch();
+  const [discountAmount, setDiscountAmount] = useState(0);
   const { plansStatus } = useSelector((state) => state.plans);
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
-  
+
   const {
     formState: { errors },
     handleSubmit,
     register,
     control,
+    getValues,
+    watch,
   } = useForm({
     defaultValues: {
-      planFeatures: [{ value: '' }]
-    }
+      planFeatures: [{ value: "" }],
+    },
   });
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "planFeatures"
+    name: "planFeatures",
   });
+
+  const watchPlanPrice = watch("planPrice");
+  const watchPlanDiscount = watch("planDiscount");
+
+  useEffect(() => {
+    if (watchPlanPrice && watchPlanDiscount) {
+      const discountAmount = calculateDiscount(
+        watchPlanPrice,
+        watchPlanDiscount
+      ).discountedPrice.toFixed(2);
+      setDiscountAmount(discountAmount);
+    }
+  }, [watchPlanPrice, watchPlanDiscount]);
 
   const addPlanHandler = async (data) => {
     // Transform the planFeatures from array of objects to array of strings
     const transformedData = {
       ...data,
-      planFeatures: data.planFeatures.map(feature => feature.value)
+      planFeatures: data.planFeatures.map((feature) => feature.value),
     };
 
     try {
@@ -64,8 +81,7 @@ function AddPlan({ closeDialog }) {
       setSnackbar({
         open: true,
         type: "error",
-        text:
-          error?.message || "Error adding plan",
+        text: error?.message || "Error adding plan",
       });
     }
   };
@@ -96,6 +112,20 @@ function AddPlan({ closeDialog }) {
             error={errors.planPrice?.message}
             width="w-full"
           />
+          <FormInput
+            label="Enter Plan Discount (%)"
+            type="number"
+            {...register("planDiscount", {
+              required: "Plan Discount is required",
+            })}
+            error={errors.planDiscount?.message}
+            width="w-full"
+          />
+          {discountAmount > 0 && (
+            <p className="text-xs underline">
+              Your Plan Total Becomes <span className="text-green-500 font-bold">Rs. {discountAmount}</span>
+            </p>
+          )}
           <div>
             <h1 className="text-sm ml-2 mb-px text-gray-600">Plan Duration</h1>
             <Controller
@@ -116,7 +146,7 @@ function AddPlan({ closeDialog }) {
               )}
             />
           </div>
-          
+
           {fields.map((field, index) => (
             <div key={field.id}>
               <FormInput
@@ -130,7 +160,7 @@ function AddPlan({ closeDialog }) {
               />
               {fields.length > 1 && (
                 <div className="flex items-center justify-between gap-3 mt-2">
-                  <div 
+                  <div
                     className="text-sm hover:underline font-semibold text-red-500 cursor-pointer"
                     onClick={() => remove(index)}
                   >
@@ -140,11 +170,11 @@ function AddPlan({ closeDialog }) {
               )}
             </div>
           ))}
-          
+
           <div className="flex items-center justify-end">
-            <div 
+            <div
               className="text-sm hover:underline font-semibold text-blue cursor-pointer"
-              onClick={() => append({ value: '' })}
+              onClick={() => append({ value: "" })}
             >
               Add More Feature
             </div>

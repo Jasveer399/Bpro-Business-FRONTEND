@@ -49,7 +49,9 @@ const Advertisement = ({ className, isButtonShow, isLeft, banners }) => {
         {banners
           ?.filter((banner) => banner.status === "Active")
           ?.map((banner, index) => (
-            <div
+            <a
+              href={banner.externalUrl}
+              target="_blank"
               key={banner.id}
               className={`absolute w-full h-full transition-transform duration-500 ease-in-out ${
                 index === currentIndex
@@ -67,7 +69,7 @@ const Advertisement = ({ className, isButtonShow, isLeft, banners }) => {
                 alt={banner.title}
                 className="w-full h-full object-cover rounded-lg"
               />
-            </div>
+            </a>
           ))}
         <div
           className={`absolute bottom-4 transform -translate-x-1/2 flex space-x-2 ${
