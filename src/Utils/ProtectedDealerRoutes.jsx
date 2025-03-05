@@ -4,7 +4,7 @@ import { getDealerAccessToken } from './Helper';
 
 function ProtectedDealerRoutes() {
     const dealerAccessToken = getDealerAccessToken()
-    return dealerAccessToken ? <Outlet /> : <Navigate to="/login" />
+    return dealerAccessToken ? <Outlet /> : <Navigate to="/home" />
 }
 
 function RedirectIfDealerAuthenticated() {

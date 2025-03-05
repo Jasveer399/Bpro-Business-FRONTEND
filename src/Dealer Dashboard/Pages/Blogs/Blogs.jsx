@@ -17,6 +17,8 @@ function Allblogs() {
         }
     }, [dispatch, status])
 
+    console.log("blogs =>", blogs);
+
     return (
         <>
             <Navbar />
@@ -31,7 +33,7 @@ function Allblogs() {
             </div> */}
             <div className='flex gap-5 mx-40 mt-20'>
                 <div className='w-3/5 flex flex-col gap-5'>
-                    {blogs.map(blog => <ShowBlogCard imageUrl={blog?.images[0]?.url} title={blog?.name} content={blog?.content} date={blog?.createdAt} id={blog?.id}/>)}
+                    {blogs.map(blog => <ShowBlogCard imageUrl={blog?.image} title={blog?.name} content={blog?.content} date={blog?.createdAt} id={blog?.id}/>)}
                 </div>
                 <div>
                     <SearchBlog />

@@ -38,6 +38,7 @@ export const getSpecificCategory = `${server}/api/v1/categories/getSpecificCateg
 export const createBlogs = `${server}/api/v1/blogs/createBlogs`;
 export const getAllBlogs = `${server}/api/v1/blogs/getAllBlogs`;
 export const getSingleBlog = `${server}/api/v1/blogs/getSingleBlog`;
+export const getFourLatestBlogs = `${server}/api/v1/blogs/getFourLatestBlogs`;
 
 // export const updateBlog = `${server}/api/v1/blogs/updateBlog`
 

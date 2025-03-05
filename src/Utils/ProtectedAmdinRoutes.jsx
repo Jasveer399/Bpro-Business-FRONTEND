@@ -3,7 +3,7 @@ import { Navigate, Outlet } from 'react-router-dom'
 
 function ProtectedAdminRoutes() {
     const adminAccessToken = localStorage.getItem('accessToken')
-    return adminAccessToken ? <Outlet /> : <Navigate to="/admin-login" />
+    return adminAccessToken ? <Outlet /> : <Navigate to="/home" />
 }
 
 function RedirectIfAuthenticated() {

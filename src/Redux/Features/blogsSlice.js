@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { createBlogs, getAllBlogs, getSingleBlog } from "../../Utils/server";
+import { createBlogs, getAllBlogs, getFourLatestBlogs, getSingleBlog } from "../../Utils/server";
 
 // Async thunk for adding a new blog
 export const addBlogAsync = createAsyncThunk(
@@ -32,6 +32,21 @@ export const fetchBlogsAsync = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       console.error("Error in fetchBlogsAsync:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
+export const fetchFourLatestBlogsAsync = createAsyncThunk(
+  "blogs/fetchFourLatestBlogs",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(getFourLatestBlogs, { withCredentials: true });
+      return response.data.data;
+    } catch (error) {
+      console.error("Error in fetchFourLatestBlogsAsync:", error);
       return rejectWithValue(
         error.response ? error.response.data : error.message
       );
@@ -97,6 +112,8 @@ const blogsSlice = createSlice({
   name: "blogs",
   initialState: {
     blogs: [],
+    fourLatestBlogs: [],
+    fourLatestBlogsStatus: "idle",
     status: "idle",
     error: null,
   },
@@ -109,7 +126,7 @@ const blogsSlice = createSlice({
       })
       .addCase(addBlogAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.blogs.push(action.payload);
+        state.blogs.push(action.payload.data);
       })
       .addCase(addBlogAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -125,6 +142,18 @@ const blogsSlice = createSlice({
       })
       .addCase(fetchBlogsAsync.rejected, (state, action) => {
         state.status = "failed";
+        state.error = action.payload;
+      })
+      // Fetch Four Latest Blogs cases
+      .addCase(fetchFourLatestBlogsAsync.pending, (state) => {
+        state.fourLatestBlogsStatus = "loading";
+      })
+      .addCase(fetchFourLatestBlogsAsync.fulfilled, (state, action) => {
+        state.fourLatestBlogsStatus = "succeeded";
+        state.fourLatestBlogs = action.payload;
+      })
+      .addCase(fetchFourLatestBlogsAsync.rejected, (state, action) => {
+        state.fourLatestBlogsStatus = "failed";
         state.error = action.payload;
       })
       // Update Blog cases

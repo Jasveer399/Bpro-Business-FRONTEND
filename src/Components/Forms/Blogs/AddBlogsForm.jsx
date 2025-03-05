@@ -11,6 +11,7 @@ import { Alert, AlertTitle } from "@mui/material";
 import { TextAreaEditor } from "../../../ui/TextAreaEditor";
 import ImageInput from "../../../ui/ImageInput";
 import { uploadFile } from "../../../Utils/Helper";
+import FormHeading from "../../../ui/FormHeading";
 
 const AddBlogsForm = ({ closeDialog }) => {
   const dispatch = useDispatch();
@@ -22,8 +23,6 @@ const AddBlogsForm = ({ closeDialog }) => {
   const [blogContent, setBlogContent] = useState("");
   const { status, error } = useSelector((state) => state.blogs);
   const isSubmitting = status === "loading";
-
-  console.log("blogContent =>", blogContent);
 
   const {
     register,
@@ -106,78 +105,78 @@ const AddBlogsForm = ({ closeDialog }) => {
   };
 
   return (
-    <div className="w-full mx-auto p-8 bg-white rounded-xl">
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-800">
-          Create New Blog Post
-        </h2>
-      </div>
+    <>
+      <div className="w-full mx-auto p-8 bg-white rounded-xl">
+        <div className="mb-4">
+          <FormHeading title="Create Blog" closeDialog={closeDialog} />
+        </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="flex gap-6 flex-wrap">
-          <ImageInput
-            register={register}
-            setValue={setValue}
-            error={errors?.image?.message}
-          />
-          <div className="flex gap-5 w-full">
-            <FormInput
-              label="Blog Title"
-              width="w-full"
-              {...register("blogname", {
-                required: "Blog title is required",
-                minLength: {
-                  value: 2,
-                  message: "Title must be at least 2 characters",
-                },
-              })}
-              error={errors.blogname?.message}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <div className="flex gap-6 flex-wrap">
+            <ImageInput
+              register={register}
+              setValue={setValue}
+              error={errors?.image?.message}
             />
-            <ChipsInput
-              value={tags}
-              onChange={setTags}
-              label="Blog Tags"
-              maxChips={5}
-              error={errors.tags?.message}
-              className="w-full"
+            <div className="flex gap-5 w-full">
+              <FormInput
+                label="Blog Title"
+                width="w-full"
+                {...register("blogname", {
+                  required: "Blog title is required",
+                  minLength: {
+                    value: 2,
+                    message: "Title must be at least 2 characters",
+                  },
+                })}
+                error={errors.blogname?.message}
+              />
+              <ChipsInput
+                value={tags}
+                onChange={setTags}
+                label="Blog Tags"
+                maxChips={5}
+                error={errors.tags?.message}
+                className="w-full"
+              />
+            </div>
+            <TextAreaEditor
+              onContentChange={(blogContent) =>
+                setValue("blogContent", blogContent)
+              }
             />
           </div>
-          <TextAreaEditor
-            onContentChange={(blogContent) =>
-              setValue("blogContent", blogContent)
-            }
-          />
-        </div>
 
-        <div className="flex justify-end gap-4 mt-8">
-          <button
-            type="button"
-            onClick={closeDialog}
-            className="px-6 py-2 rounded-xl border border-gray-300 hover:bg-gray-50 text-gray-600"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="px-6 py-2 rounded-xl bg-blue text-white hover:bg-blue-600 disabled:opacity-50 shadow-lg hover:shadow-xl transition-all"
-          >
-            {isSubmitting ? <Loader /> : "Publish Blog"}
-          </button>
-        </div>
+          <div className="flex justify-end gap-4 mt-8">
+            <button
+              type="button"
+              onClick={closeDialog}
+              className="px-6 py-2 rounded-xl border border-gray-300 hover:bg-gray-50 text-gray-600"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-6 py-2 rounded-xl bg-blue text-white hover:bg-blue-600 disabled:opacity-50 shadow-lg hover:shadow-xl transition-all"
+            >
+              {isSubmitting ? <Loader /> : "Publish Blog"}
+            </button>
+          </div>
 
-        {notification && (
-          <Alert
-            className={`mb-6 ${
-              notification.type === "error" ? "bg-red-500" : "bg-green-500"
-            }`}
-            onClick={() => setNotification(null)}
-          >
-            <h1>{notification.message}</h1>
-          </Alert>
-        )}
-      </form>
-    </div>
+          {notification && (
+            <Alert
+              className={`mb-6 ${
+                notification.type === "error" ? "bg-red-500" : "bg-green-500"
+              }`}
+              onClick={() => setNotification(null)}
+            >
+              <h1>{notification.message}</h1>
+            </Alert>
+          )}
+        </form>
+      </div>
+    </>
   );
 };
 

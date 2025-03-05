@@ -34,7 +34,7 @@ function Blogs() {
                     <AddBlogsForm />
                 </Dialog>
             </div>
-            <div className="container mx-auto">
+            <div className="mx-auto">
                 <BlogCardGrid data={blogs} status={status} />
             </div>
         </div>

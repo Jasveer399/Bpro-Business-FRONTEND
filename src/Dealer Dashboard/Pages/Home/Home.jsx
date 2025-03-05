@@ -17,11 +17,15 @@ import {
 } from "../../../Redux/Features/bookmarkSlice";
 import DealerProfileCard from "../../Components/Home/DealerProfileCard";
 import Loader from "../../../ui/Loader";
+import { fetchFourLatestBlogsAsync } from "../../../Redux/Features/blogsSlice";
 
 function Home() {
   const dispatch = useDispatch();
   const { bannersCategory, status, error } = useSelector(
     (state) => state.bannersCategory
+  );
+  const { fourLatestBlogsStatus, fourLatestBlogs } = useSelector(
+    (state) => state.blogs
   );
   const [updatedProducts, setUpdatedProducts] = useState([]);
 
@@ -47,7 +51,11 @@ function Home() {
     if (bookmarkStatus === "idle") {
       dispatch(fetchUserBookmarksAsync());
     }
-  }, [status, allProductStatus, bookmarkStatus, dispatch]);
+
+    if (fourLatestBlogsStatus === "idle") {
+      dispatch(fetchFourLatestBlogsAsync())
+    }
+  }, [status, allProductStatus, bookmarkStatus, fourLatestBlogsStatus, dispatch]);
 
   useEffect(() => {
     const updatedData = allProducts?.map((product) => ({
@@ -145,7 +153,7 @@ function Home() {
 
           {/* Right side content */}
           <div className="w-full md:w-1/4 space-y-2">
-            <LatestArticles articles={articleData} />
+            <LatestArticles status={fourLatestBlogsStatus} articles={fourLatestBlogs} />
             <Advertisement
               className="w-full md:w-[100%] h-auto"
               isLeft={true}

@@ -31,7 +31,7 @@ function EditProfile() {
     },
   });
   const dispatch = useDispatch();
-  const { status: dealerStatus } = useSelector((state) => state.dealers);
+  const { status: dealerStatus, updateStatus } = useSelector((state) => state.dealers);
   const { categories, status: categoryStatus } = useSelector(
     (state) => state.categories
   );
@@ -785,7 +785,7 @@ function EditProfile() {
             disabled={isSubmitting}
             className="w-72 bg-[#FFB200] border-2 flex items-center justify-center border-white shadow-2xl hover:shadow-inner px-6 py-3 text-lg font-semibold rounded-md text-white mb-10"
           >
-            {dealerStatus === "loading" ? <Loader /> : "Submit"}
+            {updateStatus === "loading" ? <Loader /> : "Submit"}
           </button>
         </form>
       </div>

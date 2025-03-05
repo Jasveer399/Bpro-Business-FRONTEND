@@ -160,6 +160,57 @@ const calculateDiscount = (price, discount) => {
   };
 }
 
+function timeAgo(timestamp) {
+  // Parse the timestamp
+  const date = new Date(timestamp);
+  const now = new Date();
+  
+  // Calculate the time difference in milliseconds
+  const timeDiff = now - date;
+  
+  // Convert to seconds
+  const seconds = Math.floor(timeDiff / 1000);
+  
+  // Define time intervals in seconds
+  const minute = 60;
+  const hour = minute * 60;
+  const day = hour * 24;
+  const week = day * 7;
+  const month = day * 30;
+  const year = day * 365;
+  
+  // Return appropriate time string based on time difference
+  if (seconds < 5) {
+    return "just now";
+  } else if (seconds < minute) {
+    return seconds + " seconds ago";
+  } else if (seconds < 2 * minute) {
+    return "a minute ago";
+  } else if (seconds < hour) {
+    return Math.floor(seconds / minute) + " minutes ago";
+  } else if (seconds < 2 * hour) {
+    return "an hour ago";
+  } else if (seconds < day) {
+    return Math.floor(seconds / hour) + " hours ago";
+  } else if (seconds < 2 * day) {
+    return "yesterday";
+  } else if (seconds < week) {
+    return Math.floor(seconds / day) + " days ago";
+  } else if (seconds < 2 * week) {
+    return "a week ago";
+  } else if (seconds < month) {
+    return Math.floor(seconds / week) + " weeks ago";
+  } else if (seconds < 2 * month) {
+    return "a month ago";
+  } else if (seconds < year) {
+    return Math.floor(seconds / month) + " months ago";
+  } else if (seconds < 2 * year) {
+    return "a year ago";
+  } else {
+    return Math.floor(seconds / year) + " years ago";
+  }
+}
+
 export {
   storeDealerAccessToken,
   removeDealerAccessToken,
@@ -170,5 +221,6 @@ export {
   deleteFile,
   calculateRemainingDays,
   formatIndianCurrency,
-  calculateDiscount
+  calculateDiscount,
+  timeAgo
 };

@@ -44,6 +44,7 @@ import DealerProfilePage from "./Dealer Dashboard/Pages/DealerProfile/DealerProf
 import Cashfree from "./Dealer Dashboard/Pages/Cashfree";
 import PaymentStatus from "./Dealer Dashboard/Pages/PaymentStatus";
 import CategoriesProduct from "./Dealer Dashboard/Pages/Categories Products/CategoriesProduct";
+import { getDealerAccessToken } from "./Utils/Helper";
 
 function App() {
   return (
@@ -71,7 +72,7 @@ function App() {
             <Route path="/categories" element={<Category />} />
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/blogview/:id" element={<BlogView />} />
-            <Route path="/pricing" element={<Pricing />} /> 
+            <Route path="/pricing" element={<Pricing />} />
           </Route>
         </Route>
         <Route element={<ProtectedDealerRoutes />}>
@@ -118,7 +119,6 @@ function App() {
         <Route path="/payment" element={<Cashfree />} />
         <Route path="/payment-status" element={<PaymentStatus />} />
       </Routes>
-
     </>
   );
 }

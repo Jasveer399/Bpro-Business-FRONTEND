@@ -45,7 +45,7 @@ function BlogDetails() {
             </div>
             <div className='flex gap-5 mx-40 mt-10'>
                 <div className='w-3/5 flex flex-col gap-5 p-5 bg-white border border-gray-200 rounded-2xl'>
-                    <img src={currentBlog?.images[0]?.url} alt="" className='w-full h-96 object-cover rounded-xl' />
+                    <img src={currentBlog?.image} alt="" className='w-full h-96 object-cover rounded-xl' />
                     <span className="flex items-center gap-2">
                         <Calendar size={18} /> {currentBlog?.createdAt.split('T')[0]}
                     </span>
