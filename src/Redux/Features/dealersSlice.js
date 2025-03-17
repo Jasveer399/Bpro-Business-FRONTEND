@@ -94,13 +94,11 @@ export const fetchSpecificDealerAsync = createAsyncThunk(
   }
 );
 
-
 // Thunk for updating a dealer
 export const updateDealerAsync = createAsyncThunk(
   "dealers/updateDealer",
   async (dealerData, { rejectWithValue }) => {
     try {
-      console.log("dealerData", dealerData);
       const response = await axios.put(updateDealerAccount, dealerData, {
         headers: {
           Authorization: `Bearer ${getDealerAccessToken()}`,
@@ -281,17 +279,21 @@ export const updateProfileImgAsync = createAsyncThunk(
       );
     }
   }
-)
+);
 
 export const removeProfileImgAsync = createAsyncThunk(
   "dealers/removeProfileImg",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.patch(removeProfileImg, {}, {
-        headers: {
-          Authorization: `Bearer ${getDealerAccessToken()}`,
-        },
-      });
+      const response = await axios.patch(
+        removeProfileImg,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${getDealerAccessToken()}`,
+          },
+        }
+      );
       return response.data.data;
     } catch (error) {
       console.error("Error in removing profile:", error);
@@ -300,7 +302,7 @@ export const removeProfileImgAsync = createAsyncThunk(
       );
     }
   }
-)
+);
 
 const dealersSlice = createSlice({
   name: "dealers",

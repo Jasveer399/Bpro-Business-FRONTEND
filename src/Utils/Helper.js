@@ -7,8 +7,24 @@ const storeDealerAccessToken = (token) => {
 const removeDealerAccessToken = () => {
   localStorage.removeItem("dealerAccessToken");
 };
+
+const storeCustomerAccessToken = (token) => {
+  localStorage.setItem("customerAccessToken", token);
+};
+const removeCustomerAccessToken = () => {
+  localStorage.removeItem("customerAccessToken");
+};
+
+const getCustomerAccessToken = () =>
+  localStorage.getItem("customerAccessToken");
 const getDealerAccessToken = () => localStorage.getItem("dealerAccessToken");
 const getAdminAccessToken = () => localStorage.getItem("accessToken");
+
+const getUserToken = () => {
+  const dealerAccessToken = getDealerAccessToken();
+  const customerAccessToken = getCustomerAccessToken();
+  return dealerAccessToken || customerAccessToken;
+};
 
 const isColorDark = (hexColor) => {
   const rgb = parseInt(hexColor.slice(1), 16);
@@ -63,38 +79,52 @@ const deleteFile = async (fileUrl) => {
 
 export function formatDateString(dateString) {
   // Check if input is valid
-  if (!dateString || typeof dateString !== 'string') {
-      throw new Error('Invalid input: Please provide a valid date string');
+  if (!dateString || typeof dateString !== "string") {
+    throw new Error("Invalid input: Please provide a valid date string");
   }
 
   try {
-      // Create a new Date object from the input string
-      const date = new Date(dateString);
+    // Create a new Date object from the input string
+    const date = new Date(dateString);
 
-      // Check if the date is valid
-      if (isNaN(date.getTime())) {
-          throw new Error('Invalid date format');
-      }
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      throw new Error("Invalid date format");
+    }
 
-      // Format hours for 12-hour clock
-      let hours = date.getHours();
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      hours = hours % 12;
-      hours = hours ? hours : 12; // Convert 0 to 12
+    // Format hours for 12-hour clock
+    let hours = date.getHours();
+    const ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12;
+    hours = hours ? hours : 12; // Convert 0 to 12
 
-      // Format minutes with leading zero if needed
-      const minutes = String(date.getMinutes()).padStart(2, '0');
+    // Format minutes with leading zero if needed
+    const minutes = String(date.getMinutes()).padStart(2, "0");
 
-      // Array of month names
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-                     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    // Array of month names
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
 
-      // Build the formatted string
-      const formattedDate = `${hours}:${minutes} ${ampm} ${date.getDate()} ${months[date.getMonth()]}, ${date.getFullYear()}`;
+    // Build the formatted string
+    const formattedDate = `${hours}:${minutes} ${ampm} ${date.getDate()} ${
+      months[date.getMonth()]
+    }, ${date.getFullYear()}`;
 
-      return formattedDate;
+    return formattedDate;
   } catch (error) {
-      throw new Error(`Error formatting date: ${error.message}`);
+    throw new Error(`Error formatting date: ${error.message}`);
   }
 }
 
@@ -102,11 +132,11 @@ function calculateRemainingDays(createdAt, planDuration) {
   // Convert creation date to Date object
   const startDate = new Date(createdAt);
   const today = new Date();
-  
+
   // Calculate end date based on plan duration
   let endDate = new Date(startDate);
-  
-  switch(planDuration) {
+
+  switch (planDuration) {
     case "One Month":
       endDate.setMonth(endDate.getMonth() + 1);
       break;
@@ -125,13 +155,13 @@ function calculateRemainingDays(createdAt, planDuration) {
     default:
       throw new Error("Invalid plan duration");
   }
-  
+
   // Calculate remaining time in milliseconds
   const remainingTime = endDate.getTime() - today.getTime();
-  
+
   // Convert to days and round up
   const remainingDays = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
-  
+
   // Return 0 if plan has expired
   return Math.max(0, remainingDays);
 }
@@ -158,19 +188,19 @@ const calculateDiscount = (price, discount) => {
     discountedPrice,
     discountAmount,
   };
-}
+};
 
 function timeAgo(timestamp) {
   // Parse the timestamp
   const date = new Date(timestamp);
   const now = new Date();
-  
+
   // Calculate the time difference in milliseconds
   const timeDiff = now - date;
-  
+
   // Convert to seconds
   const seconds = Math.floor(timeDiff / 1000);
-  
+
   // Define time intervals in seconds
   const minute = 60;
   const hour = minute * 60;
@@ -178,7 +208,7 @@ function timeAgo(timestamp) {
   const week = day * 7;
   const month = day * 30;
   const year = day * 365;
-  
+
   // Return appropriate time string based on time difference
   if (seconds < 5) {
     return "just now";
@@ -216,11 +246,15 @@ export {
   removeDealerAccessToken,
   getDealerAccessToken,
   getAdminAccessToken,
+  storeCustomerAccessToken,
+  removeCustomerAccessToken,
+  getCustomerAccessToken,
+  getUserToken,
   isColorDark,
   uploadFile,
   deleteFile,
   calculateRemainingDays,
   formatIndianCurrency,
   calculateDiscount,
-  timeAgo
+  timeAgo,
 };

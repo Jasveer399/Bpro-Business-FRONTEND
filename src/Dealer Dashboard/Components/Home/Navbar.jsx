@@ -3,7 +3,11 @@ import { FaFacebookF, FaLinkedinIn } from "react-icons/fa";
 import { GrInstagram } from "react-icons/gr";
 import { Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { getDealerAccessToken } from "../../../Utils/Helper";
+import {
+  getCustomerAccessToken,
+  getDealerAccessToken,
+  removeCustomerAccessToken,
+} from "../../../Utils/Helper";
 import Dialog from "../../../ui/Dialog";
 import MobileNoForm from "../Forms/Auth/MobileNoInput";
 import CustomerLoginForm from "../Forms/Auth/CustomerLoginForm";
@@ -15,7 +19,8 @@ const Navbar = () => {
     setIsOpen(!isOpen);
   };
 
-  const token = getDealerAccessToken();
+  const dealerToken = getDealerAccessToken();
+  const customerToken = getCustomerAccessToken();
 
   return (
     <div className="bg-primary text-white font-montserrat">
@@ -39,10 +44,17 @@ const Navbar = () => {
           <Link to="/contact-us" className="hover:opacity-80">
             Contact Us
           </Link>
-          {token ? (
+          {dealerToken ? (
             <Link to="/my-dashboard/listing" className="hover:opacity-80">
               Dashboard
             </Link>
+          ) : customerToken ? (
+            <button
+              onClick={removeCustomerAccessToken}
+              className="hover:opacity-80"
+            >
+              Logout
+            </button>
           ) : (
             <Dialog
               trigger={
@@ -51,7 +63,9 @@ const Navbar = () => {
               width="w-[35%]"
               height="h-[55%]"
             >
-              <CustomerLoginForm />
+              {({ closeDialog }) => (
+                <CustomerLoginForm closeDialog={closeDialog} />
+              )}
             </Dialog>
           )}
           <div className="flex items-center gap-1 cursor-pointer hover:opacity-80">
@@ -89,10 +103,12 @@ const Navbar = () => {
             <Link href="/contact" className="hover:opacity-80">
               Contact Us
             </Link>
-            {token ? (
+            {dealerToken ? (
               <Link to="/my-dashboard/listing" className="hover:opacity-80">
                 Dashboard
               </Link>
+            ) : customerToken ? (
+              <button className="hover:opacity-80">Logout</button>
             ) : (
               <Dialog
                 trigger={

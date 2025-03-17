@@ -1,5 +1,5 @@
-export const server = "http://localhost:3000";
-// export const server = "http://3.7.200.115:4000";
+// export const server = "http://localhost:3000";
+export const server = "http://3.7.200.115:4000";
 // export const server = "https://bpro-business-backend.onrender.com";
 
 // ALl Dashboard Route
@@ -20,6 +20,8 @@ export const requestUpdateProfile = `${server}/api/v1/dealer/requestUpdateProfil
 export const getAllUpdateApprovalRequests = `${server}/api/v1/dealer/getAllUpdateApprovalRequests`;
 export const changeStatusUpdateProfile = `${server}/api/v1/dealer/changeStatusUpdateProfile`;
 export const getSpecificDealer = `${server}/api/v1/dealer/getSpecificDealer`;
+export const incrementWhatsappCount = `${server}/api/v1/dealer/incrementWhatsappCount`;
+export const incrementCallCount = `${server}/api/v1/dealer/incrementCallCount`;
 
 // ALl Banners Route
 export const addBanner = `${server}/api/v1/banners/addBanner`;
@@ -58,6 +60,7 @@ export const editProduct = `${server}/api/v1/product/editProduct`;
 export const deleteProduct = `${server}/api/v1/product/deleteProduct`;
 export const getProductsStats = `${server}/api/v1/product/getProductsStats`;
 export const getAllProducts = `${server}/api/v1/product/getAllProducts`;
+export const viewProduct = `${server}/api/v1/product/viewProduct`;
 
 //All BookMarks Routes
 // export const getAllBookmarks = `${server}/api/v1/bookmarks/getAllBookmarks`;
@@ -78,3 +81,8 @@ export const getAllPlans = `${server}/api/v1/plan/getAllPlans`;
 //All File Routes
 export const uploadFileEndPoint = `${server}/upload`;
 export const deleteFileEndPoint = `${server}/upload`;
+
+//All Customer Routes
+export const createCustomerAndGetOTP = `${server}/api/v1/customer/createCustomerAndGetOTP`;
+export const verifyOtp = `${server}/api/v1/customer/verifyOTP`;
+export const completeProfile = `${server}/api/v1/customer/completeProfile`;

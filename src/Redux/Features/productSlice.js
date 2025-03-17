@@ -181,7 +181,7 @@ const productSlice = createSlice({
       state.error = null;
     },
     setProduct: (state, action) => {
-      console.log("id: ",action.payload)
+      console.log("id: ", action.payload);
       state.product =
         state.allProducts.find((p) => p.id === action.payload) || null;
     },
@@ -196,8 +196,10 @@ const productSlice = createSlice({
         if (state.products) {
           state.products.push(action.payload.data);
         }
-        state.productsStats.totalProducts = state.productsStats.totalProducts + 1
-        state.productsStats.activeProducts = state.productsStats.activeProducts + 1
+        state.productsStats.totalProducts =
+          state.productsStats.totalProducts + 1;
+        state.productsStats.activeProducts =
+          state.productsStats.activeProducts + 1;
       })
       .addCase(addProductAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -274,8 +276,10 @@ const productSlice = createSlice({
         state.products = state.products.filter(
           (p) => p.id !== action.payload.data.id
         );
-        state.productsStats.totalProducts = state.productsStats.totalProducts - 1
-        state.productsStats.activeProducts = state.productsStats.activeProducts - 1
+        state.productsStats.totalProducts =
+          state.productsStats.totalProducts - 1;
+        state.productsStats.activeProducts =
+          state.productsStats.activeProducts - 1;
       })
       .addCase(deleteProductAsync.rejected, (state, action) => {
         state.status = "failed";

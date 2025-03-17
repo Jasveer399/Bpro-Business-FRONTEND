@@ -93,7 +93,6 @@ function App() {
             path="/my-dashboard/product-detail/:id"
             element={<ProductDetail />}
           />
-          <Route path="/product-detail/:id" element={<ProductDetail />} />
           <Route
             path="/my-dashboard/edit-product-detail/:id"
             element={<EditProductLisiting />}
@@ -104,6 +103,7 @@ function App() {
           <Route path="/register" element={<DealerRegister />} />
           <Route path="/login" element={<DealerLogin />} />
         </Route>
+        <Route path="/product-detail/:id" element={<ProductDetail />} />
         <Route path="/home" element={<Home />} />
         <Route path="/pricing-plan" element={<PricingPlan />} />
         <Route path="/about-us" element={<AboutUs />} />

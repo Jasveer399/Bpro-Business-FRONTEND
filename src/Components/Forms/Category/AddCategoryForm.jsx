@@ -21,7 +21,6 @@ function AddCategoryForm({ closeDialog }) {
   } = useForm();
 
   const addCategoryHandler = async (data) => {
-    console.log("addCategory: ", data);
     const formData = new FormData();
     formData.append("title", data.title);
     if (iconImg.file) {

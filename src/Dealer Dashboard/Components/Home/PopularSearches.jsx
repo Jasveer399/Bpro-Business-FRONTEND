@@ -6,14 +6,15 @@ import { MailOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 function PopularSearches({ product, onBookmarkToggle }) {
-  console.log("product", product);
   const navigate = useNavigate();
   return (
     <div className="relative border bg-white border-[#E7E7E7] rounded-md font-montserrat p-2">
       {/* Bookmark Icon */}
       <div
         className="cursor-pointer "
-        onClick={() => navigate(`/product-detail/${product.id}`)}
+        onClick={() => {
+          navigate(`/product-detail/${product.id}`);
+        }}
       >
         <div
           className="absolute top-3 right-3 cursor-pointer z-20"
@@ -68,7 +69,7 @@ function PopularSearches({ product, onBookmarkToggle }) {
             <FaStar className="text-white" size={14} />
           </div>
           <p className="text-[#6A6A6A] text-sm">
-            {(product.Reviews?.length || product?._count?.Reviews) || "0"} Ratings
+            {product.Reviews?.length || product?._count?.Reviews || "0"} Ratings
           </p>
         </div>
       </div>

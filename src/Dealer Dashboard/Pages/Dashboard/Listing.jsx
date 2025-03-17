@@ -22,7 +22,7 @@ function Listing() {
       dispatch(getProductsStatsAsync());
     }
   }, [dispatch, productsStatsStatus]);
-  
+
   console.log("products stats", productsStats);
   return (
     <>
@@ -46,8 +46,15 @@ function Listing() {
           <div className="w-full">
             <ListingCard
               colorCode="bg-[#f04d4e]"
-              count={productsStats?.expiredProducts || 0}
-              name="Expired Listings"
+              count={productsStats?.whatsappClickClount || 0}
+              name="Whatsapp Click Count"
+            />
+          </div>
+          <div className="w-full">
+            <ListingCard
+              colorCode="bg-[#f04d4e]"
+              count={productsStats?.phoneNoClickClount || 0}
+              name="Phone No Click Count"
             />
           </div>
         </div>

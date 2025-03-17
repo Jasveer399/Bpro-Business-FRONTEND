@@ -5,7 +5,6 @@ import { PiImagesFill, PiMoonDuotone, PiSunDimDuotone } from "react-icons/pi";
 import { TfiDashboard } from "react-icons/tfi";
 import Header from "../ui/Header";
 import { useTheme } from "../Context/ThemeContext";
-import { BsFillPersonVcardFill } from "react-icons/bs";
 import { ImBlogger } from "react-icons/im";
 import { useSelector } from "react-redux";
 import { BiCategoryAlt } from "react-icons/bi";
@@ -28,7 +27,7 @@ function Layout() {
     { name: "Dealers", icon: FaUserTie, link: "/dealers" },
     { name: "Workers", icon: GrUserWorker, link: "/workers" },
     { name: "Blogs", icon: ImBlogger, link: "/blogs" },
-    { name: "Banner", icon: PiImagesFill , link: "/banners" },
+    { name: "Banner", icon: PiImagesFill, link: "/banners" },
     { name: "Category", icon: BiCategoryAlt, link: "/categories" },
     { name: "Pricing", icon: IoPricetagsOutline, link: "/pricing" },
   ];

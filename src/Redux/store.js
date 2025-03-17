@@ -10,6 +10,7 @@ import bookmarkReducer from "../Redux/Features/bookmarkSlice.js";
 import reviewReducer from "../Redux/Features/reviewsSlice.js";
 import plansReducer from "../Redux/Features/PlansSlice.js";
 import dashboardSlice from "../Redux/Features/dashboardSlice.js";
+import customerSlice from "../Redux/Features/customerSlice.js";
 
 export const store = configureStore({
   reducer: {
@@ -24,5 +25,6 @@ export const store = configureStore({
     reviews: reviewReducer,
     plans: plansReducer,
     dashboard: dashboardSlice,
+    customer: customerSlice,
   },
 });

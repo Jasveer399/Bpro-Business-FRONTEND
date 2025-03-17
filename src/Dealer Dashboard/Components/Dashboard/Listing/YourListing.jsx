@@ -20,7 +20,9 @@ function YourListing({ status, products }) {
   const [idToDelete, setIdToDelete] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const dropdownRefs = useRef({});
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+
+  console.log("products in your listing ===>", products);
 
   const toggleDropdown = (id) => {
     setActiveDropdown(activeDropdown === id ? null : id);
@@ -74,7 +76,7 @@ function YourListing({ status, products }) {
                 <th className="py-5 px-3">Discount Price</th>
                 <th className="py-5 px-3">Total Price</th>
                 <th className="py-5 px-3">Status</th>
-                <th className="py-5 px-3">Listing ID</th>
+                <th className="py-5 px-3">View Count</th>
                 <th className="py-5 px-3">Setting</th>
               </tr>
             </thead>
@@ -156,7 +158,7 @@ function YourListing({ status, products }) {
                       </span>
                     </td>
                     <td className="py-3 text-center uppercase">
-                      {listing.id.slice(0, 5)}
+                      {listing._count.viewProduct}
                     </td>
                     <td className="py-3">
                       <div className="flex justify-center space-x-2 relative configure-dropdown">
@@ -195,9 +197,7 @@ function YourListing({ status, products }) {
                 <tr>
                   <td colSpan={9}>
                     <div className="flex items-center justify-center my-5">
-                      <h1 className="text-lg font-bold">
-                        No Listings Found
-                      </h1>
+                      <h1 className="text-lg font-bold">No Listings Found</h1>
                     </div>
                   </td>
                 </tr>

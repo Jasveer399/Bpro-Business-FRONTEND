@@ -30,7 +30,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { addReviewAsync } from "../../../../Redux/Features/reviewsSlice";
 import Snackbars from "../../../../ui/Snackbars";
 import ImagesSwiper from "./ImagesSwiper";
-import { formatDateString } from "../../../../Utils/Helper";
+import { formatDateString, getUserToken } from "../../../../Utils/Helper";
+import axios from "axios";
+import {
+  incrementCallCount,
+  incrementWhatsappCount,
+  viewProduct,
+} from "../../../../Utils/server";
 
 function ProductDetail() {
   const navigate = useNavigate();
@@ -49,7 +55,7 @@ function ProductDetail() {
     productStatus,
     error,
     addReviewStatus,
-    allProducts
+    allProducts,
   } = useSelector((state) => state.products);
 
   const { categories, status } = useSelector((state) => state.categories);
@@ -61,14 +67,28 @@ function ProductDetail() {
     ? product?.Reviews
     : product?.Reviews?.slice(0, 2);
 
+  const handleViewProduct = async () => {
+    console.log("Call View Product");
+    const res = await axios.post(
+      `${viewProduct}/${id}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${getUserToken()}`,
+        },
+      }
+    );
+  };
+
+  useEffect(() => {
+    handleViewProduct();
+  }, []);
+
   useEffect(() => {
     if (allProductsStatus === "idle") {
       dispatch(fetchAllProductsAsync());
     }
   }, [allProductsStatus, dispatch]);
-
-  console.log("allproduct sttaus", allProductsStatus)
-  console.log("allproducts", categories )
 
   useEffect(() => {
     if (allProducts?.length > 0) {
@@ -113,12 +133,36 @@ function ProductDetail() {
     }
   };
 
-  console.log("product", product);
+  const handleIncrementWhatsappCount = async (dealer) => {
+    try {
+      console.log("Call Increment Whatsapp Count", dealer);
+      const response = await axios.get(
+        `${incrementWhatsappCount}/${dealer.id}`
+      );
+      console.log("Response in handleIncrementWhatsappCount ===>", response);
+    } catch (error) {
+      console.log("Error in handleIncrementWhatsappCount ===>", error);
+    }
+  };
+
+  const handleIncrementCallCount = async (dealer) => {
+    try {
+      console.log("Call Increment Call Count", dealer);
+      const response = await axios.get(`${incrementCallCount}/${dealer.id}`);
+      console.log("Response in handleIncrementCallCount ===>", response);
+    } catch (error) {
+      console.log("Error in handleIncrementCallCount ===>", error);
+    }
+  };
+
   return (
     <>
-      {!allProducts || !product && (
-        <div className="w-screen h-screen bg-black/10 flex items-center justify-center absolute"><Loader /></div>
-      )}
+      {!allProducts ||
+        (!product && (
+          <div className="w-screen h-screen bg-black/10 flex items-center justify-center absolute">
+            <Loader />
+          </div>
+        ))}
       <Navbar />
       <Header />
       <div className="w-full h-full flex my-4 gap-5 font-montserrat">
@@ -155,7 +199,9 @@ function ProductDetail() {
                 </tr>
                 <tr className="text-lg border-b border-gray-400">
                   <th className="w-44 text-left pt-5 pb-3">Categories:</th>
-                  <td className="pt-5 pb-3">{product?.categories?.map((cat) => cat.title + ", ")}</td>
+                  <td className="pt-5 pb-3">
+                    {product?.categories?.map((cat) => cat.title + ", ")}
+                  </td>
                 </tr>
                 <tr className="text-lg border-b border-gray-400">
                   <th className="w-44 text-left pt-5 pb-3">Phone:</th>
@@ -284,32 +330,6 @@ function ProductDetail() {
               {addReviewStatus === "loading" ? <Loader /> : "Post Review"}
             </button>
           </form>
-          {/* <h2 className="font-bold text-2xl my-5">Related Listings</h2>
-          <div className="flex gap-4 relative border p-3 rounded-lg border-gray-400">
-            <img src="/mumbai.png" className="rounded-lg w-80" />
-            <div className="mt-2">
-              <small>Service {">"} Cleaning</small>
-              <h2 className="font-bold mb-3 text-lg flex items-center gap-2">
-                <span>Toilet Cleaning Prod</span>
-                <FaCircleCheck className="text-[#73CF42]" />
-              </h2>
-              <p className="flex items-center gap-1">
-                <FaLocationDot size={12} />
-                <span>Uttrakhand</span>
-              </p>
-              <div className="flex items-center gap-2">
-                <p className="bg-[#73CF42] px-2 py-px rounded-md inline-block font-semibold mt-2">
-                  4.0
-                </p>
-                <div className="mt-3">
-                  <ReadOnlyRatings />
-                </div>
-              </div>
-            </div>
-            <div className="absolute top-3 right-3 cursor-pointer">
-              <IoBookmarkOutline size={24} className="" />
-            </div>
-          </div> */}
         </div>
         <div className="w-[25%]">
           <div className="bg-white border border-gray-400 flex items-center gap-4 px-4 py-6 rounded-lg">
@@ -341,7 +361,10 @@ function ProductDetail() {
                 Member since {product?.Dealer?.created_at?.split("T")[0]}
               </p>
             </div>
-            <p className="font-semibold underline cursor-pointer text-[#4C7BE3] mb-3" onClick={() => navigate(`/dealerProfile/${product?.Dealer?.id}`)}>
+            <p
+              className="font-semibold underline cursor-pointer text-[#4C7BE3] mb-3"
+              onClick={() => navigate(`/dealerProfile/${product?.Dealer?.id}`)}
+            >
               View All Ads
             </p>
             <div className="flex gap-5 my-3">
@@ -373,14 +396,6 @@ function ProductDetail() {
                 </a>
               )}
             </div>
-            {/* <div className="flex justify-center w-full gap-4 mb-4">
-              <button className="w-[50%] border border-gray-400 text-gray-600 font-semibold py-2 rounded-md">
-                Send Message
-              </button>
-              <button className="w-[50%] border border-gray-400 text-gray-600 font-semibold py-2 rounded-md">
-                Send Offer
-              </button>
-            </div> */}
             {product?.Dealer?.mobileNo && (
               <div className="flex w-full bg-[#4C7BE3] text-white h-full rounded-lg shadow-md mb-4">
                 <div className="w-[20%] bg-[#4171d9] flex items-center justify-center rounded-l-lg">
@@ -389,6 +404,7 @@ function ProductDetail() {
                 <a
                   className="w-[80%] py-2"
                   href={`tel:+91${product?.Dealer?.mobileNo}`}
+                  onClick={() => handleIncrementCallCount(product?.Dealer)}
                 >
                   <small>Click To Call</small>
                   <h1 className="font-bold text-2xl">
@@ -405,6 +421,7 @@ function ProductDetail() {
                 <a
                   className="w-[80%] py-2"
                   href={`https://wa.me/+91${product?.Dealer?.whatsappNo}`}
+                  onClick={() => handleIncrementWhatsappCount(product?.Dealer)}
                 >
                   <small>Click To Show Number</small>
                   <h1 className="font-bold text-2xl">
@@ -436,7 +453,10 @@ function ProductDetail() {
                 categories.map((category) => (
                   <div className="group flex items-center justify-between border-b-2 border-gray-400 py-3 hover:border-[#EB6752] cursor-pointer">
                     <div className="flex items-center gap-5">
-                      <img src={category.iconImgUrl} className="w-10 h-10 object-cover" />
+                      <img
+                        src={category.iconImgUrl}
+                        className="w-10 h-10 object-cover"
+                      />
                       <h1 className="text-lg font-bold">{category.title}</h1>
                     </div>
                     <h2 className="font-bold border border-gray-400 flex items-center px-3 rounded-lg py-1 text-gray-600 group-hover:bg-[#EB6752] group-hover:text-white group-hover:border-[#EB6752]">
