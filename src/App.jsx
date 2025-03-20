@@ -44,7 +44,7 @@ import DealerProfilePage from "./Dealer Dashboard/Pages/DealerProfile/DealerProf
 import Cashfree from "./Dealer Dashboard/Pages/Cashfree";
 import PaymentStatus from "./Dealer Dashboard/Pages/PaymentStatus";
 import CategoriesProduct from "./Dealer Dashboard/Pages/Categories Products/CategoriesProduct";
-import { getDealerAccessToken } from "./Utils/Helper";
+import AllProducts from "./Dealer Dashboard/Pages/Products/AllProducts";
 
 function App() {
   return (
@@ -113,6 +113,7 @@ function App() {
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/dealerProfile/:id" element={<DealerProfilePage />} />
         <Route path="/category/:title/:id" element={<CategoriesProduct />} />
+        <Route path="/all-products" element={<AllProducts />} />
         <Route path="/editProfile" element={<EditProfile />} />
         <Route path="/thankyou" element={<Thankyou />} />
         <Route path="/edtior" element={<Edtior />} />

@@ -11,23 +11,22 @@ function PopularSearches({ product, onBookmarkToggle }) {
     <div className="relative border bg-white border-[#E7E7E7] rounded-md font-montserrat p-2">
       {/* Bookmark Icon */}
       <div
+        className="absolute top-3 right-3 cursor-pointer z-50"
+        onClick={() => onBookmarkToggle(product)}
+      >
+        <FaBookmark
+          className={`${
+            product.bookmark ? "text-yellow-500" : "text-gray-500"
+          }`}
+          size={20}
+        />
+      </div>
+      <div
         className="cursor-pointer "
         onClick={() => {
           navigate(`/product-detail/${product.id}`);
         }}
       >
-        <div
-          className="absolute top-3 right-3 cursor-pointer z-20"
-          onClick={() => onBookmarkToggle(product)}
-        >
-          <FaBookmark
-            className={`${
-              product.bookmark ? "text-yellow-500" : "text-gray-500"
-            }`}
-            size={20}
-          />
-        </div>
-
         {/* Product Image */}
         <div>
           <img

@@ -1,49 +1,50 @@
-import React, { useEffect, useState } from "react";
 import Navbar from "../../Components/Home/Navbar";
 import Header from "../../Components/Home/Header";
-import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchSpecificCategoryAsync } from "../../../Redux/Features/categoriesSlice";
-import PopularSearches from "../../Components/Home/PopularSearches";
-import LocationCarousel from "../../Components/Home/LocationCard";
-import Loader from "../../../ui/Loader";
+import { useEffect, useState } from "react";
+import { fetchAllProductsAsync } from "../../../Redux/Features/productSlice";
 import {
   addBookmarkAsync,
   deleteBookmarkAsync,
   fetchUserBookmarksAsync,
 } from "../../../Redux/Features/bookmarkSlice";
+import LocationCarousel from "../../Components/Home/LocationCard";
+import { Loader } from "lucide-react";
+import PopularSearches from "../../Components/Home/PopularSearches";
+import ShopsCategory from "../../Components/Home/ShopsCategory";
 
-function CategoriesProduct() {
-  const { id, title } = useParams();
+const AllProducts = () => {
   const dispatch = useDispatch();
-
-  const { specificCategory, specificCategoryStatus } = useSelector(
-    (state) => state.categories
-  );
-
   const [updatedProducts, setUpdatedProducts] = useState([]);
+
+  // Fetch products from the listings
+  const {
+    allProducts,
+    status: productStatus,
+    allProductStatus,
+  } = useSelector((state) => state.products);
 
   const { items: bookmarkedItems, bookmarkStatus } = useSelector(
     (state) => state.bookmarks
   );
 
   useEffect(() => {
-    if (specificCategoryStatus === "idle") {
-      dispatch(fetchSpecificCategoryAsync(id));
+    if (allProductStatus === "idle") {
+      dispatch(fetchAllProductsAsync());
     }
 
     if (bookmarkStatus === "idle") {
       dispatch(fetchUserBookmarksAsync());
     }
-  }, [dispatch, bookmarkStatus, specificCategoryStatus]);
+  }, [allProductStatus, bookmarkStatus, dispatch]);
 
   useEffect(() => {
-    const updatedData = specificCategory?.products?.map((product) => ({
+    const updatedData = allProducts?.map((product) => ({
       ...product,
       bookmark: bookmarkedItems.some((item) => item.productId === product.id),
     }));
     setUpdatedProducts(updatedData);
-  }, [specificCategory, bookmarkedItems]);
+  }, [allProducts, bookmarkedItems]);
 
   const handleBookmarkToggle = (product) => {
     const isBookmarked = product.bookmark;
@@ -65,7 +66,6 @@ function CategoriesProduct() {
       dispatch(addBookmarkAsync(product.id));
     }
   };
-
   return (
     <div className="font-montserrat">
       <Navbar />
@@ -79,19 +79,17 @@ function CategoriesProduct() {
           className="w-full h-72 object-cover relative"
         />
         <h1 className="flex flex-col md:text-6xl text-4xl font-semibold text-white absolute top-56 md:left-20 left-5 gap-4">
-          Category
-          <span className="text-xl">
-            {title?.toUpperCase()} | {specificCategory?.products?.length || 0}{" "}
-            Products
-          </span>
+          All Products
         </h1>
       </div>
-      <h1 className="text-4xl font-[600] my-5 mx-12">
-        <span className="capitalize">{title}</span> Products
-      </h1>
+
+      <h1 className="text-4xl font-[600] my-5 mx-12">Categories</h1>
+      <ShopsCategory />
+
+      <h1 className="text-4xl font-[600] my-5 mx-12">All Products</h1>
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 m-2 md:m-4 gap-3 md:gap-5 px-6">
-        {specificCategoryStatus === "loading" ? (
-          <div className="flex items-center justify-center">
+        {allProductStatus === "loading" ? (
+          <div className="flex items-center justify-center my-4">
             <Loader />
           </div>
         ) : updatedProducts && updatedProducts.length > 0 ? (
@@ -103,8 +101,8 @@ function CategoriesProduct() {
             />
           ))
         ) : (
-          <div className="flex items-center justify-center text-lg font-[600]">
-            No Products Found
+          <div className="font-[600] text-lg flex justify-center items-center">
+            No Products Available
           </div>
         )}
       </div>
@@ -119,6 +117,6 @@ function CategoriesProduct() {
       </div>
     </div>
   );
-}
+};
 
-export default CategoriesProduct;
+export default AllProducts;

@@ -18,6 +18,7 @@ import {
 import DealerProfileCard from "../../Components/Home/DealerProfileCard";
 import Loader from "../../../ui/Loader";
 import { fetchFourLatestBlogsAsync } from "../../../Redux/Features/blogsSlice";
+import { Link } from "react-router-dom";
 
 function Home() {
   const dispatch = useDispatch();
@@ -53,9 +54,15 @@ function Home() {
     }
 
     if (fourLatestBlogsStatus === "idle") {
-      dispatch(fetchFourLatestBlogsAsync())
+      dispatch(fetchFourLatestBlogsAsync());
     }
-  }, [status, allProductStatus, bookmarkStatus, fourLatestBlogsStatus, dispatch]);
+  }, [
+    status,
+    allProductStatus,
+    bookmarkStatus,
+    fourLatestBlogsStatus,
+    dispatch,
+  ]);
 
   useEffect(() => {
     const updatedData = allProducts?.map((product) => ({
@@ -86,38 +93,6 @@ function Home() {
     }
   };
 
-  const articleData = [
-    {
-      time: "10 hours ago",
-      title: "Commented on Video posted by black demon.",
-    },
-    {
-      time: "10 hours ago",
-      title: "Commented on Video posted by black demon.",
-    },
-    {
-      time: "10 hours ago",
-      title: "Commented on Video posted by black demon.",
-    },
-    {
-      time: "10 hours ago",
-      title: "Commented on Video posted by black demon.",
-    },
-  ];
-
-  const handleLoadMore = () => {
-    const nextPage = products.currentPage + 1;
-    if (nextPage <= products.totalPages) {
-      dispatch(
-        fetchAllProductsAsync({
-          page: nextPage,
-          limit: 8,
-        })
-      );
-    }
-  };
-
-  console.log("updatedProducts:", updatedProducts);
   return (
     <>
       <Navbar />
@@ -153,7 +128,10 @@ function Home() {
 
           {/* Right side content */}
           <div className="w-full md:w-1/4 space-y-2">
-            <LatestArticles status={fourLatestBlogsStatus} articles={fourLatestBlogs} />
+            <LatestArticles
+              status={fourLatestBlogsStatus}
+              articles={fourLatestBlogs}
+            />
             <Advertisement
               className="w-full md:w-[100%] h-auto"
               isLeft={true}
@@ -174,33 +152,35 @@ function Home() {
           <h1 className="font-montserrat font-extrabold text-xl md:text-2xl mx-3 md:mx-5">
             Popular Searches
           </h1>
-          {allProductStatus === "loading" ? (
-            <div className="flex items-center justify-center my-4">
-              <Loader />
-            </div>
-          ) : updatedProducts && updatedProducts.length > 0 ? (
-            updatedProducts?.map((product) => (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 m-2 md:m-4 gap-3 md:gap-5">
-                <PopularSearches
-                  key={product.id}
-                  product={product}
-                  onBookmarkToggle={handleBookmarkToggle}
-                />
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 m-2 md:m-4 gap-3 md:gap-5">
+            {allProductStatus === "loading" ? (
+              <div className="flex items-center justify-center my-4">
+                <Loader />
               </div>
-            ))
-          ) : (
-            <div className="font-[600] text-lg flex justify-center items-center">
-              No Products Available
-            </div>
-          )}
+            ) : updatedProducts && updatedProducts.length > 0 ? (
+              updatedProducts
+                .slice(0, 8)
+                ?.map((product) => (
+                  <PopularSearches
+                    key={product.id}
+                    product={product}
+                    onBookmarkToggle={handleBookmarkToggle}
+                  />
+                ))
+            ) : (
+              <div className="font-[600] text-lg flex justify-center items-center">
+                No Products Available
+              </div>
+            )}
+          </div>
           {allProducts?.length >= 8 && (
             <div className="flex items-center justify-center">
-              <button
-                onClick={handleLoadMore}
-                className="border border-[#E7E7E7] py-1 px-8 rounded-md font-semibold hover:bg-gray-50 transition-colors"
+              <Link
+                to="/all-products"
+                className="bg-secondary py-2 px-6 shadow-md rounded-md font-semibold  transition-colors"
               >
                 Load More...
-              </button>
+              </Link>
             </div>
           )}
         </div>

@@ -158,7 +158,7 @@ function YourListing({ status, products }) {
                       </span>
                     </td>
                     <td className="py-3 text-center uppercase">
-                      {listing._count.viewProduct}
+                      {listing?._count?.viewProduct || 0}
                     </td>
                     <td className="py-3">
                       <div className="flex justify-center space-x-2 relative configure-dropdown">
