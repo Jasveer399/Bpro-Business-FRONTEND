@@ -33,16 +33,16 @@ export const addBookmarkAsync = createAsyncThunk(
 
 export const deleteBookmarkAsync = createAsyncThunk(
   "bookmarks/deleteBookmark",
-  async (bookMarkid, { rejectWithValue }) => {
+  async (bookMarkId, { rejectWithValue }) => {
     try {
-      const response = await axios.delete(`${deleteBookmark}/${bookMarkid}`, {
+      const response = await axios.delete(`${deleteBookmark}/${bookMarkId}`, {
         headers: {
           Authorization: `Bearer ${getDealerAccessToken()}`,
         },
       });
-      return { id: bookMarkid, ...response.data };
+      // Make sure the ID is properly returned
+      return { id: bookMarkId, ...response.data };
     } catch (error) {
-      console.error("Error in deleteBookmarkAsync:", error);
       return rejectWithValue(
         error.response ? error.response.data : error.message
       );
@@ -62,7 +62,6 @@ export const fetchUserBookmarksAsync = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      console.error("Error in fetchUserBookmarksAsync:", error);
       return rejectWithValue(
         error.response ? error.response.data : error.message
       );
@@ -87,7 +86,8 @@ const bookmarkSlice = createSlice({
       })
       .addCase(addBookmarkAsync.fulfilled, (state, action) => {
         state.bookmarkStatus = "succeeded";
-        state.items.push(action.payload);
+        // Push just the data part, which should have the correct structure
+        state.items.push(action.payload.data);
       })
       .addCase(addBookmarkAsync.rejected, (state, action) => {
         state.bookmarkStatus = "failed";
@@ -100,6 +100,7 @@ const bookmarkSlice = createSlice({
       })
       .addCase(deleteBookmarkAsync.fulfilled, (state, action) => {
         state.bookmarkStatus = "succeeded";
+        console.log("Removing bookmark from state:", action.payload);
         state.items = state.items.filter(
           (item) => item.id !== action.payload.id
         );
@@ -115,7 +116,8 @@ const bookmarkSlice = createSlice({
       })
       .addCase(fetchUserBookmarksAsync.fulfilled, (state, action) => {
         state.bookmarkStatus = "succeeded";
-        state.items.push(...action.payload.data);
+        // Replace the entire items array instead of pushing
+        state.items = action.payload.data;
       })
       .addCase(fetchUserBookmarksAsync.rejected, (state, action) => {
         state.bookmarkStatus = "failed";

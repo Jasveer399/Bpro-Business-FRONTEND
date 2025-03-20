@@ -65,31 +65,52 @@ function Home() {
   ]);
 
   useEffect(() => {
-    const updatedData = allProducts?.map((product) => ({
-      ...product,
-      bookmark: bookmarkedItems.some((item) => item.productId === product.id),
-    }));
-    setUpdatedProducts(updatedData);
+    if (allProducts && bookmarkedItems) {
+      const updatedData = allProducts.map((product) => {
+        const isBookmarked = bookmarkedItems.some(
+          (item) => item.productId === product.id
+        );
+        return {
+          ...product,
+          bookmark: isBookmarked,
+        };
+      });
+
+      setUpdatedProducts(updatedData);
+    }
   }, [allProducts, bookmarkedItems]);
 
+  // In your handleBookmarkToggle function
   const handleBookmarkToggle = (product) => {
     const isBookmarked = product.bookmark;
 
+    // Find the actual bookmark item
+    const bookmarkedItem = bookmarkedItems.find(
+      (item) => item.productId === product.id
+    );
+
+    // Optimistically update UI
     const updatedProductList = updatedProducts.map((p) =>
       p.id === product.id ? { ...p, bookmark: !isBookmarked } : p
     );
     setUpdatedProducts(updatedProductList);
 
-    const bookmarkedItem = bookmarkedItems.find(
-      (item) => item.productId === product.id
-    );
-
     if (isBookmarked && bookmarkedItem) {
-      // Remove bookmark using the item's ID
-      dispatch(deleteBookmarkAsync(bookmarkedItem.id));
+      dispatch(deleteBookmarkAsync(bookmarkedItem.id))
+        .unwrap()
+        .then((response) => {})
+        .catch((error) => {
+          // Revert UI change on error
+          setUpdatedProducts(updatedProducts);
+        });
     } else {
-      // Add bookmark using the product ID
-      dispatch(addBookmarkAsync(product.id));
+      dispatch(addBookmarkAsync(product.id))
+        .unwrap()
+        .then((response) => {})
+        .catch((error) => {
+          // Revert UI change on error
+          setUpdatedProducts(updatedProducts);
+        });
     }
   };
 
