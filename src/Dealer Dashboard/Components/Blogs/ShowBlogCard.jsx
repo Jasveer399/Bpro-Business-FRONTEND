@@ -54,7 +54,7 @@ const ShowBlogCard = ({ imageUrl, date, title, content, id }) => {
         </div>
 
         {/* Content */}
-        <div className="ml-6 max-w-md">
+        <div className="ml-6 mt-3">
           <div className="text-gray-600 text-sm flex items-center space-x-4 mb-2">
             <span className="flex items-center">
               <Calendar size={18} className="mr-2" />{" "}

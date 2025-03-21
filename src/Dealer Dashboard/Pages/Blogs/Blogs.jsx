@@ -36,7 +36,7 @@ function Allblogs() {
                 <h1 className='text-white'>Home / Blogs / Blog-List</h1>
             </div> */}
       <div className="flex gap-5 mx-40 mt-20">
-        <div className="w-3/5 flex flex-col gap-5">
+        <div className="w-full flex flex-col gap-5">
           {blogs.map((blog) => (
             <ShowBlogCard
               imageUrl={blog?.image}
@@ -47,10 +47,10 @@ function Allblogs() {
             />
           ))}
         </div>
-        <div>
+        {/* <div>
           <SearchBlog />
           <PopularTags tags={tags} />
-        </div>
+        </div> */}
       </div>
     </>
   );
