@@ -50,7 +50,7 @@ function DealerProfileCard() {
               <div className="flex flex-col  items-center h-60 p-3 border cursor-pointer">
                 <img
                   src={dealer.profileUrl || "/dummy-profile.png"}
-                  className="w-32 h-32 object-contain rounded-full mb-2"
+                  className="w-32 h-32 object-cover rounded-full mb-2"
                 />
                 <h1 className="font-[600] text-lg">{dealer.fullName}</h1>
                 <h1 className="text-sm text-gray-600">
