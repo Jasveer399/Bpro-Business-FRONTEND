@@ -207,11 +207,12 @@ function Home() {
         </div>
 
         {/* Banner section */}
-        <div className="w-full">
-          <img
-            src="/banner.png"
-            className="w-full object-cover"
-            alt="Main Banner"
+        <div className="w-full rounded-sm">
+          <Advertisement
+            className="w-full h-60"
+            isLeft={true}
+            isButtonShow={true}
+            banners={bannersCategory[5]?.Banners}
           />
         </div>
 

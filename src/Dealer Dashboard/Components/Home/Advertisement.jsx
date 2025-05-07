@@ -4,7 +4,12 @@ import { useSelector } from "react-redux";
 import { fetchBannersAsync } from "../../../Redux/Features/bannersSlice";
 import { useDispatch } from "react-redux";
 
-const Advertisement = ({ className, isButtonShow, isLeft, banners }) => {
+const Advertisement = ({
+  className = "md:w-2/3 h-80",
+  isButtonShow,
+  isLeft,
+  banners,
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState("right");
 
@@ -42,9 +47,7 @@ const Advertisement = ({ className, isButtonShow, isLeft, banners }) => {
   };
 
   return (
-    <div
-      className={`relative w-full md:w-2/3 h-80 overflow-hidden ${className}`}
-    >
+    <div className={`relative w-full overflow-hidden ${className}`}>
       <div className="relative h-80">
         {banners
           ?.filter((banner) => banner.status === "Active")
