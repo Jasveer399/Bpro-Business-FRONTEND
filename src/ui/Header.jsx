@@ -113,7 +113,7 @@ function Header({ isSideBarFull }) {
               onClick={() => navigate(-1)}
             />
           )}
-          <h4 className="uppercase text-lg font-[600]">
+          <h4 className="uppercase text-lg font-[600] dark:text-white ">
             {location.pathname.split("/")[1]}
           </h4>
         </div>

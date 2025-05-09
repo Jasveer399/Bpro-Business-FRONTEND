@@ -7,17 +7,30 @@ import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 function Workers() {
   const { workers } = useSelector((state) => state.workers);
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth().toString());
+  const [selectedYear, setSelectedYear] = useState(
+    new Date().getFullYear().toString()
+  );
+  const [selectedMonth, setSelectedMonth] = useState(
+    new Date().getMonth().toString()
+  );
 
-  const years = Array.from(
-    { length: 5 },
-    (_, i) => (new Date().getFullYear() - i).toString()
+  const years = Array.from({ length: 5 }, (_, i) =>
+    (new Date().getFullYear() - i).toString()
   );
 
   const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
 
   return (
@@ -36,7 +49,7 @@ function Workers() {
                   label="Year"
                   onChange={(e) => setSelectedYear(e.target.value)}
                 >
-                  {years.map(year => (
+                  {years.map((year) => (
                     <MenuItem key={year} value={year}>
                       {year}
                     </MenuItem>
@@ -72,7 +85,9 @@ function Workers() {
             >
               <AddWorkerForm />
             </Dialog>
-            <h2 className="font-semibold dark:text-colorText">TOTAL: {workers?.length || 0}</h2>
+            <h2 className="font-semibold dark:text-colorText">
+              TOTAL: {workers?.length || 0}
+            </h2>
           </div>
         </div>
         <AllWorkers selectedYear={selectedYear} selectedMonth={selectedMonth} />

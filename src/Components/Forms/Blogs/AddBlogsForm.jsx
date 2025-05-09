@@ -12,6 +12,7 @@ import { TextAreaEditor } from "../../../ui/TextAreaEditor";
 import ImageInput from "../../../ui/ImageInput";
 import { uploadFile } from "../../../Utils/Helper";
 import FormHeading from "../../../ui/FormHeading";
+import Snackbars from "../../../ui/Snackbars";
 
 const AddBlogsForm = ({ closeDialog }) => {
   const dispatch = useDispatch();
@@ -20,8 +21,8 @@ const AddBlogsForm = ({ closeDialog }) => {
     { id: 0, file: null },
   ]);
   const [notification, setNotification] = useState(null);
-  const [blogContent, setBlogContent] = useState("");
-  const { status, error } = useSelector((state) => state.blogs);
+  const { status } = useSelector((state) => state.blogs);
+  const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const isSubmitting = status === "loading";
 
   const {
@@ -73,33 +74,39 @@ const AddBlogsForm = ({ closeDialog }) => {
     }
     // Validate if tags are added
     if (tags.length === 0) {
-      setNotification({
+      setSnackbar({
+        open: true,
         type: "error",
-        message: "Please add at least one tag",
+        text: "Please add at least one tag",
       });
       return;
     }
-
     setValue("tags", tags);
     try {
       const resultAction = await dispatch(addBlogAsync(data));
       if (addBlogAsync.fulfilled.match(resultAction)) {
-        setNotification({
+        setSnackbar({
+          open: true,
           type: "success",
-          message: "Blog posted successfully!",
+          text: "Blog posted successfully!",
         });
         reset(); // Reset form
         setTags([]); // Reset tags
         setImageContainers([{ id: 0, file: null }]); // Reset images
         if (closeDialog) closeDialog();
       } else {
-        setNotification({ type: "error", message: "Failed to post blog!" });
+        setSnackbar({
+          open: true,
+          type: "error",
+          text: "Failed to post blog!",
+        });
         throw new Error(resultAction.error.message);
       }
     } catch (err) {
-      setNotification({
+      setSnackbar({
+        open: true,
         type: "error",
-        message: err.message || "Failed to post blog",
+        text: err.message || "Failed to post blog",
       });
     }
   };
@@ -176,6 +183,12 @@ const AddBlogsForm = ({ closeDialog }) => {
           )}
         </form>
       </div>
+      <Snackbars
+        open={snackbar.open}
+        type={snackbar.type}
+        text={snackbar.text}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
     </>
   );
 };

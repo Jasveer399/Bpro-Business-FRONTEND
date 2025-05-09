@@ -11,9 +11,11 @@ import {
 import Dialog from "../../../ui/Dialog";
 import MobileNoForm from "../Forms/Auth/MobileNoInput";
 import CustomerLoginForm from "../Forms/Auth/CustomerLoginForm";
+import { useEffect } from "react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLogin, setIsLogin] = useState(false);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -21,6 +23,8 @@ const Navbar = () => {
 
   const dealerToken = getDealerAccessToken();
   const customerToken = getCustomerAccessToken();
+
+  useEffect(() => {}, [isLogin]);
 
   return (
     <div className="bg-primary text-white font-montserrat">
@@ -50,7 +54,10 @@ const Navbar = () => {
             </Link>
           ) : customerToken ? (
             <button
-              onClick={removeCustomerAccessToken}
+              onClick={() => {
+                removeCustomerAccessToken();
+                setIsLogin(false);
+              }}
               className="hover:opacity-80"
             >
               Logout
@@ -64,7 +71,10 @@ const Navbar = () => {
               height="h-[55%]"
             >
               {({ closeDialog }) => (
-                <CustomerLoginForm closeDialog={closeDialog} />
+                <CustomerLoginForm
+                  closeDialog={closeDialog}
+                  setIsLogin={setIsLogin}
+                />
               )}
             </Dialog>
           )}

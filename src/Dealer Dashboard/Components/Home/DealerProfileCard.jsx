@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -8,19 +8,43 @@ import { Navigation, Pagination } from "swiper/modules";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDealersAsync } from "../../../Redux/Features/dealersSlice";
 import { useNavigate } from "react-router-dom";
+import { getUserToken } from "../../../Utils/Helper";
+import Snackbars from "../../../ui/Snackbars";
+import axios from "axios";
+import { viewDealerProfile } from "../../../Utils/server";
 
 function DealerProfileCard() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { dealers, fetchStatus } = useSelector((state) => state.dealers);
-
+  const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   useEffect(() => {
     if (fetchStatus === "idle") {
       dispatch(fetchDealersAsync());
     }
   }, [fetchStatus, dispatch]);
 
-  console.log("dealers", dealers);
+  const handleOnclick = async (id) => {
+    if (getUserToken()) {
+      navigate(`/dealerProfile/${id}`);
+      const res = await axios.post(
+        `${viewDealerProfile}/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${getUserToken()}`,
+          },
+        }
+      );
+      console.log("res in View Dealer Profile ===================>", res);
+    } else {
+      setSnackbar({
+        open: true,
+        type: "error",
+        text: "Please login first",
+      });
+    }
+  };
   return (
     <div className="w-full">
       {dealers && dealers.length > 0 ? (
@@ -45,7 +69,7 @@ function DealerProfileCard() {
           {dealers?.map((dealer) => (
             <SwiperSlide
               key={dealer.id}
-              onClick={() => navigate(`/dealerProfile/${dealer.id}`)}
+              onClick={() => handleOnclick(dealer.id)}
             >
               <div className="flex flex-col  items-center h-60 p-3 border cursor-pointer">
                 <img
@@ -68,6 +92,13 @@ function DealerProfileCard() {
           <h1 className="text-2xl font-semibold">No Dealers Found</h1>
         </div>
       )}
+
+      <Snackbars
+        open={snackbar.open}
+        type={snackbar.type}
+        text={snackbar.text}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
     </div>
   );
 }

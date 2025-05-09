@@ -15,11 +15,11 @@ const BlogCardGrid = ({ data, status }) => {
           <Loader />
         </div>
       ) : blogs.length > 0 ? (
-        blogs.map((blog) => (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 mt-5 mx-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 mt-5 mx-8">
+          {blogs.map((blog) => (
             <BlogCard key={blog.id} blog={blog} />
-          </div>
-        ))
+          ))}
+        </div>
       ) : (
         <div className="flex items-center justify-center py-5 font-[600]">
           <div>No blogs Available</div>

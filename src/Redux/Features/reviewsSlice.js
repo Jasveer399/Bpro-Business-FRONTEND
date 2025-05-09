@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { createReview } from "../../Utils/server";
-import { getDealerAccessToken } from "../../Utils/Helper";
+import { getUserToken } from "../../Utils/Helper";
 
 // Thunk for adding a new worker
 export const addReviewAsync = createAsyncThunk(
@@ -11,7 +11,7 @@ export const addReviewAsync = createAsyncThunk(
       const response = await axios.post(createReview, data, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${getDealerAccessToken()}`,
+          Authorization: `Bearer ${getUserToken()}`,
         },
       });
       return response.data;

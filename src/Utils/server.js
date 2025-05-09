@@ -1,5 +1,5 @@
-// export const server = "http://localhost:3000";
-export const server = "http://3.7.200.115:4000";
+export const server = "http://localhost:3000";
+// export const server = "http://3.7.200.115:4000";
 // export const server = "https://bpro-business-backend.onrender.com";
 
 // ALl Dashboard Route
@@ -22,6 +22,7 @@ export const changeStatusUpdateProfile = `${server}/api/v1/dealer/changeStatusUp
 export const getSpecificDealer = `${server}/api/v1/dealer/getSpecificDealer`;
 export const incrementWhatsappCount = `${server}/api/v1/dealer/incrementWhatsappCount`;
 export const incrementCallCount = `${server}/api/v1/dealer/incrementCallCount`;
+export const viewDealerProfile = `${server}/api/v1/dealer/viewDealerProfile`;
 
 // ALl Banners Route
 export const addBanner = `${server}/api/v1/banners/addBanner`;

@@ -67,6 +67,7 @@ function ProductDetail() {
     ? product?.Reviews
     : product?.Reviews?.slice(0, 2);
 
+  console.log("product?.Reviews  =========>", product?.Reviews);
   const handleViewProduct = async () => {
     console.log("Call View Product");
     const res = await axios.post(
@@ -257,7 +258,7 @@ function ProductDetail() {
                     />
                     <div>
                       <h3 className="font-semibold">
-                        {review?.Dealer?.fullName}
+                        {review?.Dealer?.fullName || review?.Customer?.name}
                       </h3>
                       <small>{formatDateString(review?.createdAt)}</small>
                     </div>

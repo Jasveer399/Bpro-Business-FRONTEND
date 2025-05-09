@@ -10,7 +10,7 @@ import Snackbars from "../../../../ui/Snackbars";
 import OTPInput from "../../../../ui/OTPInput";
 import NameLocationInput from "./NameLocationInput";
 
-function CustomerLoginForm({ closeDialog }) {
+function CustomerLoginForm({ closeDialog, setIsLogin }) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const [otp, setOtp] = useState("");
@@ -18,7 +18,7 @@ function CustomerLoginForm({ closeDialog }) {
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [showProfileForm, setShowProfileForm] = useState(false);
   const [showLoginSuccess, setShowLoginSuccess] = useState(false);
-
+  const [isAgree, setIsAgree] = useState(false);
   const dispatch = useDispatch();
   const {
     status: customerStatus,
@@ -50,6 +50,15 @@ function CustomerLoginForm({ closeDialog }) {
         open: true,
         type: "error",
         text: "Please enter a valid phone number",
+      });
+      return;
+    }
+
+    if (!isAgree) {
+      setSnackbar({
+        open: true,
+        type: "error",
+        text: "Please agree to terms and conditions",
       });
       return;
     }
@@ -111,7 +120,6 @@ function CustomerLoginForm({ closeDialog }) {
 
         // The isOTPVerified effect will handle the next step based on isUserFillAllDetails
       } else {
-        // Error case
         setSnackbar({
           open: true,
           type: "error",
@@ -181,7 +189,11 @@ function CustomerLoginForm({ closeDialog }) {
             />
             <div className="w-[80%] mx-auto mt-3 flex justify-between items-center">
               <div className="flex items-center text-black gap-1">
-                <input type="checkbox" id="terms" />
+                <input
+                  onChange={() => setIsAgree(!isAgree)}
+                  type="checkbox"
+                  id="terms"
+                />
                 <small className="text-xs">
                   I Agree to Terms and Conditions
                 </small>
@@ -209,10 +221,13 @@ function CustomerLoginForm({ closeDialog }) {
               <p>You are now connected with our dealers.</p>
             </div>
             <button
-              onClick={closeDialog}
+              onClick={() => {
+                setIsLogin(true);
+                closeDialog();
+              }}
               className="bg-secondary w-full py-3 font-semibold rounded-md shadow-lg"
             >
-              Back to Login
+              Explore Now
             </button>
           </div>
         ) : showProfileForm ? (
