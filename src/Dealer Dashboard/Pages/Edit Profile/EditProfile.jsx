@@ -8,10 +8,11 @@ import { useDispatch, useSelector } from "react-redux";
 import Snackbars from "../../../ui/Snackbars";
 import Loader from "../../../ui/Loader";
 import SelectInput from "../../../ui/SelectInput";
-import { businessTypesOptions } from "../../../Utils/options";
+import { businessTypesOptions, stateOptions } from "../../../Utils/options";
 import { updateDealerAsync } from "../../../Redux/Features/dealersSlice";
 import { useNavigate } from "react-router-dom";
 import { fetchCategoriesAsync } from "../../../Redux/Features/categoriesSlice";
+import { MultiSelect } from "react-multi-select-component";
 
 function EditProfile() {
   const navigate = useNavigate();
@@ -28,10 +29,13 @@ function EditProfile() {
       time: "",
       dayStartTime: "",
       dayEndTime: "",
+      locations: [],
     },
   });
   const dispatch = useDispatch();
-  const { status: dealerStatus, updateStatus } = useSelector((state) => state.dealers);
+  const { status: dealerStatus, updateStatus } = useSelector(
+    (state) => state.dealers
+  );
   const { categories, status: categoryStatus } = useSelector(
     (state) => state.categories
   );
@@ -83,6 +87,7 @@ function EditProfile() {
   const isSubmitting = status === "loading";
 
   const editProfileHandler = async (formData) => {
+    console.log("formData: ", formData);
     try {
       const formDataToSend = new FormData();
 
@@ -108,6 +113,15 @@ function EditProfile() {
       formDataToSend.append("pincode", formData.pincode);
 
       // console.log("imagesContainers", imageContainers);
+
+      // Format and add locations
+      if (formData.locations && Array.isArray(formData.locations)) {
+        // Extract just the values from the location objects and create a simple array
+        const locationValues = formData.locations.map(location => location.value);
+        
+        // Convert array to JSON string for FormData
+        formDataToSend.append("locations", JSON.stringify(locationValues));
+      }
 
       // Add images
       imageContainers.forEach((container, index) => {
@@ -168,11 +182,11 @@ function EditProfile() {
           type: "success",
           text: "Profile Updated Successfully !!",
         });
-        sessionStorage.clear()
+        sessionStorage.clear();
         // if (location?.state?.data?.email) {
-          setTimeout(() => {
-            navigate("/thankyou", { replace: true });
-          }, 500);
+        setTimeout(() => {
+          navigate("/thankyou", { replace: true });
+        }, 500);
         // }
         reset(); // Reset form
         setTags([]); // Reset tags
@@ -454,16 +468,32 @@ function EditProfile() {
                   )}
                 />
               </div>
-              {/* <div className="w-[100%] text-[#2E3192] flex flex-col gap-2">
-                <h1>Select Business Type</h1>
-                <MultiSelect
-                  options={businessTypesOptions}
-                  value={selectedBusinessType}
-                  onChange={setSelectedBusinessType}
-                  labelledBy="businessType"
-                  className="h-15"
+              <div>
+                <span className="text-[#2E3192] text-sm">
+                  Select Locations<span className="text-red-500">*</span>
+                </span>
+                <Controller
+                  name="locations"
+                  control={control}
+                  rules={{ required: "Select One Location" }}
+                  render={({ field, fieldState: { error } }) => (
+                    <div>
+                      <MultiSelect
+                        options={stateOptions} // Replace with your categories
+                        value={field.value || []}
+                        onChange={field.onChange}
+                        labelledBy="Select Location"
+                        className="custom-multi-select"
+                      />
+                      {error && (
+                        <p className="mt-1 text-red-500 text-sm">
+                          {error.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
                 />
-              </div> */}
+              </div>
             </div>
           </div>
 
