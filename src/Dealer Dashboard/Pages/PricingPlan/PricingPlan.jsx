@@ -88,6 +88,7 @@ function PricingPlan() {
                 <h2 className="text-5xl text-[#605e7e] mb-3 p-2 mt-2 flex flex-col">
                   <span className="text-lg font-[500]">Features</span>
                   <span className="text-base">
+                    <p>{plan.locationCount} Locations</p>
                     {plan.planFeatures?.map((feature, i) => (
                       <p key={i}>{feature}</p>
                     ))}
@@ -124,6 +125,7 @@ function PricingPlan() {
                     sessionStorage.setItem("planPrice", plan.planPrice);
                     sessionStorage.setItem("planDiscount", plan.planDiscount);
                     sessionStorage.setItem("planId", plan.id);
+                    sessionStorage.setItem("locationCount", plan.locationCount);
                     navigate(`${token ? "/product-listing" : "/register"}`);
                   }}
                 >

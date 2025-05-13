@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ImageUp, Plus, X } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import FormInput from "../../../ui/FormInput";
 import TextareaInput from "../../../ui/TextareaInput";
@@ -13,6 +13,8 @@ import ImageInput from "../../../ui/ImageInput";
 import { uploadFile } from "../../../Utils/Helper";
 import FormHeading from "../../../ui/FormHeading";
 import Snackbars from "../../../ui/Snackbars";
+import { blogCategories } from "../../../Utils/options";
+import SelectInput from "../../../ui/SelectInput";
 
 const AddBlogsForm = ({ closeDialog }) => {
   const dispatch = useDispatch();
@@ -31,6 +33,7 @@ const AddBlogsForm = ({ closeDialog }) => {
     setValue,
     formState: { errors },
     reset,
+    control,
   } = useForm({
     defaultValues: {
       status: "active",
@@ -145,6 +148,23 @@ const AddBlogsForm = ({ closeDialog }) => {
                 maxChips={5}
                 error={errors.tags?.message}
                 className="w-full"
+              />
+              <Controller
+                name="blogCategory"
+                control={control}
+                rules={{ required: "Blog category is required" }}
+                render={({ field, fieldState: { error } }) => (
+                  <SelectInput
+                    label="Blog Category"
+                    options={blogCategories}
+                    onChange={(option) => {
+                      field.onChange(option.value);
+                    }}
+                    error={error?.message}
+                    width="w-full"
+                    value={field.value}
+                  />
+                )}
               />
             </div>
             <TextAreaEditor

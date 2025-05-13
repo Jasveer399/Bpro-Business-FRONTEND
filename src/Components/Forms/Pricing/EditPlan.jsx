@@ -22,7 +22,7 @@ function EditPlan({ closeDialog, plan }) {
     register,
     setValue,
     control,
-    watch
+    watch,
   } = useForm({
     defaultValues: {
       planFeatures: [],
@@ -53,6 +53,7 @@ function EditPlan({ closeDialog, plan }) {
       setValue("planPrice", plan.planPrice);
       setValue("planDuration", plan.planDuration);
       setValue("planDiscount", plan.planDiscount);
+      setValue("locationCount", plan.locationCount);
 
       // Set the planFeatures directly using setValue instead of append
       if (plan.planFeatures && Array.isArray(plan.planFeatures)) {
@@ -139,7 +140,10 @@ function EditPlan({ closeDialog, plan }) {
           />
           {discountAmount > 0 && (
             <p className="text-xs underline">
-              Your Plan Total Becomes <span className="text-green-500 font-bold">Rs. {discountAmount}</span>
+              Your Plan Total Becomes{" "}
+              <span className="text-green-500 font-bold">
+                Rs. {discountAmount}
+              </span>
             </p>
           )}
           <div>
@@ -162,6 +166,16 @@ function EditPlan({ closeDialog, plan }) {
               )}
             />
           </div>
+
+          <FormInput
+            label="Enter Location Count"
+            type="number"
+            {...register("locationCount", {
+              required: "Location Count is required",
+            })}
+            error={errors.locationCount?.message}
+            width="w-full"
+          />
 
           {fields.map((field, index) => (
             <div key={field.id}>

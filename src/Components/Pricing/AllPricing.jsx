@@ -83,9 +83,14 @@ const AllPricing = () => {
                 >
                   <td className="py-3 px-3 text-center">{plan.planName}</td>
                   <td className="py-3 px-3 text-center">₹ {plan.planPrice}</td>
-                  <td className="py-3 px-3 text-center">{plan.planDiscount}%</td>
+                  <td className="py-3 px-3 text-center">
+                    {plan.planDiscount}%
+                  </td>
                   <td className="py-3 px-3 text-center">{plan.planDuration}</td>
                   <td className="py-3 px-3 text-center">
+                    <div>
+                      <div>{plan.locationCount} Locations</div>
+                    </div>
                     {plan.planFeatures.map((feature) => (
                       <div>{feature}</div>
                     ))}

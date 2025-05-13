@@ -88,6 +88,16 @@ function EditProfile() {
 
   const editProfileHandler = async (formData) => {
     console.log("formData: ", formData);
+    if (formData.locations.length > sessionStorage.getItem("locations")) {
+      setSnackbar({
+        open: true,
+        type: "error",
+        text:
+          "You cannot add locations more than " +
+          sessionStorage.getItem("locations"),
+      });
+      return;
+    }
     try {
       const formDataToSend = new FormData();
 
@@ -117,8 +127,10 @@ function EditProfile() {
       // Format and add locations
       if (formData.locations && Array.isArray(formData.locations)) {
         // Extract just the values from the location objects and create a simple array
-        const locationValues = formData.locations.map(location => location.value);
-        
+        const locationValues = formData.locations.map(
+          (location) => location.value
+        );
+
         // Convert array to JSON string for FormData
         formDataToSend.append("locations", JSON.stringify(locationValues));
       }
@@ -484,6 +496,7 @@ function EditProfile() {
                         onChange={field.onChange}
                         labelledBy="Select Location"
                         className="custom-multi-select"
+                        hasSelectAll={false}
                       />
                       {error && (
                         <p className="mt-1 text-red-500 text-sm">

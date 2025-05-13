@@ -123,7 +123,10 @@ function AddPlan({ closeDialog }) {
           />
           {discountAmount > 0 && (
             <p className="text-xs underline">
-              Your Plan Total Becomes <span className="text-green-500 font-bold">Rs. {discountAmount}</span>
+              Your Plan Total Becomes{" "}
+              <span className="text-green-500 font-bold">
+                Rs. {discountAmount}
+              </span>
             </p>
           )}
           <div>
@@ -146,6 +149,16 @@ function AddPlan({ closeDialog }) {
               )}
             />
           </div>
+
+          <FormInput
+            label="Enter Location Count"
+            type="number"
+            {...register("locationCount", {
+              required: "Location Count is required",
+            })}
+            error={errors.locationCount?.message}
+            width="w-full"
+          />
 
           {fields.map((field, index) => (
             <div key={field.id}>
