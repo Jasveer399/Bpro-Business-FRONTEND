@@ -60,8 +60,8 @@ function BlogDetails() {
         <h1 className="text-5xl text-white">Blog-Detail</h1>
         <h1 className="text-white">Home / Blogs / Blog-Detail</h1>
       </div>
-      <div className="flex gap-5 mx-40 mt-10">
-        <div className="w-3/5 flex flex-col gap-5 p-5 bg-white border border-gray-200 rounded-2xl">
+      <div className="flex justify-center items-center gap-5  my-10">
+        <div className="w-4/5 flex flex-col gap-5 p-5 bg-white border border-gray-200 rounded-2xl">
           <img
             src={currentBlog?.image}
             alt=""
@@ -77,10 +77,10 @@ function BlogDetails() {
             dangerouslySetInnerHTML={{ __html: currentBlog?.content }}
           />
         </div>
-        <div>
+        {/* <div>
           <SearchBlog />
           <PopularTags tags={tags} />
-        </div>
+        </div> */}
       </div>
     </>
   );

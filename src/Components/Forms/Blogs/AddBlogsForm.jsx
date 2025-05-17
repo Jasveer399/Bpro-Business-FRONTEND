@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ImageUp, Plus, X } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +15,7 @@ import FormHeading from "../../../ui/FormHeading";
 import Snackbars from "../../../ui/Snackbars";
 import { blogCategories } from "../../../Utils/options";
 import SelectInput from "../../../ui/SelectInput";
+import { fetchCategoriesAsync } from "../../../Redux/Features/categoriesSlice";
 
 const AddBlogsForm = ({ closeDialog }) => {
   const dispatch = useDispatch();
@@ -26,7 +27,20 @@ const AddBlogsForm = ({ closeDialog }) => {
   const { status } = useSelector((state) => state.blogs);
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const isSubmitting = status === "loading";
+  const { categories, status: categoriesStatus } = useSelector(
+    (state) => state.categories
+  );
 
+  useEffect(() => {
+    if (categoriesStatus === "idle") {
+      dispatch(fetchCategoriesAsync());
+    }
+  }, [categoriesStatus, dispatch]);
+
+  const allCategories = categories.map((category) => ({
+    value: category.id,
+    label: category.title,
+  }));
   const {
     register,
     handleSubmit,
@@ -150,13 +164,15 @@ const AddBlogsForm = ({ closeDialog }) => {
                 className="w-full"
               />
               <Controller
-                name="blogCategory"
+                name="categoriesId"
                 control={control}
                 rules={{ required: "Blog category is required" }}
                 render={({ field, fieldState: { error } }) => (
                   <SelectInput
                     label="Blog Category"
-                    options={blogCategories}
+                    options={
+                      allCategories || [{ value: "", label: "Select Category" }]
+                    }
                     onChange={(option) => {
                       field.onChange(option.value);
                     }}

@@ -444,7 +444,6 @@ function EditProfile() {
                   rules={{ required: "Select One Business Type" }}
                   render={({ field, fieldState: { error } }) => (
                     <SelectInput
-                      label="Select Bussiness Type"
                       options={businessTypesOptions}
                       onChange={(option) => {
                         field.onChange(option.value);
@@ -468,7 +467,6 @@ function EditProfile() {
                   rules={{ required: "Select One Category" }}
                   render={({ field, fieldState: { error } }) => (
                     <SelectInput
-                      label="Select Category"
                       options={allCategories}
                       onChange={(option) => {
                         field.onChange(option.value);
@@ -491,7 +489,7 @@ function EditProfile() {
                   render={({ field, fieldState: { error } }) => (
                     <div>
                       <MultiSelect
-                        options={stateOptions} // Replace with your categories
+                        options={stateOptions}
                         value={field.value || []}
                         onChange={field.onChange}
                         labelledBy="Select Location"
