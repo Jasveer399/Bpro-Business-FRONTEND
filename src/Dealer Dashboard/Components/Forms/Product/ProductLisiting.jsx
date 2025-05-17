@@ -412,7 +412,7 @@ function ProductLisiting() {
                   className="border-l-0 rounded-r rounded-l-none"
                 />
               </div>
-              <div className="mt-[1.45rem] w-full">
+              <div className="w-full">
                 <Controller
                   name="priceOption"
                   control={control}

@@ -88,7 +88,7 @@ function EditProfile() {
 
   const editProfileHandler = async (formData) => {
     console.log("formData: ", formData);
-    if (formData.locations.length > sessionStorage.getItem("locations")) {
+    if (formData.locations.length > sessionStorage.getItem("locationCount")) {
       setSnackbar({
         open: true,
         type: "error",

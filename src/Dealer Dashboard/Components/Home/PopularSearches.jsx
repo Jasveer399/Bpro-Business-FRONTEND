@@ -6,10 +6,48 @@ import { MailOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Snackbars from "../../../ui/Snackbars";
 import { getUserToken } from "../../../Utils/Helper";
+import Dialog from "../../../ui/Dialog";
+import CustomerLoginForm from "../Forms/Auth/CustomerLoginForm";
+import { useDialogTrigger } from "./DealerProfileCard";
 
 function PopularSearches({ product, onBookmarkToggle }) {
   const navigate = useNavigate();
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
+  const [dialogTrigger, setDialogTrigger] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
+  const [selectedProductId, setSelectedProductId] = useState(null);
+
+  // Use the hook to programmatically open the dialog
+  useDialogTrigger(dialogTrigger);
+
+  // Function to handle navigation to product detail
+  const handleProductClick = (productId) => {
+    if (getUserToken()) {
+      navigate(`/product-detail/${productId}`);
+    } else {
+      setSelectedProductId(productId);
+      setDialogTrigger((prev) => !prev);
+    }
+  };
+
+  // Function to handle after successful login
+  const handleSuccessfulLogin = () => {
+    if (selectedProductId) {
+      navigate(`/product-detail/${selectedProductId}`);
+      setSelectedProductId(null);
+    }
+  };
+
+  // Function to handle communication buttons click
+  const handleCommunicationClick = (type) => {
+    if (getUserToken()) {
+      // If logged in, do nothing as href will handle it
+      return;
+    } else {
+      // If not logged in, trigger dialog
+      setDialogTrigger((prev) => !prev);
+    }
+  };
 
   return (
     <>
@@ -27,18 +65,8 @@ function PopularSearches({ product, onBookmarkToggle }) {
           />
         </div>
         <div
-          className="cursor-pointer "
-          onClick={() => {
-            if (getUserToken()) {
-              navigate(`/product-detail/${product.id}`);
-            } else {
-              setSnackbar({
-                open: true,
-                type: "error",
-                text: "Please login first",
-              });
-            }
-          }}
+          className="cursor-pointer"
+          onClick={() => handleProductClick(product.id)}
         >
           {/* Product Image */}
           <div>
@@ -111,37 +139,19 @@ function PopularSearches({ product, onBookmarkToggle }) {
           ) : (
             <>
               <div
-                onClick={() => {
-                  setSnackbar({
-                    open: true,
-                    type: "error",
-                    text: "Please login first",
-                  });
-                }}
+                onClick={() => handleCommunicationClick("call")}
                 className="bg-[#29AF3E] px-3 py-1 rounded-md text-white font-semibold border border-[#29AF3E] cursor-pointer"
               >
                 Call Now
               </div>
               <div
-                onClick={() => {
-                  setSnackbar({
-                    open: true,
-                    type: "error",
-                    text: "Please login first",
-                  });
-                }}
+                onClick={() => handleCommunicationClick("whatsapp")}
                 className="border border-[#C3C3C3] rounded-md p-px cursor-pointer"
               >
                 <FaWhatsapp className="text-[#29AF3E] text-3xl" />
               </div>
               <div
-                onClick={() => {
-                  setSnackbar({
-                    open: true,
-                    type: "error",
-                    text: "Please login first",
-                  });
-                }}
+                onClick={() => handleCommunicationClick("email")}
                 className="bg-primary p-1 rounded-md border border-primary text-white cursor-pointer"
               >
                 <MailOpen />
@@ -150,6 +160,27 @@ function PopularSearches({ product, onBookmarkToggle }) {
           )}
         </div>
       </div>
+
+      {/* Login Dialog with a hidden button that we click programmatically */}
+      <Dialog
+        trigger={
+          // This invisible button serves as the required trigger element
+          <button id="hidden-login-dialog-trigger" style={{ display: "none" }}>
+            Login
+          </button>
+        }
+        width="w-[35%]"
+        height="h-[55%]"
+      >
+        {({ closeDialog }) => (
+          <CustomerLoginForm
+            closeDialog={closeDialog}
+            setIsLogin={setIsLogin}
+            onLoginSuccess={handleSuccessfulLogin}
+          />
+        )}
+      </Dialog>
+
       <Snackbars
         open={snackbar.open}
         type={snackbar.type}
@@ -159,5 +190,4 @@ function PopularSearches({ product, onBookmarkToggle }) {
     </>
   );
 }
-
 export default PopularSearches;
