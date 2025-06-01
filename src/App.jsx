@@ -45,6 +45,7 @@ import Cashfree from "./Dealer Dashboard/Pages/Cashfree";
 import PaymentStatus from "./Dealer Dashboard/Pages/PaymentStatus";
 import CategoriesProduct from "./Dealer Dashboard/Pages/Categories Products/CategoriesProduct";
 import AllProducts from "./Dealer Dashboard/Pages/Products/AllProducts";
+import Template from "./Dealer Dashboard/Pages/Template/Template";
 
 function App() {
   return (
@@ -119,6 +120,7 @@ function App() {
         <Route path="/edtior" element={<Edtior />} />
         <Route path="/payment" element={<Cashfree />} />
         <Route path="/payment-status" element={<PaymentStatus />} />
+        <Route path="/template" element={<Template />} />
       </Routes>
     </>
   );
