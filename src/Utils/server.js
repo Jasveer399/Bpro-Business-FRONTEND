@@ -1,5 +1,5 @@
-// export const server = "http://localhost:3000";
-export const server = "http://3.7.200.115:4000";
+export const server = "http://localhost:3000";
+// export const server = "http://3.7.200.115:4000";
 // export const server = "https://bpro-business-backend.onrender.com";
 
 // ALl Dashboard Route
@@ -87,3 +87,9 @@ export const deleteFileEndPoint = `${server}/upload`;
 export const createCustomerAndGetOTP = `${server}/api/v1/customer/createCustomerAndGetOTP`;
 export const verifyOtp = `${server}/api/v1/customer/verifyOTP`;
 export const completeProfile = `${server}/api/v1/customer/completeProfile`;
+
+//All Visiting Card Routes
+export const createTestimonialsUrl = `${server}/api/v1/visitingcard/create-testimonials`;
+export const getTestimonialsUrl = `${server}/api/v1/visitingcard/get-testimonials`;
+export const updateTestimonialsUrl = `${server}/api/v1/visitingcard/update-testimonials`;
+export const deleteTestimonialsUrl = `${server}/api/v1/visitingcard/delete-testimonials`;

@@ -38,11 +38,22 @@ function LoginForm() {
         res.payload.message ===
         "Please complete your profile first. Redirecting...."
       ) {
+        sessionStorage.setItem("dealerId", res.payload.data.id);
+        sessionStorage.setItem("email", res.payload.data.email);
+        sessionStorage.setItem(
+          "locationCount",
+          res.payload.data.Plan.locationCount
+        );
+        sessionStorage.setItem("mobileNo", res.payload.data.mobileNo);
+        sessionStorage.setItem(
+          "planDiscount",
+          res.payload.data.Plan.planDiscount
+        );
         setTimeout(() => {
           navigate("/editProfile", {
             state: { data: { email: getValues("email") } },
           });
-        }, 500);
+        }, 800);
       }
       setSnackbar({
         open: true,

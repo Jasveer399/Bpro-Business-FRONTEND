@@ -45,6 +45,7 @@ import Cashfree from "./Dealer Dashboard/Pages/Cashfree";
 import PaymentStatus from "./Dealer Dashboard/Pages/PaymentStatus";
 import CategoriesProduct from "./Dealer Dashboard/Pages/Categories Products/CategoriesProduct";
 import AllProducts from "./Dealer Dashboard/Pages/Products/AllProducts";
+import Visiting_Card from "./Pages/Visiting-Card/Visiting_Card";
 
 function App() {
   return (
@@ -119,6 +120,9 @@ function App() {
         <Route path="/edtior" element={<Edtior />} />
         <Route path="/payment" element={<Cashfree />} />
         <Route path="/payment-status" element={<PaymentStatus />} />
+
+        {/* This Route Goes to Dealer Protected Routes */}
+        <Route path="visiting-card/:dealerId" element={<Visiting_Card />} />
       </Routes>
     </>
   );

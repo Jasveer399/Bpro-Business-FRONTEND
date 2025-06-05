@@ -5,7 +5,7 @@ import {
   deleteBookmark,
   getUserBookmarks,
 } from "../../Utils/server";
-import { getDealerAccessToken } from "../../Utils/Helper";
+import { getDealerAccessToken, getUserToken } from "../../Utils/Helper";
 
 // Thunks
 export const addBookmarkAsync = createAsyncThunk(
@@ -17,7 +17,7 @@ export const addBookmarkAsync = createAsyncThunk(
         {},
         {
           headers: {
-            Authorization: `Bearer ${getDealerAccessToken()}`,
+            Authorization: `Bearer ${getUserToken()}`,
           },
         }
       );
@@ -37,7 +37,7 @@ export const deleteBookmarkAsync = createAsyncThunk(
     try {
       const response = await axios.delete(`${deleteBookmark}/${bookMarkId}`, {
         headers: {
-          Authorization: `Bearer ${getDealerAccessToken()}`,
+          Authorization: `Bearer ${getUserToken()}`,
         },
       });
       // Make sure the ID is properly returned
@@ -57,7 +57,7 @@ export const fetchUserBookmarksAsync = createAsyncThunk(
       const response = await axios.get(getUserBookmarks, {
         withCredentials: true,
         headers: {
-          Authorization: `Bearer ${getDealerAccessToken()}`,
+          Authorization: `Bearer ${getUserToken()}`,
         },
       });
       return response.data;

@@ -1,15 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
-import { X, Upload } from "lucide-react";
+import { X, Plus } from "lucide-react";
 
-const ImageInput = ({
+const ImageUpload = ({
   register,
   setValue,
-  name = "image",
   error,
-  label = "Cover Image",
   existingImage = null,
   onImageChange,
   onImageRemove,
+  fieldName = "image",
 }) => {
   const [preview, setPreview] = useState(existingImage);
   const fileInputRef = useRef(null);
@@ -19,7 +18,7 @@ const ImageInput = ({
     setPreview(existingImage);
   }, [existingImage]);
 
-  const { ref, onChange, ...rest } = register("image", {
+  const { ref, onChange, ...rest } = register(fieldName, {
     validate: {
       lessThan5MB: (file) =>
         !file || file.size <= 5000000 || "Image must be less than 5MB",
@@ -48,8 +47,8 @@ const ImageInput = ({
       setPreview(url);
 
       // Set the file value in the form
-      setValue(name, file, { shouldValidate: true });
-
+      setValue(fieldName, file, { shouldValidate: true });
+      setValue("preview", url, { shouldValidate: true });
       // Call the onImageChange callback if provided
       onImageChange?.(file);
     }
@@ -57,7 +56,7 @@ const ImageInput = ({
 
   const removeImage = () => {
     setPreview(null);
-    setValue("image", null, { shouldValidate: true });
+    setValue(fieldName, null, { shouldValidate: true });
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -66,34 +65,33 @@ const ImageInput = ({
   };
 
   return (
-    <div className="w-full flex flex-col items-start">
-      <label className="text-[17px] ml-2 font-semibold text-primary">
-        {label}
-      </label>
-
+    <div className="flex flex-col">
       {!preview ? (
         <div
-          className="mt-2 w-full h-[200px] border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors"
+          className="w-20 h-20 bg-[#ECEBFF]  rounded-lg flex items-center justify-center cursor-pointers transition-colors group"
           onClick={() => fileInputRef.current?.click()}
         >
-          <Upload className="w-10 h-10 text-gray-400" />
-          <p className="mt-2 text-sm text-gray-500">Click to upload image</p>
-          <p className="text-xs text-gray-400 mt-1">PNG, JPG up to 5MB</p>
+          <Plus
+            size={50}
+            className="w-8 h-8 text-primary  border-primary border-2 border-dashed group-hover:text-primary transition-colors p-1"
+          />
         </div>
       ) : (
-        <div className="mt-2 relative w-full h-[200px] rounded-xl overflow-hidden group">
+        <div className="relative w-20 h-20 rounded-lg overflow-hidden group">
           <img
             src={preview}
             alt="Preview"
             className="w-full h-full object-cover"
           />
-          <button
-            type="button"
-            onClick={removeImage}
-            className="absolute top-2 right-2 p-1 bg-red-500 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center">
+            <button
+              type="button"
+              onClick={removeImage}
+              className="p-1 bg-red-500 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600"
+            >
+              <X className="w-3 h-3" />
+            </button>
+          </div>
         </div>
       )}
 
@@ -109,9 +107,11 @@ const ImageInput = ({
         {...rest}
       />
 
-      {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
+      {error && (
+        <p className="mt-1 text-xs text-red-500 text-center">{error}</p>
+      )}
     </div>
   );
 };
 
-export default ImageInput;
+export default ImageUpload;

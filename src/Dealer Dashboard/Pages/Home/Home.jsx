@@ -8,7 +8,10 @@ import LatestArticles from "../../Components/Home/LatestArticles";
 import ShopsCategory from "../../Components/Home/ShopsCategory";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBannerCategoryAsync } from "../../../Redux/Features/bannersCategorySlice";
-import { fetchAllProductsAsync } from "../../../Redux/Features/productSlice";
+import {
+  fetchAllProductsAsync,
+  setLocation,
+} from "../../../Redux/Features/productSlice";
 import LocationCarousel from "../../Components/Home/LocationCard";
 import {
   addBookmarkAsync,
@@ -19,6 +22,7 @@ import DealerProfileCard from "../../Components/Home/DealerProfileCard";
 import Loader from "../../../ui/Loader";
 import { fetchFourLatestBlogsAsync } from "../../../Redux/Features/blogsSlice";
 import { Link } from "react-router-dom";
+import { stateOptions } from "../../../Utils/options";
 
 function Home() {
   const dispatch = useDispatch();
@@ -29,24 +33,163 @@ function Home() {
     (state) => state.blogs
   );
   const [updatedProducts, setUpdatedProducts] = useState([]);
+  const [locationDetected, setLocationDetected] = useState(false);
 
   // Fetch products from the listings
   const {
     allProducts,
     status: productStatus,
     allProductStatus,
+    userLocation,
   } = useSelector((state) => state.products);
   const { items: bookmarkedItems, bookmarkStatus } = useSelector(
     (state) => state.bookmarks
   );
+
+  console.log("allProducts", allProducts);
+
+  // Function to get user's current location using Google Geocoding API
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          console.log("User coordinates:", { latitude, longitude });
+
+          try {
+            const GOOGLE_MAPS_API_KEY =
+              import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "YOUR_API_KEY_HERE";
+
+            if (
+              !GOOGLE_MAPS_API_KEY ||
+              GOOGLE_MAPS_API_KEY === "YOUR_API_KEY_HERE"
+            ) {
+              console.warn(
+                "Google Maps API key not found. Please set VITE_GOOGLE_MAPS_API_KEY in your environment variables."
+              );
+              dispatch(setLocation("assam"));
+              setLocationDetected(true);
+              return;
+            }
+
+            const response = await fetch(
+              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_MAPS_API_KEY}`
+            );
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data.status === "OK" && data.results.length > 0) {
+              const result = data.results[0];
+              let city = null;
+              let state = null;
+              let country = null;
+
+              // Parse address components to get city, state, and country
+              result.address_components.forEach((component) => {
+                const types = component.types;
+                if (types.includes("locality")) {
+                  city = component.long_name;
+                } else if (
+                  types.includes("administrative_area_level_2") &&
+                  !city
+                ) {
+                  city = component.long_name;
+                } else if (types.includes("administrative_area_level_1")) {
+                  state = component.long_name;
+                } else if (types.includes("country")) {
+                  country = component.long_name;
+                }
+              });
+
+              // Map state to stateOptions value
+              const stateMatch = stateOptions.find((option) => {
+                return (
+                  option.label.toLowerCase() === state?.toLowerCase() ||
+                  option.value.toLowerCase() === state?.toLowerCase()
+                );
+              });
+              const selectedLocation = stateMatch
+                ? stateMatch.value
+                : city?.toLowerCase() ||
+                  state?.toLowerCase() ||
+                  country?.toLowerCase() ||
+                  "unknown";
+
+              console.log("Detected location from Google:", {
+                city,
+                state,
+                country,
+                selectedLocation,
+              });
+
+              dispatch(setLocation(selectedLocation));
+              setLocationDetected(true);
+            } else {
+              console.error(
+                "Google Geocoding API error:",
+                data.status,
+                data.error_message
+              );
+              dispatch(setLocation(`${latitude},${longitude}`));
+              setLocationDetected(true);
+            }
+          } catch (error) {
+            console.error("Error getting location from Google API:", error);
+            dispatch(setLocation(`${latitude},${longitude}`));
+            setLocationDetected(true);
+          }
+        },
+        (error) => {
+          console.error("Geolocation error:", error);
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              console.log("User denied the request for Geolocation.");
+              break;
+            case error.POSITION_UNAVAILABLE:
+              console.log("Location information is unavailable.");
+              break;
+            case error.TIMEOUT:
+              console.log("The request to get user location timed out.");
+              break;
+            default:
+              console.log("An unknown error occurred.");
+              break;
+          }
+          dispatch(setLocation("assam"));
+          setLocationDetected(true);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000,
+        }
+      );
+    } else {
+      console.log("Geolocation is not supported by this browser.");
+      dispatch(setLocation("assam"));
+      setLocationDetected(true);
+    }
+  };
+
+  // Get location when component mounts
+  useEffect(() => {
+    if (!locationDetected) {
+      getCurrentLocation();
+    }
+  }, []);
 
   useEffect(() => {
     if (status === "idle") {
       dispatch(fetchBannerCategoryAsync());
     }
 
-    if (allProductStatus === "idle") {
-      dispatch(fetchAllProductsAsync());
+    // Only fetch products after location is detected
+    if (allProductStatus === "idle" && locationDetected && userLocation) {
+      dispatch(fetchAllProductsAsync(userLocation));
     }
 
     if (bookmarkStatus === "idle") {
@@ -62,6 +205,8 @@ function Home() {
     bookmarkStatus,
     fourLatestBlogsStatus,
     dispatch,
+    userLocation,
+    locationDetected,
   ]);
 
   useEffect(() => {
@@ -174,7 +319,7 @@ function Home() {
             Popular Searches
           </h1>
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 m-2 md:m-4 gap-3 md:gap-5">
-            {allProductStatus === "loading" ? (
+            {allProductStatus === "loading" || !locationDetected ? (
               <div className="flex items-center justify-center my-4">
                 <Loader />
               </div>

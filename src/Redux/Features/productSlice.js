@@ -12,6 +12,13 @@ import {
 import { getDealerAccessToken } from "../../Utils/Helper";
 import { referenceLineClasses } from "@mui/x-charts";
 
+export const setLocation = createAsyncThunk(
+  "products/setLocation",
+  async (location) => {
+    return location;
+  }
+);
+
 export const addProductAsync = createAsyncThunk(
   "products/addProduct",
   async (productData, { rejectWithValue }) => {
@@ -35,15 +42,19 @@ export const addProductAsync = createAsyncThunk(
 
 export const fetchAllProductsAsync = createAsyncThunk(
   "products/allProducts",
-  async (_, { rejectWithValue }) => {
+  async (location, { rejectWithValue }) => {
+    console.log("location:>>", location);
     try {
-      const response = await axios.get(getAllProducts, {
-        withCredentials: true,
-        // headers: {
-        //   Authorization: `Bearer ${getDealerAccessToken()}`,
-        //   "Content-Type": "multipart/form-data",
-        // },
-      });
+      const response = await axios.get(
+        `${getAllProducts}?location=${location}`,
+        {
+          withCredentials: true,
+          // headers: {
+          //   Authorization: `Bearer ${getDealerAccessToken()}`,
+          //   "Content-Type": "multipart/form-data",
+          // },
+        }
+      );
       return response.data;
     } catch (error) {
       console.error("Error in allProducts async:", error);
@@ -169,6 +180,7 @@ const productSlice = createSlice({
     product: null,
     productStatus: "idle",
     addReviewStatus: "idle",
+    userLocation: "assam",
     status: "idle",
     error: null,
     currentPage: 1,
@@ -188,6 +200,12 @@ const productSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // set location
+      .addCase(setLocation.fulfilled, (state, action) => {
+        state.userLocation = action.payload;
+        state.allProductStatus = "idle";
+      })
+      // Add Product
       .addCase(addProductAsync.pending, (state) => {
         state.status = "loading";
       })

@@ -316,6 +316,7 @@ const dealersSlice = createSlice({
     changePassStatus: "idle",
     updateStatus: "idle",
     fetchStatus: "idle",
+    planDaysLeft: 0,
     error: null,
     currentDealer: null,
     currentDealerStatus: "idle",

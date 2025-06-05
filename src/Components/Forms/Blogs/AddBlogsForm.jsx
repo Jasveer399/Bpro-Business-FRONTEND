@@ -3,17 +3,15 @@ import { ImageUp, Plus, X } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import FormInput from "../../../ui/FormInput";
-import TextareaInput from "../../../ui/TextareaInput";
 import { addBlogAsync } from "../../../Redux/Features/blogsSlice";
 import Loader from "../../../ui/Loader";
 import ChipsInput from "./ChipsInput";
-import { Alert, AlertTitle } from "@mui/material";
+import { Alert } from "@mui/material";
 import { TextAreaEditor } from "../../../ui/TextAreaEditor";
 import ImageInput from "../../../ui/ImageInput";
 import { uploadFile } from "../../../Utils/Helper";
 import FormHeading from "../../../ui/FormHeading";
 import Snackbars from "../../../ui/Snackbars";
-import { blogCategories } from "../../../Utils/options";
 import SelectInput from "../../../ui/SelectInput";
 import { fetchCategoriesAsync } from "../../../Redux/Features/categoriesSlice";
 

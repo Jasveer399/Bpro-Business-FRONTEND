@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Navbar from "../../Components/Home/Navbar";
 import Header from "../../Components/Home/Header";
 import { Controller, useForm } from "react-hook-form";
@@ -23,6 +23,7 @@ function EditProfile() {
     reset,
     control,
     setValue,
+    watch,
   } = useForm({
     defaultValues: {
       status: "active",
@@ -85,6 +86,32 @@ function EditProfile() {
 
   const { status, error } = useSelector((state) => state.products);
   const isSubmitting = status === "loading";
+  const locations = watch("locations");
+  const count = parseInt(sessionStorage.getItem("locationCount")) || 0;
+  const previousValidLocations = useRef(locations || []);
+
+  useEffect(() => {
+    if (locations && locations.length > count) {
+      // Show error message
+      setSnackbar({
+        open: true,
+        type: "error",
+        text: "You cannot add locations more than " + count,
+      });
+
+      // Revert to previous valid selection
+      setValue("locations", previousValidLocations.current, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+      return;
+    }
+
+    // Update the reference with current valid selection
+    if (locations && locations.length <= count) {
+      previousValidLocations.current = locations;
+    }
+  }, [locations, count, setValue]);
 
   const editProfileHandler = async (formData) => {
     console.log("formData: ", formData);
@@ -94,7 +121,7 @@ function EditProfile() {
         type: "error",
         text:
           "You cannot add locations more than " +
-          sessionStorage.getItem("locations"),
+          sessionStorage.getItem("locationCount"),
       });
       return;
     }

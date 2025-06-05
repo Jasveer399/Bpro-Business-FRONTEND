@@ -7,6 +7,7 @@ export default {
       fontFamily: {
         montserrat: ["Montserrat", "sans-serif"],
         maven: ['"Maven Pro"', "sans-serif"],
+        mulish: ["Mulish", "sans-serif"],
       },
       backgroundImage: {
         "brand-color-3":

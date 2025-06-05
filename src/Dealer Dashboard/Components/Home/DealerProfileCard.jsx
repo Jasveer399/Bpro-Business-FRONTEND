@@ -12,7 +12,7 @@ import { getUserToken } from "../../../Utils/Helper";
 import Snackbars from "../../../ui/Snackbars";
 import axios from "axios";
 import { viewDealerProfile } from "../../../Utils/server";
-import Dialog from "../../../ui/Dialog";
+import ProgrammaticDialog from "../../../ui/ProgrammaticDialog";
 import CustomerLoginForm from "../Forms/Auth/CustomerLoginForm";
 
 function DealerProfileCard() {
@@ -22,9 +22,7 @@ function DealerProfileCard() {
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const [selectedDealerId, setSelectedDealerId] = useState(null);
   const [isLogin, setIsLogin] = useState(true);
-  const [dialogTrigger, setDialogTrigger] = useState(false);
-
-  useDialogTrigger(dialogTrigger);
+  const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
 
   useEffect(() => {
     if (fetchStatus === "idle") {
@@ -36,43 +34,68 @@ function DealerProfileCard() {
     if (getUserToken()) {
       // If user is logged in, proceed as before
       navigate(`/dealerProfile/${id}`);
-      const res = await axios.post(
-        `${viewDealerProfile}/${id}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${getUserToken()}`,
-          },
-        }
-      );
+      try {
+        const res = await axios.post(
+          `${viewDealerProfile}/${id}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${getUserToken()}`,
+            },
+          }
+        );
+      } catch (error) {
+        console.error("Error viewing dealer profile:", error);
+        setSnackbar({
+          open: true,
+          type: "error",
+          text: "Failed to load dealer profile",
+        });
+      }
     } else {
-      // If user is not logged in, save the dealer ID and trigger the dialog
+      // If user is not logged in, save the dealer ID and open the dialog
       setSelectedDealerId(id);
-      // This will trigger the dialog to open
-      setDialogTrigger((prev) => !prev);
+      setIsLoginDialogOpen(true);
     }
   };
 
   // Function to handle after successful login
-  const handleSuccessfulLogin = () => {
+  const handleSuccessfulLogin = async () => {
+    setIsLoginDialogOpen(false);
+
     // If we have a selected dealer ID, navigate to their profile
     if (selectedDealerId) {
       navigate(`/dealerProfile/${selectedDealerId}`);
 
       // Make the API call to view the dealer profile
-      axios.post(
-        `${viewDealerProfile}/${selectedDealerId}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${getUserToken()}`,
-          },
-        }
-      );
+      try {
+        await axios.post(
+          `${viewDealerProfile}/${selectedDealerId}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${getUserToken()}`,
+            },
+          }
+        );
+      } catch (error) {
+        console.error("Error viewing dealer profile:", error);
+        setSnackbar({
+          open: true,
+          type: "error",
+          text: "Failed to load dealer profile",
+        });
+      }
 
       // Reset selected dealer ID
       setSelectedDealerId(null);
     }
+  };
+
+  // Function to close dialog
+  const handleCloseDialog = () => {
+    setIsLoginDialogOpen(false);
+    setSelectedDealerId(null);
   };
 
   return (
@@ -101,16 +124,19 @@ function DealerProfileCard() {
               key={dealer.id}
               onClick={() => handleOnclick(dealer.id)}
             >
-              <div className="flex flex-col items-center h-60 p-3 border cursor-pointer">
+              <div className="flex flex-col items-center h-60 p-3 border cursor-pointer hover:shadow-lg transition-shadow">
                 <img
                   src={dealer.profileUrl || "/dummy-profile.png"}
+                  alt={dealer.fullName}
                   className="w-32 h-32 object-cover rounded-full mb-2"
                 />
-                <h1 className="font-[600] text-lg">{dealer.fullName}</h1>
-                <h1 className="text-sm text-gray-600">
+                <h1 className="font-[600] text-lg text-center">
+                  {dealer.fullName}
+                </h1>
+                <h1 className="text-sm text-gray-600 text-center">
                   {dealer?.Category?.title}
                 </h1>
-                <h1 className="text-sm">
+                <h1 className="text-sm text-center">
                   {dealer.state}, {dealer.country}
                 </h1>
               </div>
@@ -123,16 +149,14 @@ function DealerProfileCard() {
         </div>
       )}
 
-      {/* Login Dialog with a hidden button that we click programmatically */}
-      <Dialog
-        trigger={
-          // This invisible button serves as the required trigger element
-          <button id="hidden-login-dialog-trigger" style={{ display: "none" }}>
-            Login
-          </button>
-        }
+      {/* Login Dialog using ProgrammaticDialog */}
+      <ProgrammaticDialog
+        isOpen={isLoginDialogOpen}
+        onClose={handleCloseDialog}
         width="w-[35%]"
         height="h-[55%]"
+        closeOnBackdrop={true}
+        showCloseButton={false}
       >
         {({ closeDialog }) => (
           <CustomerLoginForm
@@ -141,7 +165,7 @@ function DealerProfileCard() {
             onLoginSuccess={handleSuccessfulLogin}
           />
         )}
-      </Dialog>
+      </ProgrammaticDialog>
 
       <Snackbars
         open={snackbar.open}
@@ -151,17 +175,6 @@ function DealerProfileCard() {
       />
     </div>
   );
-}
-
-// Effect to programmatically click the hidden button when dialogTrigger changes
-export function useDialogTrigger(dialogTrigger) {
-  useEffect(() => {
-    // Find the hidden button and click it to open the dialog
-    const hiddenButton = document.getElementById("hidden-login-dialog-trigger");
-    if (hiddenButton) {
-      hiddenButton.click();
-    }
-  }, [dialogTrigger]);
 }
 
 export default DealerProfileCard;
