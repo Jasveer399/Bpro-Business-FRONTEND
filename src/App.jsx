@@ -46,6 +46,7 @@ import PaymentStatus from "./Dealer Dashboard/Pages/PaymentStatus";
 import CategoriesProduct from "./Dealer Dashboard/Pages/Categories Products/CategoriesProduct";
 import AllProducts from "./Dealer Dashboard/Pages/Products/AllProducts";
 import Visiting_Card from "./Pages/Visiting-Card/Visiting_Card";
+import Template from "./Dealer Dashboard/Pages/Template/Template";
 
 function App() {
   return (
@@ -123,6 +124,7 @@ function App() {
 
         {/* This Route Goes to Dealer Protected Routes */}
         <Route path="visiting-card/:dealerId" element={<Visiting_Card />} />
+        <Route path="/template" element={<Template />} />
       </Routes>
     </>
   );
