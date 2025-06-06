@@ -515,5 +515,7 @@ const dealersSlice = createSlice({
   },
 });
 
+export const selectCurrentDealer = (state) => state.dealers.currentDealer;
+
 export const { setDealer } = dealersSlice.actions;
 export default dealersSlice.reducer;

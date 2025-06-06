@@ -47,8 +47,25 @@ import CategoriesProduct from "./Dealer Dashboard/Pages/Categories Products/Cate
 import AllProducts from "./Dealer Dashboard/Pages/Products/AllProducts";
 import Visiting_Card from "./Pages/Visiting-Card/Visiting_Card";
 import Template from "./Dealer Dashboard/Pages/Template/Template";
+import { getDealerAccessToken } from "./Utils/Helper";
+import { useEffect } from "react";
+import {
+  fetchCurrentDealerAsync,
+  selectCurrentDealer,
+} from "./Redux/Features/dealersSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 function App() {
+  const dealerAccessToken = getDealerAccessToken();
+  const dispatch = useDispatch();
+  if (dealerAccessToken) {
+    const currentDealer = useSelector(selectCurrentDealer);
+    useEffect(() => {
+      if (!currentDealer) {
+        dispatch(fetchCurrentDealerAsync());
+      }
+    }, [dispatch, currentDealer]);
+  }
   return (
     <>
       <Routes>
@@ -91,6 +108,7 @@ function App() {
             <Route path="/my-dashboard/bookmarks" element={<Bookmark />} />
             <Route path="/my-dashboard/messages" element={<Messages />} />
           </Route>
+          <Route path="/visiting-card" element={<Visiting_Card />} />
           <Route
             path="/my-dashboard/product-detail/:id"
             element={<ProductDetail />}
@@ -123,7 +141,7 @@ function App() {
         <Route path="/payment-status" element={<PaymentStatus />} />
 
         {/* This Route Goes to Dealer Protected Routes */}
-        <Route path="visiting-card/:dealerId" element={<Visiting_Card />} />
+
         <Route path="/template" element={<Template />} />
       </Routes>
     </>

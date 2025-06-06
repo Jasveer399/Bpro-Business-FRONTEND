@@ -93,3 +93,7 @@ export const createTestimonialsUrl = `${server}/api/v1/visitingcard/create-testi
 export const getTestimonialsUrl = `${server}/api/v1/visitingcard/get-testimonials`;
 export const updateTestimonialsUrl = `${server}/api/v1/visitingcard/update-testimonials`;
 export const deleteTestimonialsUrl = `${server}/api/v1/visitingcard/delete-testimonials`;
+export const createVisitingCard = `${server}/api/v1/visitingcard/create-visiting-card`;
+export const updateVisitingCard = `${server}/api/v1/visitingcard/update-visiting-card`;
+export const getVisitingCard = `${server}/api/v1/visitingcard/get-visiting-card`;
+export const deleteVisitingCard = `${server}/api/v1/visitingcard/delete-visiting-card`;

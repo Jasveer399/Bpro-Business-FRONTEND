@@ -11,11 +11,13 @@ import {
   selectTestimonialsError,
   resetCreateStatus,
 } from "../../Redux/Features/testimonialsSlice";
+import { selectCurrentDealer } from "../../Redux/Features/dealersSlice";
 
 function AddTestimonialsForm({ closeDialog }) {
   const dispatch = useDispatch();
   const createStatus = useSelector(selectCreateStatus);
   const error = useSelector(selectTestimonialsError);
+  const currentDealer = useSelector(selectCurrentDealer);
 
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -46,6 +48,7 @@ function AddTestimonialsForm({ closeDialog }) {
     formData.append("content", data.testimonialText);
     formData.append("name", data.clientName);
     formData.append("designation", data.designation);
+    formData.append("dealerId", currentDealer.id);
 
     // Add image if selected
     if (selectedImage) {

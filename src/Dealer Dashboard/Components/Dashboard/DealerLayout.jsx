@@ -14,7 +14,9 @@ import { fetchCurrentDealerAsync } from "../../../Redux/Features/dealersSlice";
 function DealerLayout() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { currentDealer, currentDealerStatus } = useSelector((state) => state.dealers);
+  const { currentDealer, currentDealerStatus } = useSelector(
+    (state) => state.dealers
+  );
   console.log("currentDealerStatus: ", currentDealerStatus);
   useEffect(() => {
     if (currentDealerStatus === "idle") {
@@ -40,6 +42,11 @@ function DealerLayout() {
       icon: MdOutlineBookmarks,
       link: "/my-dashboard/bookmarks",
     },
+    {
+      name: "Visiting Card",
+      icon: PiDiamondsFour,
+      link: "/visiting-card",
+    },
   ];
 
   console.log("currentDealer", currentDealer);
@@ -58,7 +65,11 @@ function DealerLayout() {
         <div className="hidden md:flex flex-col w-64 bg-white shadow-lg">
           <div className="flex flex-col items-center mt-6">
             <img
-              src={`${currentDealer?.profileUrl ? currentDealer?.profileUrl : "/dummy-profile.png"}`}
+              src={`${
+                currentDealer?.profileUrl
+                  ? currentDealer?.profileUrl
+                  : "/dummy-profile.png"
+              }`}
               alt="Profile"
               className="w-12 h-12 rounded-full mb-2"
             />

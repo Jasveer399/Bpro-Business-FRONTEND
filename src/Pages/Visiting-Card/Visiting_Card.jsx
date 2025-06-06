@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Navbar from "../../Dealer Dashboard/Components/Home/Navbar";
 import Header from "../../Dealer Dashboard/Components/Home/Header";
 import MultipleImageUpload from "../../Components/Visiting_Card/MultipleImageUpload";
@@ -10,22 +11,43 @@ import ImageInput from "../../ui/ImageInput";
 import MultiSelector from "../../ui/MultiSelector";
 import Testimonials from "../../Components/Visiting_Card/Testimonials";
 import FormInput from "../../ui/FormInput";
+import {
+  createVisitingCardAsync,
+  selectCreateStatus,
+  selectVisitingCardsError,
+  resetCreateStatus,
+  resetError,
+} from "../../Redux/Features/visitingCardSlice";
+import { selectCurrentDealer } from "../../Redux/Features/dealersSlice";
+import { selectedTestimonialId } from "../../Redux/Features/testimonialsSlice";
+import { useNavigate } from "react-router-dom";
 
 function Visiting_Card() {
   const [bannerSection, setBannerSection] = useState("Image");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // Redux state
+  const createStatus = useSelector(selectCreateStatus);
+  const error = useSelector(selectVisitingCardsError);
+  const currentDealer = useSelector(selectCurrentDealer);
+  const testimonialIds = useSelector(selectedTestimonialId);
+
   const {
     formState: { errors },
     handleSubmit,
     register,
     setValue,
     control,
-    watch, // Added watch
+    watch,
+    reset,
   } = useForm({
     defaultValues: {
       openingTime: "",
       closingTime: "",
       businessDays: [],
       gallery: null,
+      services: ["Wedding Service"],
     },
   });
 
@@ -33,10 +55,72 @@ function Visiting_Card() {
     setBannerSection(section);
   };
 
+  // Handle success/error states
+  useEffect(() => {
+    if (createStatus === "succeeded") {
+      reset(); // Reset form after successful submission
+      dispatch(resetCreateStatus());
+      navigate(-1);
+    }
+
+    if (createStatus === "failed" && error) {
+      dispatch(resetError());
+    }
+  }, [createStatus, error, reset, dispatch]);
+
   // Form submit handler
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
-    // Handle form submission here
+  const onSubmit = async (data) => {
+    try {
+      // Create FormData for file uploads
+      const formData = new FormData();
+      // Add basic form fields
+      formData.append("intro", data.intro);
+      formData.append("copyright", data.copyright);
+      formData.append("openingTime", data.openingTime);
+      formData.append("closingTime", data.closingTime);
+      formData.append("dealerId", currentDealer.id); // Add testimonialId if available
+
+      // Handle business days - convert to JSON string if array
+      if (data.businessDays && Array.isArray(data.businessDays)) {
+        formData.append("businessDays", JSON.stringify(data.businessDays));
+      }
+
+      // Handle services - convert to JSON string if array
+      if (data.services && Array.isArray(data.services)) {
+        formData.append("services", JSON.stringify(data.services));
+      }
+
+      if (testimonialIds && Array.isArray(testimonialIds)) {
+        formData.append("testimonialIds", JSON.stringify(testimonialIds));
+      }
+      // return; // Debugging line to stop execution here
+      if (bannerSection === "Image" && data.bannerImage) {
+        formData.append("bannerImage", data.bannerImage);
+      } else if (bannerSection === "Video" && data.video_url) {
+        formData.append("bannerVideoUrl", data.video_url);
+      }
+
+      // Handle gallery images
+      if (data.galleryImages && data.galleryImages.length > 0) {
+        Array.from(data.galleryImages).forEach((file) => {
+          formData.append("galleryImages", file);
+        });
+      }
+
+      // Debug: Log FormData contents
+      console.log("Form Data being sent:");
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
+
+      // return; // Debugging line to stop execution here
+
+      // Dispatch the async thunk
+      await dispatch(createVisitingCardAsync(formData)).unwrap();
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      // Error handling is done in useEffect above
+    }
   };
 
   return (
@@ -93,7 +177,7 @@ function Visiting_Card() {
                   register={register}
                   setValue={setValue}
                   name="bannerImage"
-                  error={errors.image?.message}
+                  error={errors.bannerImage?.message}
                   label="Banner Image"
                 />
               ) : (
@@ -101,7 +185,10 @@ function Visiting_Card() {
                   label="Banner Video URL"
                   type="text"
                   {...register("video_url", {
-                    required: "Video URL is required",
+                    required:
+                      bannerSection === "Video"
+                        ? "Video URL is required"
+                        : false,
                   })}
                   error={errors.video_url?.message}
                   width="w-full"
@@ -126,14 +213,14 @@ function Visiting_Card() {
           <TextareaInput
             label="Text here..."
             width="w-full"
-            {...register("desc", {
+            {...register("intro", {
               required: "Description is required",
               minLength: {
                 value: 10,
                 message: "Content must be at least 10 characters",
               },
             })}
-            error={errors.desc?.message}
+            error={errors.intro?.message}
             rows={6}
           />
         </div>
@@ -165,7 +252,7 @@ function Visiting_Card() {
             register={register}
             setValue={setValue}
             watch={watch}
-            error={errors.gallery?.message}
+            error={errors.galleryImages?.message}
             name="galleryImages"
             label="Gallery Images"
             onImagesChange={(images) => {
@@ -192,13 +279,20 @@ function Visiting_Card() {
         <div className="flex gap-3 py-4 mt-4">
           <button
             type="submit"
-            className="px-6 py-2 font-[500] bg-secondary text-primary rounded-lg hover:bg-secondary transition-colors"
+            disabled={createStatus === "loading"}
+            className={`px-6 py-2 font-[500] rounded-lg transition-colors ${
+              createStatus === "loading"
+                ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+                : "bg-secondary text-primary hover:bg-secondary"
+            }`}
           >
-            Submit
+            {createStatus === "loading" ? "Creating..." : "Submit"}
           </button>
           <button
             type="button"
-            className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+            disabled={createStatus === "loading"}
+            onClick={() => reset()}
+            className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>

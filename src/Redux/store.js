@@ -12,6 +12,7 @@ import plansReducer from "../Redux/Features/PlansSlice.js";
 import dashboardSlice from "../Redux/Features/dashboardSlice.js";
 import customerSlice from "../Redux/Features/customerSlice.js";
 import testimonialsReducer from "../Redux/Features/testimonialsSlice.js";
+import visitingCardsSlice from "../Redux/Features/visitingCardSlice.js";
 
 export const store = configureStore({
   reducer: {
@@ -28,5 +29,6 @@ export const store = configureStore({
     dashboard: dashboardSlice,
     customer: customerSlice,
     testimonials: testimonialsReducer,
+    visitingCards: visitingCardsSlice,
   },
 });

@@ -32,9 +32,9 @@ export const createTestimonialAsync = createAsyncThunk(
 // Thunk for fetching all testimonials
 export const fetchTestimonialsAsync = createAsyncThunk(
   "testimonials/fetchTestimonials",
-  async (_, { rejectWithValue }) => {
+  async ({ dealerId }, { rejectWithValue }) => {
     try {
-      const response = await axios.get(getTestimonialsUrl, {
+      const response = await axios.get(`${getTestimonialsUrl}/${dealerId}`, {
         headers: {
           Authorization: `Bearer ${getUserToken()}`,
         },
@@ -102,6 +102,7 @@ const testimonialsSlice = createSlice({
     createStatus: "idle",
     updateStatus: "idle",
     deleteStatus: "idle",
+    selectedTestimonialsId: [],
     error: null,
   },
   reducers: {
@@ -120,6 +121,21 @@ const testimonialsSlice = createSlice({
     },
     resetError: (state) => {
       state.error = null;
+    },
+    toggleSelectedTestimonial: (state, action) => {
+      const testimonialId = action.payload;
+      if (state.selectedTestimonialsId.includes(testimonialId)) {
+        state.selectedTestimonialsId = state.selectedTestimonialsId.filter(
+          (id) => id !== testimonialId
+        );
+      } else {
+        state.selectedTestimonialsId.push(testimonialId);
+      }
+    },
+
+    // (Optional) clear all selected
+    clearSelectedTestimonials: (state) => {
+      state.selectedTestimonialsId = [];
     },
   },
   extraReducers: (builder) => {
@@ -199,6 +215,8 @@ export const {
   resetUpdateStatus,
   resetDeleteStatus,
   resetError,
+  toggleSelectedTestimonial,
+  clearSelectedTestimonials,
 } = testimonialsSlice.actions;
 
 // Export selectors
@@ -219,5 +237,8 @@ export const getSeletedTestimonial = ({ state, testimonialId }) =>
   state.testimonials?.testimonials.find(
     (testimonial) => testimonial.id === testimonialId
   );
+
+export const selectedTestimonialId = (state) =>
+  state.testimonials.selectedTestimonialsId || null;
 
 export default testimonialsSlice.reducer;

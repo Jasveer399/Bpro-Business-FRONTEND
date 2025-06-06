@@ -5,6 +5,7 @@ const ImageInput = ({
   register,
   setValue,
   name = "image",
+  onReset,
   error,
   label = "Cover Image",
   existingImage = null,
@@ -19,7 +20,8 @@ const ImageInput = ({
     setPreview(existingImage);
   }, [existingImage]);
 
-  const { ref, onChange, ...rest } = register("image", {
+  // Use the name prop instead of hardcoding "image"
+  const { ref, onChange, ...rest } = register(name, {
     validate: {
       lessThan5MB: (file) =>
         !file || file.size <= 5000000 || "Image must be less than 5MB",
@@ -47,7 +49,7 @@ const ImageInput = ({
       const url = URL.createObjectURL(file);
       setPreview(url);
 
-      // Set the file value in the form
+      // Set the file value in the form using the correct name
       setValue(name, file, { shouldValidate: true });
 
       // Call the onImageChange callback if provided
@@ -57,7 +59,8 @@ const ImageInput = ({
 
   const removeImage = () => {
     setPreview(null);
-    setValue("image", null, { shouldValidate: true });
+    // Use the name prop instead of hardcoding "image"
+    setValue(name, null, { shouldValidate: true });
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -65,6 +68,16 @@ const ImageInput = ({
     onImageRemove?.();
   };
 
+  // Reset the input when the component unmounts
+  useEffect(() => {
+    return () => {
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+      setPreview(null);
+      onReset?.();
+    };
+  });
   return (
     <div className="w-full flex flex-col items-start">
       <label className="text-[17px] ml-2 font-semibold text-primary">

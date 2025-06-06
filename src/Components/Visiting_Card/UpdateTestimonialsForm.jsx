@@ -13,12 +13,14 @@ import {
   selectTestimonials,
 } from "../../Redux/Features/testimonialsSlice";
 import Loader from "../../ui/Loader";
+import { selectCurrentDealer } from "../../Redux/Features/dealersSlice";
 
 function UpdateTestimonialsForm({ testimonialId, closeDialog }) {
   const dispatch = useDispatch();
   const updateStatus = useSelector(selectUpdateStatus);
   const error = useSelector(selectTestimonialsError);
   const testimonials = useSelector(selectTestimonials);
+  const currentDealer = useSelector(selectCurrentDealer);
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentImage, setCurrentImage] = useState(null);

@@ -9,8 +9,10 @@ import {
   selectTestimonialsStatus,
   selectDeleteStatus,
   selectTestimonialsError,
+  toggleSelectedTestimonial,
 } from "../../Redux/Features/testimonialsSlice";
 import UpdateTestimonialsForm from "./UpdateTestimonialsForm";
+import { selectCurrentDealer } from "../../Redux/Features/dealersSlice";
 
 function Testimonials() {
   const dispatch = useDispatch();
@@ -22,6 +24,10 @@ function Testimonials() {
   ] = useState(false);
 
   const [selectedTestimonialId, setSelectedTestimonialId] = useState(null);
+  const currentDealer = useSelector(selectCurrentDealer);
+
+  // Row selection state
+  const [selectedRows, setSelectedRows] = useState(new Set());
 
   // Redux selectors
   const testimonials = useSelector(selectTestimonials);
@@ -31,12 +37,32 @@ function Testimonials() {
 
   // Fetch testimonials on component mount
   useEffect(() => {
-    dispatch(fetchTestimonialsAsync());
-  }, [dispatch]);
+    dispatch(
+      fetchTestimonialsAsync({
+        dealerId: currentDealer?.id || "",
+      })
+    );
+  }, [dispatch, currentDealer]);
+
+  // Handle individual row selection
+  const handleRowSelect = (testimonialId) => {
+    const newSelectedRows = new Set(selectedRows);
+    if (newSelectedRows.has(testimonialId)) {
+      newSelectedRows.delete(testimonialId);
+    } else {
+      newSelectedRows.add(testimonialId);
+    }
+    setSelectedRows(newSelectedRows);
+    dispatch(toggleSelectedTestimonial(testimonialId));
+  };
 
   const handleRemove = async (id) => {
     try {
       await dispatch(deleteTestimonialAsync(id)).unwrap();
+      // Remove from selected rows if it was selected
+      const newSelectedRows = new Set(selectedRows);
+      newSelectedRows.delete(id);
+      setSelectedRows(newSelectedRows);
     } catch (error) {
       console.error("Failed to delete testimonial:", error);
     }
@@ -84,22 +110,25 @@ function Testimonials() {
         <h1 className="text-2xl font-bold text-gray-900">
           Testimonials ({testimonials?.length || 0})
         </h1>
-        <button
-          type="button"
-          onClick={() => setIsAddTestimonialsFormDialogOpen(true)}
-          className="bg-secondary hover:bg-secondary/90 font-semibold text-primary px-6 py-2 rounded-md transition-colors"
-        >
-          Add More
-        </button>
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={() => setIsAddTestimonialsFormDialogOpen(true)}
+            className="bg-secondary hover:bg-secondary/90 font-semibold text-primary px-6 py-2 rounded-md transition-colors"
+          >
+            Add More
+          </button>
+        </div>
       </div>
 
       {/* Table Container */}
       <div className="bg-white rounded-lg overflow-hidden shadow-sm">
         {/* Header Row */}
         <div className="bg-primary text-white grid grid-cols-12 gap-4 px-6 py-4 font-semibold text-sm">
+          <div className="col-span-2 flex items-center gap-2">SELECT ALL</div>
           <div className="col-span-2">NAME</div>
           <div className="col-span-2">DESIGNATION</div>
-          <div className="col-span-5">CONTENT</div>
+          <div className="col-span-3">CONTENT</div>
           <div className="col-span-3 text-center">ACTION</div>
         </div>
 
@@ -108,8 +137,22 @@ function Testimonials() {
           testimonials.map((testimonial) => (
             <div
               key={testimonial.id}
-              className="grid grid-cols-12 gap-4 px-6 py-4 border-b border-gray-100 items-center hover:bg-gray-50 transition-colors"
+              className={`grid grid-cols-12 gap-4 px-6 py-4 border-b border-gray-100 items-center transition-colors ${
+                selectedRows.has(testimonial.id)
+                  ? "bg-blue-50 border-blue-200"
+                  : "hover:bg-gray-50"
+              }`}
             >
+              {/* Selection Column */}
+              <div className="col-span-2 flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={selectedRows.has(testimonial.id)}
+                  onChange={() => handleRowSelect(testimonial.id)}
+                  className="form-checkbox h-4 w-4 text-primary focus:ring-primary"
+                />
+              </div>
+
               {/* Name Column */}
               <div className="col-span-2 flex items-center gap-3">
                 <img
@@ -130,8 +173,8 @@ function Testimonials() {
               </div>
 
               {/* Content Column */}
-              <div className="col-span-5">
-                <p className="text-gray-700 text-sm leading-relaxed">
+              <div className="col-span-3">
+                <p className="text-gray-700 text-sm leading-relaxed line-clamp-3">
                   {testimonial.testimonialsText ||
                     testimonial.content ||
                     "No content available"}
@@ -141,12 +184,14 @@ function Testimonials() {
               {/* Action Column */}
               <div className="col-span-3 flex gap-2 justify-center">
                 <button
+                  type="button"
                   onClick={() => handleUpdate(testimonial.id)}
                   className="bg-[#49B27A] hover:bg-[#32a568] text-white px-4 py-1.5 rounded text-sm font-medium transition-colors"
                 >
                   Modify
                 </button>
                 <button
+                  type="button"
                   onClick={() => handleRemove(testimonial.id)}
                   disabled={deleteStatus === "loading"}
                   className="bg-[#FE043C] hover:bg-[#c7173d] text-white px-4 py-1.5 rounded text-sm font-medium transition-colors disabled:opacity-50"
