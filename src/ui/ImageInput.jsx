@@ -5,7 +5,6 @@ const ImageInput = ({
   register,
   setValue,
   name = "image",
-  onReset,
   error,
   label = "Cover Image",
   existingImage = null,
@@ -68,16 +67,6 @@ const ImageInput = ({
     onImageRemove?.();
   };
 
-  // Reset the input when the component unmounts
-  useEffect(() => {
-    return () => {
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-      setPreview(null);
-      onReset?.();
-    };
-  });
   return (
     <div className="w-full flex flex-col items-start">
       <label className="text-[17px] ml-2 font-semibold text-primary">
