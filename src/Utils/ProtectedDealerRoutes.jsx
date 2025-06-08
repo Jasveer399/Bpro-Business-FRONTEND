@@ -6,7 +6,7 @@ import { selectCurrentDealer } from "../Redux/Features/dealersSlice";
 
 function ProtectedDealerRoutes() {
   const dealerAccessToken = getDealerAccessToken();
-  // const { planDaysLeft } = useSelector((state) => state.dealers || {});
+  const { planDaysLeft } = useSelector((state) => state.dealers || {});
 
   const currentDealer = useSelector(selectCurrentDealer);
   const location = useLocation();
@@ -18,18 +18,18 @@ function ProtectedDealerRoutes() {
 
   // Check if the plan has expired (planDaysLeft === 0)
   // Skip redirect if the user is already on /my-dashboard/listing
-  // if (planDaysLeft === 0 && location.pathname !== "/my-dashboard/listing") {
-  //   return (
-  //     <Navigate
-  //       to="/my-dashboard/listing"
-  //       state={{
-  //         message:
-  //           "Your plan has expired. Please renew to access this feature.",
-  //       }}
-  //       replace
-  //     />
-  //   );
-  // }
+  if (planDaysLeft === 0 && location.pathname !== "/my-dashboard/listing") {
+    return (
+      <Navigate
+        to="/my-dashboard/listing"
+        state={{
+          message:
+            "Your plan has expired. Please renew to access this feature.",
+        }}
+        replace
+      />
+    );
+  }
 
   // If authenticated and plan is active, or on /my-dashboard/listing, render the child routes
   return <Outlet />;

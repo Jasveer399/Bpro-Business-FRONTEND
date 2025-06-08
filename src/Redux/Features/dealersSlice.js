@@ -15,8 +15,13 @@ import {
   changeStatusUpdateProfile,
   getSpecificDealer,
   removeProfileImg,
+  getPlanDaysLeft,
 } from "../../Utils/server";
-import { getAdminAccessToken, getDealerAccessToken } from "../../Utils/Helper";
+import {
+  calculateRemainingDays,
+  getAdminAccessToken,
+  getDealerAccessToken,
+} from "../../Utils/Helper";
 
 // Thunk for adding a new dealer
 export const addDealerAsync = createAsyncThunk(
@@ -66,6 +71,7 @@ export const fetchDealersAsync = createAsyncThunk(
       const response = await axios.get(getAllDealers, {
         withCredentials: true,
       });
+      console.log("REsponse", response);
       return response.data.data;
     } catch (error) {
       console.error("Error in fetchDealersAsync:", error);
@@ -304,6 +310,25 @@ export const removeProfileImgAsync = createAsyncThunk(
   }
 );
 
+export const getPlanDaysLeftAsync = createAsyncThunk(
+  "dealers/getPlanDaysLeft",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${getPlanDaysLeft}`, {
+        headers: {
+          Authorization: `Bearer ${getDealerAccessToken()}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error in getPlanDaysLeft:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
 const dealersSlice = createSlice({
   name: "dealers",
   initialState: {
@@ -316,7 +341,9 @@ const dealersSlice = createSlice({
     changePassStatus: "idle",
     updateStatus: "idle",
     fetchStatus: "idle",
+    planDaysLeftStatus: "idle",
     planDaysLeft: 0,
+    isPaymentDoneForVisitingCard: false,
     error: null,
     currentDealer: null,
     currentDealerStatus: "idle",
@@ -324,6 +351,10 @@ const dealersSlice = createSlice({
   reducers: {
     setDealer: (state, action) => {
       state.dealer = state.dealers.find((d) => d.id === action.payload) || null;
+      state.planDaysLeft = calculateRemainingDays(
+        state.dealer.createdAt,
+        state.dealer.Plan.planDuration
+      );
     },
   },
   extraReducers: (builder) => {
@@ -347,7 +378,10 @@ const dealersSlice = createSlice({
       })
       .addCase(loginDealerAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.dealers.push(action.payload);
+        state.dealers.push(action.payload.data);
+        state.planDaysLeft = action.payload.data.planDaysLeft;
+        state.isPaymentDoneForVisitingCard =
+          action.payload.data.isPaymentDoneForVisitingCard;
       })
       .addCase(loginDealerAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -510,6 +544,21 @@ const dealersSlice = createSlice({
       })
       .addCase(removeProfileImgAsync.rejected, (state, action) => {
         state.status = "failed";
+        state.error = action.payload;
+      })
+
+      // ... play days left fetch....
+      .addCase(getPlanDaysLeftAsync.pending, (state) => {
+        state.planDaysLeftStatus = "loading";
+      })
+      .addCase(getPlanDaysLeftAsync.fulfilled, (state, action) => {
+        state.planDaysLeftStatus = "succeeded";
+        state.planDaysLeft = action.payload.data.planDaysLeft;
+        state.isPaymentDoneForVisitingCard =
+          action.payload.data.isPaymentDoneForVisitingCard;
+      })
+      .addCase(getPlanDaysLeftAsync.rejected, (state, action) => {
+        state.planDaysLeftStatus = "failed";
         state.error = action.payload;
       });
   },

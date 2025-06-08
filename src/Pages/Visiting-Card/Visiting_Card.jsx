@@ -21,9 +21,12 @@ import {
 import { selectCurrentDealer } from "../../Redux/Features/dealersSlice";
 import { selectedTestimonialId } from "../../Redux/Features/testimonialsSlice";
 import { useNavigate } from "react-router-dom";
+import { selectDealerProducts } from "../../Redux/Features/productSlice";
+import Snackbars from "../../ui/Snackbars";
 
 function Visiting_Card() {
   const [bannerSection, setBannerSection] = useState("Image");
+  const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -32,6 +35,12 @@ function Visiting_Card() {
   const error = useSelector(selectVisitingCardsError);
   const currentDealer = useSelector(selectCurrentDealer);
   const testimonialIds = useSelector(selectedTestimonialId);
+  const products = useSelector(selectDealerProducts);
+
+  const Serviceoptions = products?.map((product) => ({
+    value: product?.id,
+    label: product?.title,
+  }));
 
   const {
     formState: { errors },
@@ -47,7 +56,7 @@ function Visiting_Card() {
       closingTime: "",
       businessDays: [],
       gallery: null,
-      services: ["Wedding Service"],
+      services: [],
     },
   });
 
@@ -60,7 +69,6 @@ function Visiting_Card() {
     if (createStatus === "succeeded") {
       reset(); // Reset form after successful submission
       dispatch(resetCreateStatus());
-      navigate(-1);
     }
 
     if (createStatus === "failed" && error) {
@@ -113,12 +121,27 @@ function Visiting_Card() {
         console.log(key, value);
       }
 
-      // return; // Debugging line to stop execution here
-
       // Dispatch the async thunk
-      await dispatch(createVisitingCardAsync(formData)).unwrap();
+      const res = await dispatch(createVisitingCardAsync(formData)).unwrap();
+
+      if (res.status) {
+        setSnackbar({
+          open: true,
+          type: "success",
+          text: res.message,
+        });
+      }
+
+      setTimeout(() => {
+        navigate(`/visiting-card/${res.data.id}`);
+      }, [500]);
     } catch (error) {
       console.error("Error submitting form:", error);
+      setSnackbar({
+        open: true,
+        type: "error",
+        text: error?.message || "Error submitting form",
+      });
       // Error handling is done in useEffect above
     }
   };
@@ -238,10 +261,11 @@ function Visiting_Card() {
               register={register}
               setValue={setValue}
               watch={watch}
+              options={Serviceoptions}
               errors={errors}
               name="services"
               required={true}
-              defaultValue={["Wedding Service"]}
+              defaultValue={[]}
             />
           </div>
         </div>
@@ -294,10 +318,16 @@ function Visiting_Card() {
             onClick={() => reset()}
             className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Cancel
+            Clear
           </button>
         </div>
       </form>
+      <Snackbars
+        open={snackbar.open}
+        type={snackbar.type}
+        text={snackbar.text}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
     </>
   );
 }

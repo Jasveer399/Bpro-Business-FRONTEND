@@ -1,12 +1,12 @@
 import React from "react";
 
 const Testimonial = ({ testimonial }) => {
-    console.log("testimonial", testimonial);
+  console.log("testimonial", testimonial);
   return (
     <div className="bg-white p-5 rounded-md shadow-md space-y-3 my-2">
       <div className="flex items-center gap-3 mb-3 ml-2">
         <img
-          src={testimonial.image}
+          src={testimonial.clientPhoto}
           alt={testimonial.name}
           className="w-16 h-16 rounded-full object-cover"
         />

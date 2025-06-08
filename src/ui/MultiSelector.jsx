@@ -5,18 +5,7 @@ const MultiSelector = ({
   title = "Our Services",
   label = "Select Business Type",
   maxSelections = 6,
-  options = [
-    "Wedding Service",
-    "Event Planning",
-    "Photography",
-    "Catering Service",
-    "Decoration Service",
-    "Music & Entertainment",
-    "Transportation",
-    "Floral Design",
-    "Videography",
-    "Venue Rental",
-  ],
+  options,
   register,
   setValue,
   watch,
@@ -39,15 +28,20 @@ const MultiSelector = ({
     }
   }, []);
 
-  const handleSelect = (option) => {
+  // Helper function to find option by value
+  const findOptionByValue = (value) => {
+    return options.find((option) => option.value === value);
+  };
+
+  const handleSelect = (optionValue) => {
     let newSelectedItems;
 
-    if (selectedItems.includes(option)) {
+    if (selectedItems.includes(optionValue)) {
       // Remove if already selected
-      newSelectedItems = selectedItems.filter((item) => item !== option);
+      newSelectedItems = selectedItems.filter((item) => item !== optionValue);
     } else if (selectedItems.length < maxSelections) {
       // Add if under limit
-      newSelectedItems = [...selectedItems, option];
+      newSelectedItems = [...selectedItems, optionValue];
     } else {
       // Don't add if at limit
       return;
@@ -74,8 +68,9 @@ const MultiSelector = ({
     }
   };
 
+  // Filter available options (not already selected)
   const availableOptions = options.filter(
-    (option) => !selectedItems.includes(option)
+    (option) => !selectedItems.includes(option.value)
   );
 
   // Close dropdown when clicking outside
@@ -114,24 +109,27 @@ const MultiSelector = ({
               {selectedItems.length === 0 ? (
                 <span className="text-gray-500">Select services...</span>
               ) : (
-                selectedItems.map((item, index) => (
-                  <span
-                    key={index}
-                    className="inline-flex items-center gap-1 px-3 py-1 bg-[#2E3192] text-white rounded-md text-sm"
-                  >
-                    {item}
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        removeItem(item);
-                      }}
-                      className="hover:bg-white hover:text-[#2E3192] rounded-full p-0.5 transition-colors"
+                selectedItems.map((itemValue, index) => {
+                  const option = findOptionByValue(itemValue);
+                  return (
+                    <span
+                      key={index}
+                      className="inline-flex items-center gap-1 px-3 py-1 bg-[#2E3192] text-white rounded-md text-sm"
                     >
-                      <X size={14} />
-                    </button>
-                  </span>
-                ))
+                      {option ? option.label : itemValue}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeItem(itemValue);
+                        }}
+                        className="hover:bg-white hover:text-[#2E3192] rounded-full p-0.5 transition-colors"
+                      >
+                        <X size={14} />
+                      </button>
+                    </span>
+                  );
+                })
               )}
             </div>
             <ChevronDown
@@ -156,9 +154,9 @@ const MultiSelector = ({
                   <div
                     key={index}
                     className="px-4 py-3 hover:bg-gray-50 cursor-pointer text-sm border-b border-gray-100 last:border-b-0 transition-colors"
-                    onClick={() => handleSelect(option)}
+                    onClick={() => handleSelect(option.value)}
                   >
-                    {option}
+                    {option.label}
                   </div>
                 ))
               )}

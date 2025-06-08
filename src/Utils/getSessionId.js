@@ -1,12 +1,23 @@
 import axios from "axios";
 import { server } from "./server";
 
-export async function getSessionId() {
+export async function getSessionId(isRegistering = true, dealerId, price) {
   try {
-    const data = {
-      id: sessionStorage.getItem("dealerId"),
-      planId: sessionStorage.getItem("planId"),
-    };
+    let data = {};
+    if (isRegistering) {
+      data = {
+        id: sessionStorage.getItem("dealerId"),
+        planId: sessionStorage.getItem("planId"),
+        isRegistering: true,
+      };
+    } else {
+      data = {
+        id: dealerId,
+        isRegistering: false,
+        amount: price,
+      };
+    }
+
     const res = await axios.post(`${server}/api/v1/payment/create-order`, data);
 
     console.log("res", res);

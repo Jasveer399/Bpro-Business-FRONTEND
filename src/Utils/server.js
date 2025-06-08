@@ -23,6 +23,7 @@ export const getSpecificDealer = `${server}/api/v1/dealer/getSpecificDealer`;
 export const incrementWhatsappCount = `${server}/api/v1/dealer/incrementWhatsappCount`;
 export const incrementCallCount = `${server}/api/v1/dealer/incrementCallCount`;
 export const viewDealerProfile = `${server}/api/v1/dealer/viewDealerProfile`;
+export const getPlanDaysLeft = `${server}/api/v1/dealer/getPlanDaysLeft`;
 
 // ALl Banners Route
 export const addBanner = `${server}/api/v1/banners/addBanner`;
@@ -97,3 +98,7 @@ export const createVisitingCard = `${server}/api/v1/visitingcard/create-visiting
 export const updateVisitingCard = `${server}/api/v1/visitingcard/update-visiting-card`;
 export const getVisitingCard = `${server}/api/v1/visitingcard/get-visiting-card`;
 export const deleteVisitingCard = `${server}/api/v1/visitingcard/delete-visiting-card`;
+export const createVisitingCardPriceAPI = `${server}/api/v1/visitingcard/create`;
+export const fetchVisitingCardsListAPI = `${server}/api/v1/visitingcard/fetch`;
+export const updateVisitingCardsListAPI = `${server}/api/v1/visitingcard/update`;
+export const deleteVisitingCardsListAPI = `${server}/api/v1/visitingcard/delete`;

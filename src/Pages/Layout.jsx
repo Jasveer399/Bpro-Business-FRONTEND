@@ -11,6 +11,7 @@ import { BiCategoryAlt } from "react-icons/bi";
 import { IoPricetagsOutline } from "react-icons/io5";
 import { GrUserWorker } from "react-icons/gr";
 import { FaUserTie } from "react-icons/fa";
+import { LuLayoutTemplate } from "react-icons/lu";
 
 function Layout() {
   const navigate = useNavigate();
@@ -30,6 +31,11 @@ function Layout() {
     { name: "Banner", icon: PiImagesFill, link: "/banners" },
     { name: "Category", icon: BiCategoryAlt, link: "/categories" },
     { name: "Pricing", icon: IoPricetagsOutline, link: "/pricing" },
+    {
+      name: "Visiting Card",
+      icon: LuLayoutTemplate,
+      link: "/all-visiting-card",
+    },
   ];
 
   useEffect(() => {

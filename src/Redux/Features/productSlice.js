@@ -329,5 +329,7 @@ const productSlice = createSlice({
   },
 });
 
+export const selectDealerProducts = (state) => state.products.products;
+
 export const { resetProductStatus, setProduct } = productSlice.actions;
 export default productSlice.reducer;

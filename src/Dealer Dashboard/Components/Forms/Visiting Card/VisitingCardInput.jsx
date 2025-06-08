@@ -3,7 +3,7 @@ import { FaRegUser } from "react-icons/fa";
 import { TbPhone } from "react-icons/tb";
 import { MdOutlineMail } from "react-icons/md";
 
-function TemplateInput({ setValue, value, type, placeholder }) {
+function VisitingCardInput({ setValue, value, type, placeholder }) {
   const inputRef = useRef(null);
   // Handle input changes with React way
   const handleChange = (e) => {
@@ -45,4 +45,4 @@ function TemplateInput({ setValue, value, type, placeholder }) {
   );
 }
 
-export default TemplateInput;
+export default VisitingCardInput;

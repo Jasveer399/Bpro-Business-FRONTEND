@@ -46,26 +46,35 @@ import PaymentStatus from "./Dealer Dashboard/Pages/PaymentStatus";
 import CategoriesProduct from "./Dealer Dashboard/Pages/Categories Products/CategoriesProduct";
 import AllProducts from "./Dealer Dashboard/Pages/Products/AllProducts";
 import Visiting_Card from "./Pages/Visiting-Card/Visiting_Card";
-import Template from "./Dealer Dashboard/Pages/Template/Template";
+import VisitingCard from "./Dealer Dashboard/Pages/Visiting Card/VisitingCard";
 import { getDealerAccessToken } from "./Utils/Helper";
 import { useEffect } from "react";
 import {
   fetchCurrentDealerAsync,
+  getPlanDaysLeftAsync,
   selectCurrentDealer,
 } from "./Redux/Features/dealersSlice";
 import { useDispatch, useSelector } from "react-redux";
+import AllVIsitingCards from "./Pages/Visiting-Card/AllVIsitingCards";
+import SelectVIsitingCard from "./Dealer Dashboard/Pages/Visiting Card/SelectVIsitingCard";
 
 function App() {
   const dealerAccessToken = getDealerAccessToken();
   const dispatch = useDispatch();
-  if (dealerAccessToken) {
-    const currentDealer = useSelector(selectCurrentDealer);
-    useEffect(() => {
+
+  const currentDealer = useSelector(selectCurrentDealer);
+  const { planDaysLeftStatus } = useSelector((state) => state.dealers);
+
+  useEffect(() => {
+    if (dealerAccessToken) {
       if (!currentDealer) {
         dispatch(fetchCurrentDealerAsync());
       }
-    }, [dispatch, currentDealer]);
-  }
+      if (planDaysLeftStatus === "idle") {
+        dispatch(getPlanDaysLeftAsync());
+      }
+    }
+  }, [dispatch, currentDealer, dealerAccessToken, planDaysLeftStatus]);
   return (
     <>
       <Routes>
@@ -92,6 +101,7 @@ function App() {
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/blogview/:id" element={<BlogView />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/all-visiting-card" element={<AllVIsitingCards />} />
           </Route>
         </Route>
         <Route element={<ProtectedDealerRoutes />}>
@@ -107,8 +117,12 @@ function App() {
             />
             <Route path="/my-dashboard/bookmarks" element={<Bookmark />} />
             <Route path="/my-dashboard/messages" element={<Messages />} />
+            <Route
+              path="/my-dashboard/select-visiting-card"
+              element={<SelectVIsitingCard />}
+            />
           </Route>
-          <Route path="/visiting-card" element={<Visiting_Card />} />
+          <Route path="/create-visiting-card" element={<Visiting_Card />} />
           <Route
             path="/my-dashboard/product-detail/:id"
             element={<ProductDetail />}
@@ -142,7 +156,7 @@ function App() {
 
         {/* This Route Goes to Dealer Protected Routes */}
 
-        <Route path="/template" element={<Template />} />
+        <Route path="/visiting-card/:id" element={<VisitingCard />} />
       </Routes>
     </>
   );

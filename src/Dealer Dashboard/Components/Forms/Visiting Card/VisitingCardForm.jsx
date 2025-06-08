@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import TemplateInput from "./TemplateInput";
+import VisitingCardInput from "./VisitingCardInput";
 
-const TemplateForm = () => {
+const VisitingCardForm = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -17,19 +17,19 @@ const TemplateForm = () => {
     <div className="ml-5">
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col lg:flex-row w-full items-center lg:gap-5">
-          <TemplateInput
+          <VisitingCardInput
             type="text"
             value={formData.name}
             setValue={setFormData}
             placeholder="Full Name"
           />
-          <TemplateInput
+          <VisitingCardInput
             type="email"
             value={formData.email}
             setValue={setFormData}
             placeholder="Your Email"
           />
-          <TemplateInput
+          <VisitingCardInput
             type="tel"
             value={formData.mobileNo}
             setValue={setFormData}
@@ -57,4 +57,4 @@ const TemplateForm = () => {
   );
 };
 
-export default TemplateForm;
+export default VisitingCardForm;

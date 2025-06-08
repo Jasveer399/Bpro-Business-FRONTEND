@@ -2,26 +2,41 @@ import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { server } from "../../Utils/server";
+import { useDispatch, useSelector } from "react-redux";
+import { getPlanDaysLeftAsync } from "../../Redux/Features/dealersSlice";
 
 function PaymentStatus() {
   const [searchParams] = useSearchParams();
+  const dispatch = useDispatch();
   const orderId = searchParams.get("orderId");
+  const isRegistering = searchParams.get("isRegistering");
+  const dealerId = searchParams.get("dealerId");
+  const { currentDealer } = useSelector((state) => state.dealers);
   const navigate = useNavigate();
   const [status, setStatus] = useState("Checking payment status...");
 
   useEffect(() => {
     const checkPaymentStatus = async () => {
       try {
-        const res = await axios.post(
-          `${server}/api/v1/payment/verify`,
-          { orderId, id: sessionStorage.getItem("dealerId") }
-        );
+        const res = await axios.post(`${server}/api/v1/payment/verify`, {
+          orderId,
+          id: dealerId,
+          isRegistering,
+        });
+        console.log("isRegistering", isRegistering);
         console.log("res", res);
         if (res.data.success) {
           setStatus("✅ Payment Successful! Redirecting...");
-          setTimeout(() => {
-            navigate("/editprofile");
-          }, 1000);
+          if (isRegistering === "true") {
+            dispatch(getPlanDaysLeftAsync());
+            setTimeout(() => {
+              navigate("/editprofile");
+            }, 1000);
+          } else {
+            setTimeout(() => {
+              navigate("/create-visiting-card");
+            }, 1000);
+          }
         } else {
           setStatus("❌ Payment Failed or Pending.");
         }

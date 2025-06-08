@@ -45,7 +45,10 @@ function AddCategoryForm({ closeDialog }) {
         setSnackbar({
           open: true,
           type: "error",
-          text: response?.payload || response?.error?.message || "Error adding banner",
+          text:
+            response?.payload ||
+            response?.error?.message ||
+            "Error adding category",
         });
       }
     } catch (error) {
@@ -110,9 +113,7 @@ function AddCategoryForm({ closeDialog }) {
                 <ImageUp
                   size={50}
                   className="text-blue text-xl font-bold cursor-pointer"
-                  onClick={() =>
-                    document.getElementById("icon-upload").click()
-                  }
+                  onClick={() => document.getElementById("icon-upload").click()}
                 />
                 <input
                   id="icon-upload"

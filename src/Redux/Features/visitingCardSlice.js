@@ -1,10 +1,19 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { getUserToken } from "../../Utils/Helper";
+import {
+  getAdminAccessToken,
+  getDealerAccessToken,
+  getUserToken,
+} from "../../Utils/Helper";
 import {
   createVisitingCard,
+  createVisitingCardPriceAPI,
   deleteVisitingCard,
+  deleteVisitingCardsListAPI,
+  fetchVisitingCardsListAPI,
+  getVisitingCard,
   updateVisitingCard,
+  updateVisitingCardsListAPI,
 } from "../../Utils/server";
 
 // Thunk for creating a new visiting card
@@ -29,16 +38,12 @@ export const createVisitingCardAsync = createAsyncThunk(
 );
 
 // // Thunk for fetching all visiting cards
-export const fetchVisitingCardsAsync = createAsyncThunk(
-  "visitingCards/fetchVisitingCards",
-  async (_, { rejectWithValue }) => {
+export const fetchVisitingCardAsync = createAsyncThunk(
+  "visitingCards/fetchVisitingCard",
+  async (id, { rejectWithValue }) => {
     try {
-      const response = await axios.get(createVisitingCard, {
-        headers: {
-          Authorization: `Bearer ${getUserToken()}`,
-        },
-      });
-      return response.data.data;
+      const response = await axios.get(`${getVisitingCard}/${id}`);
+      return response.data;
     } catch (error) {
       console.error("Error in fetch visiting cards:", error);
       return rejectWithValue(
@@ -93,14 +98,110 @@ export const deleteVisitingCardAsync = createAsyncThunk(
   }
 );
 
+// Thunk for create a visiting card price
+export const createVisitingCardPrice = createAsyncThunk(
+  "visitingCards/createVisitingCardPrice",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(createVisitingCardPriceAPI, data, {
+        headers: {
+          Authorization: `Bearer ${getAdminAccessToken()}`,
+        },
+      });
+      console.log("response", response);
+      return response.data;
+    } catch (error) {
+      console.error("Error in delete visiting card:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
+// Thunk for fetching a visiting card list
+export const fetchVisitingCardsList = createAsyncThunk(
+  "visitingCards/fetchVisitingCardsList",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(fetchVisitingCardsListAPI, {
+        headers: {
+          Authorization: `Bearer ${
+            getAdminAccessToken() || getDealerAccessToken()
+          }`,
+        },
+      });
+      console.log("response", response);
+      return response.data;
+    } catch (error) {
+      console.error("Error in delete visiting card:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
+// Thunk for deleting a visiting card price
+export const deleteVisitingCardPricingAsync = createAsyncThunk(
+  "visitingCards/deleteVisitingCardPricingAsync",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axios.delete(
+        `${deleteVisitingCardsListAPI}/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${getAdminAccessToken()}`,
+          },
+        }
+      );
+      return { id, data: response.data };
+    } catch (error) {
+      console.error("Error in delete visiting card:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
+// Thunk for update a visiting card price
+export const updateVisitingCardPrice = createAsyncThunk(
+  "visitingCards/updateVisitingCardPrice",
+  async (data, { rejectWithValue }) => {
+    try {
+      console.log("Data", data);
+      const response = await axios.put(
+        `${updateVisitingCardsListAPI}/${data.id}`,
+        data.passData,
+        {
+          headers: {
+            Authorization: `Bearer ${getAdminAccessToken()}`,
+          },
+        }
+      );
+      console.log("Response", response);
+      return response.data;
+    } catch (error) {
+      console.error("Error in delete visiting card:", error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
 const visitingCardsSlice = createSlice({
   name: "visitingCards",
   initialState: {
     visitingCards: [],
+    visitingCard: null,
+    visitingCardsList: [],
     status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
     createStatus: "idle",
     updateStatus: "idle",
     deleteStatus: "idle",
+    selectedVisitingCardStatus: "idle",
     error: null,
   },
   reducers: {
@@ -138,18 +239,18 @@ const visitingCardsSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Fetch Visiting Cards cases
-      .addCase(fetchVisitingCardsAsync.pending, (state) => {
-        state.status = "loading";
+      // Fetch Visiting Card cases
+      .addCase(fetchVisitingCardAsync.pending, (state) => {
+        state.selectedVisitingCardStatus = "loading";
         state.error = null;
       })
-      .addCase(fetchVisitingCardsAsync.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.visitingCards = action.payload;
+      .addCase(fetchVisitingCardAsync.fulfilled, (state, action) => {
+        state.selectedVisitingCardStatus = "succeeded";
+        state.visitingCard = action.payload.data;
         state.error = null;
       })
-      .addCase(fetchVisitingCardsAsync.rejected, (state, action) => {
-        state.status = "failed";
+      .addCase(fetchVisitingCardAsync.rejected, (state, action) => {
+        state.selectedVisitingCardStatus = "failed";
         state.error = action.payload;
       })
 
@@ -187,6 +288,73 @@ const visitingCardsSlice = createSlice({
       })
       .addCase(deleteVisitingCardAsync.rejected, (state, action) => {
         state.deleteStatus = "failed";
+        state.error = action.payload;
+      })
+
+      // create Visiting Card Price cases
+      .addCase(createVisitingCardPrice.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(createVisitingCardPrice.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.visitingCardsList.push(action.payload.data);
+        state.error = null;
+      })
+      .addCase(createVisitingCardPrice.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+
+      // fetch Visiting Card List cases
+      .addCase(fetchVisitingCardsList.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(fetchVisitingCardsList.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.visitingCardsList = action.payload.data;
+        state.error = null;
+      })
+      .addCase(fetchVisitingCardsList.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+
+      // Delete Visiting Card Price cases
+      .addCase(deleteVisitingCardPricingAsync.pending, (state) => {
+        state.deleteStatus = "loading";
+        state.error = null;
+      })
+      .addCase(deleteVisitingCardPricingAsync.fulfilled, (state, action) => {
+        state.deleteStatus = "succeeded";
+        state.visitingCardsList = state.visitingCardsList.filter(
+          (visitingCard) => visitingCard.id !== action.payload.id
+        );
+        state.error = null;
+      })
+      .addCase(deleteVisitingCardPricingAsync.rejected, (state, action) => {
+        state.deleteStatus = "failed";
+        state.error = action.payload;
+      })
+
+      // Update Visiting Card Price cases
+      .addCase(updateVisitingCardPrice.pending, (state) => {
+        state.updateStatus = "loading";
+        state.error = null;
+      })
+      .addCase(updateVisitingCardPrice.fulfilled, (state, action) => {
+        state.updateStatus = "succeeded";
+        const index = state.visitingCardsList.findIndex(
+          (visitingCard) => visitingCard.id === action.payload.data.id
+        );
+        if (index !== -1) {
+          state.visitingCardsList[index] = action.payload.data;
+        }
+        state.error = null;
+      })
+      .addCase(updateVisitingCardPrice.rejected, (state, action) => {
+        state.updateStatus = "failed";
         state.error = action.payload;
       });
   },

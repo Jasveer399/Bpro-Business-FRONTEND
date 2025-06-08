@@ -45,7 +45,7 @@ function DealerLayout() {
     {
       name: "Visiting Card",
       icon: PiDiamondsFour,
-      link: "/visiting-card",
+      link: "/my-dashboard/select-visiting-card",
     },
   ];
 
