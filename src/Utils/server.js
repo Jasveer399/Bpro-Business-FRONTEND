@@ -102,3 +102,4 @@ export const createVisitingCardPriceAPI = `${server}/api/v1/visitingcard/create`
 export const fetchVisitingCardsListAPI = `${server}/api/v1/visitingcard/fetch`;
 export const updateVisitingCardsListAPI = `${server}/api/v1/visitingcard/update`;
 export const deleteVisitingCardsListAPI = `${server}/api/v1/visitingcard/delete`;
+export const sendMail = `${server}/api/v1/visitingcard/send-mail`;

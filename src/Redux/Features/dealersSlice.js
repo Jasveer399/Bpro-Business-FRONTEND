@@ -448,6 +448,8 @@ const dealersSlice = createSlice({
       .addCase(fetchCurrentDealerAsync.fulfilled, (state, action) => {
         state.currentDealerStatus = "succeeded";
         state.currentDealer = action.payload;
+        state.isPaymentDoneForVisitingCard =
+          action.payload.visitingCardPaymentDone;
       })
       .addCase(fetchCurrentDealerAsync.rejected, (state, action) => {
         state.currentDealerStatus = "failed";

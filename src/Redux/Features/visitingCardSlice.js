@@ -210,6 +210,10 @@ const visitingCardsSlice = createSlice({
       state.createStatus = "idle";
       state.error = null;
     },
+    resetSelectedVisitingCardStatus: (state) => {
+      state.selectedVisitingCardStatus = "idle";
+      state.error = null;
+    },
     resetUpdateStatus: (state) => {
       state.updateStatus = "idle";
       state.error = null;
@@ -366,6 +370,7 @@ export const {
   resetUpdateStatus,
   resetDeleteStatus,
   resetError,
+  resetSelectedVisitingCardStatus,
 } = visitingCardsSlice.actions;
 
 // Export selectors

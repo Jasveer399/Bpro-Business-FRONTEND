@@ -16,7 +16,10 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchVisitingCardAsync } from "../../../Redux/Features/visitingCardSlice";
+import {
+  fetchVisitingCardAsync,
+  resetSelectedVisitingCardStatus,
+} from "../../../Redux/Features/visitingCardSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import Map from "../../Components/ui/Map";
 import Gallery from "../../Components/Visiting Card/Gallery";
@@ -30,14 +33,10 @@ const VisitingCard = () => {
   );
 
   useEffect(() => {
-    if (selectedVisitingCardStatus === "idle") {
+    if (selectedVisitingCardStatus === "idle" || visitingCard?.id !== id) {
       dispatch(fetchVisitingCardAsync(id));
     }
   }, [dispatch, selectedVisitingCardStatus, id]);
-
-  console.log("id", id);
-
-  console.log("visitingCard", visitingCard);
 
   const socialLinks = [
     {
@@ -236,7 +235,7 @@ const VisitingCard = () => {
         <h1 className="text-2xl lg:text-3xl font-[700] ml-5 text-center lg:text-left">
           Inquiries
         </h1>
-        <TemplateForm />
+        <TemplateForm id={id} />
       </div>
       <Map
         streetNo={visitingCard?.Dealer?.streetNo}

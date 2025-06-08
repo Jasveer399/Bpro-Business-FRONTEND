@@ -18,7 +18,10 @@ import {
   resetCreateStatus,
   resetError,
 } from "../../Redux/Features/visitingCardSlice";
-import { selectCurrentDealer } from "../../Redux/Features/dealersSlice";
+import {
+  fetchCurrentDealerAsync,
+  selectCurrentDealer,
+} from "../../Redux/Features/dealersSlice";
 import { selectedTestimonialId } from "../../Redux/Features/testimonialsSlice";
 import { useNavigate } from "react-router-dom";
 import { selectDealerProducts } from "../../Redux/Features/productSlice";
@@ -130,6 +133,7 @@ function Visiting_Card() {
           type: "success",
           text: res.message,
         });
+        dispatch(fetchCurrentDealerAsync());
       }
 
       setTimeout(() => {

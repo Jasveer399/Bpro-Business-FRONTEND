@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import SelectVisitingCard_Card from "../../Components/Visiting Card/SelectVisitingCard_Card";
 import Loader from "../../../ui/Loader";
 import Snackbars from "../../../ui/Snackbars";
+import DisplayVisitingCardWithQR from "../../Components/Visiting Card/DisplayVisitingCardWithQR";
 
 const SelectVIsitingCard = () => {
   const dispatch = useDispatch();
@@ -21,12 +22,10 @@ const SelectVIsitingCard = () => {
     }
   }, [dispatch, status]);
 
-  console.log("visitingCardsList", visitingCardsList);
-
   return (
     <>
-      <div className="w-[90%] mx-auto">
-        <h1 className="text-2xl font-bold my-4">Select Visiting Card</h1>
+      <div className="w-[90%] mx-auto mb-10">
+        <h1 className="text-2xl font-bold my-4">Create New Visiting Card</h1>
         <div className="">
           {status === "loading" ? (
             <div className="flex items-center justify-center">
@@ -50,6 +49,34 @@ const SelectVIsitingCard = () => {
           )}
         </div>
       </div>
+      {currentDealer && currentDealer?.VisitingCard?.length > 0 && (
+        <>
+          <hr />
+          <div className="w-[90%] mx-auto mb-10">
+            <h1 className="text-2xl font-bold my-4">Your Visiting Cards</h1>
+            <div className="">
+              {status === "loading" ? (
+                <div className="flex items-center justify-center">
+                  <Loader />
+                </div>
+              ) : currentDealer && currentDealer?.VisitingCard?.length > 0 ? (
+                <div className="grid grid-cols-4 gap-4">
+                  {currentDealer?.VisitingCard?.map((card) => (
+                    <DisplayVisitingCardWithQR
+                      id={card.id}
+                      key={card.id}
+                      url={card.visitingCardUrl}
+                      setSnackbar={setSnackbar}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <p className="text-center">No data found</p>
+              )}
+            </div>
+          </div>
+        </>
+      )}
       <Snackbars
         open={snackbar.open}
         type={snackbar.type}

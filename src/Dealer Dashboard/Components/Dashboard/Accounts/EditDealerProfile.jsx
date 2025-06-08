@@ -60,7 +60,7 @@ function EditDealerProfile() {
     setProfileImageUrl(URL.createObjectURL(file));
   };
 
-  const handleImageRemove = async() => {
+  const handleImageRemove = async () => {
     // Remove the image from the server and reset the profileImageUrl state
     const response = await dispatch(removeProfileImgAsync());
     if (removeProfileImgAsync.fulfilled.match(response)) {
@@ -113,8 +113,12 @@ function EditDealerProfile() {
 
   const editProfileHandler = async (data) => {
     console.log("data: ", data);
+    const updatedData = {
+      ...data,
+      id: currentDealer.id,
+    };
     try {
-      const response = await dispatch(updateDealerAsync(data)).unwrap();
+      const response = await dispatch(updateDealerAsync(updatedData)).unwrap();
       console.log("Profile Edited Successfully", response);
       if (response.success) {
         setSnackbar({

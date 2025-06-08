@@ -65,6 +65,8 @@ function App() {
   const currentDealer = useSelector(selectCurrentDealer);
   const { planDaysLeftStatus } = useSelector((state) => state.dealers);
 
+  console.log("currentDealer", currentDealer);
+
   useEffect(() => {
     if (dealerAccessToken) {
       if (!currentDealer) {
