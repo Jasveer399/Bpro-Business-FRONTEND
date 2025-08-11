@@ -1,5 +1,5 @@
-export const server = "http://localhost:3000";
-// export const server = "http://3.7.200.115:4000";
+// export const server = "http://localhost:3000";
+export const server = "http://13.234.235.174:3000";
 // export const server = "https://bpro-business-backend.onrender.com";
 
 // ALl Dashboard Route
