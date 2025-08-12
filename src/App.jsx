@@ -80,32 +80,6 @@ function App() {
   return (
     <>
       <Routes>
-        <Route element={<RedirectIfAuthenticated />}>
-          <Route path="/admin-login" element={<AdminLogin />} />
-        </Route>
-        <Route element={<ProtectedAdminRoutes />}>
-          <Route element={<Layout />}>
-            <Route index element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/dealers" element={<Dealers />} />
-            <Route
-              path="/dealers/view-profile/:id"
-              element={<DealerProfile />}
-            />
-            <Route path="/workers" element={<Workers />} />
-            <Route
-              path="/workers/dealers-details/:id"
-              element={<DealersDetails />}
-            />
-            <Route path="/banners" element={<BannersCategory />} />
-            <Route path="/banners/:id" element={<Banner />} />
-            <Route path="/categories" element={<Category />} />
-            <Route path="/blogs" element={<Blogs />} />
-            <Route path="/blogview/:id" element={<BlogView />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/all-visiting-card" element={<AllVIsitingCards />} />
-          </Route>
-        </Route>
         <Route element={<ProtectedDealerRoutes />}>
           <Route element={<DealerLayout />}>
             <Route
@@ -159,6 +133,33 @@ function App() {
         {/* This Route Goes to Dealer Protected Routes */}
 
         <Route path="/visiting-card/:id" element={<VisitingCard />} />
+
+        <Route element={<RedirectIfAuthenticated />}>
+          <Route path="/admin-login" element={<AdminLogin />} />
+        </Route>
+        <Route element={<ProtectedAdminRoutes />}>
+          <Route element={<Layout />}>
+            <Route index element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dealers" element={<Dealers />} />
+            <Route
+              path="/dealers/view-profile/:id"
+              element={<DealerProfile />}
+            />
+            <Route path="/workers" element={<Workers />} />
+            <Route
+              path="/workers/dealers-details/:id"
+              element={<DealersDetails />}
+            />
+            <Route path="/banners" element={<BannersCategory />} />
+            <Route path="/banners/:id" element={<Banner />} />
+            <Route path="/categories" element={<Category />} />
+            <Route path="/blogs" element={<Blogs />} />
+            <Route path="/blogview/:id" element={<BlogView />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/all-visiting-card" element={<AllVIsitingCards />} />
+          </Route>
+        </Route>
       </Routes>
     </>
   );
