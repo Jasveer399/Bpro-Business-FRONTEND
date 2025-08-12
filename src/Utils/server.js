@@ -1,5 +1,5 @@
 // export const server = "http://localhost:3000";
-export const server = "http://api.bproindia.com";
+export const server = "https://api.bproindia.com";
 // export const server = "https://bpro-business-backend.onrender.com";
 
 // ALl Dashboard Route
