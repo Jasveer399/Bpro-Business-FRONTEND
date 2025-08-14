@@ -193,9 +193,25 @@ const productSlice = createSlice({
       state.error = null;
     },
     setProduct: (state, action) => {
-      console.log("id: ", action.payload);
-      state.product =
-        state.allProducts.find((p) => p.id === action.payload) || null;
+      console.log(
+        "action.payload in setProduct in productSlice=========>",
+        action.payload
+      );
+
+      // First try to find in dealer's products (state.products)
+      let foundProduct = state.products.find((p) => p.id === action.payload);
+
+      // If not found in dealer products, try allProducts
+      if (!foundProduct) {
+        foundProduct = state.allProducts.find((p) => p.id === action.payload);
+      }
+
+      state.product = foundProduct || null;
+      console.log(
+        "setProduct result:",
+        foundProduct ? "Found" : "Not found",
+        foundProduct?.title
+      );
     },
   },
   extraReducers: (builder) => {

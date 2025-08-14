@@ -9,6 +9,7 @@ import Loader from "../../../../ui/Loader";
 import Snackbars from "../../../../ui/Snackbars";
 import OTPInput from "../../../../ui/OTPInput";
 import NameLocationInput from "./NameLocationInput";
+import { Link, useNavigate } from "react-router-dom";
 
 function CustomerLoginForm({ closeDialog, setIsLogin }) {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -20,6 +21,7 @@ function CustomerLoginForm({ closeDialog, setIsLogin }) {
   const [showLoginSuccess, setShowLoginSuccess] = useState(false);
   const [isAgree, setIsAgree] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     status: customerStatus,
     error,
@@ -209,6 +211,16 @@ function CustomerLoginForm({ closeDialog, setIsLogin }) {
                 disabled={customerStatus === "loading"}
               >
                 {customerStatus === "loading" ? <Loader /> : "Send OTP"}
+              </button>
+              <button
+                onClick={() => {
+                  navigate("/login");
+                  closeDialog();
+                }}
+                className="bg-transparent text-gray-500 mt-4 w-full py-3 font-semibold rounded-md flex justify-center items-center border border-gray-300"
+                disabled={customerStatus === "loading"}
+              >
+                Login as Dealer
               </button>
             </div>
           </>

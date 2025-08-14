@@ -13,6 +13,7 @@ import ChipsInput from "../../../../Components/Forms/Blogs/ChipsInput";
 import { useDispatch, useSelector } from "react-redux";
 import {
   editProductAsync,
+  fetchAllProductsAsync,
   fetchProductsAsync,
   setProduct,
 } from "../../../../Redux/Features/productSlice";
@@ -43,7 +44,14 @@ function EditProductLisiting() {
 
   const id = useParams().id;
   const dispatch = useDispatch();
-  const { product, status, error } = useSelector((state) => state.products);
+  const {
+    product,
+    products,
+    allProducts,
+    status,
+    allProductStatus,
+    userLocation,
+  } = useSelector((state) => state.products);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [description, setDescription] = useState("");
   const [imageContainers, setImageContainers] = useState([
@@ -78,16 +86,41 @@ function EditProductLisiting() {
   }, [dispatch, categoryStatus, categories]);
 
   useEffect(() => {
+    // Load dealer's products first
     if (status === "idle") {
       dispatch(fetchProductsAsync());
     }
-  }, [dispatch, status]);
+
+    // Load all products if needed (for the setProduct functionality)
+    if (allProductStatus === "idle") {
+      dispatch(fetchAllProductsAsync(userLocation));
+    }
+  }, [dispatch, status, allProductStatus, userLocation]);
 
   useEffect(() => {
-    dispatch(setProduct(id));
-  }, [status, dispatch, id]);
+    if (id) {
+      // Try to find product in dealer's products first
+      const productInDealerProducts = products.find((p) => p.id === id);
+      if (productInDealerProducts) {
+        console.log(
+          "Found product in dealer products:",
+          productInDealerProducts
+        );
+        dispatch(setProduct(id));
+      }
+      // If not found in dealer products, try allProducts
+      else if (allProducts && allProducts.length > 0) {
+        console.log("Searching in allProducts for id:", id);
+        console.log(
+          "Available products:",
+          allProducts.map((p) => ({ id: p.id, title: p.title }))
+        );
+        dispatch(setProduct(id));
+      }
+    }
+  }, [products, allProducts, id, dispatch]);
 
-  console.log("product", product)
+  console.log("product  ====>", product);
 
   useEffect(() => {
     if (product) {
@@ -315,7 +348,6 @@ function EditProductLisiting() {
               <MultiSelect
                 options={categoriesOptions}
                 value={selectedCategories}
-
                 onChange={setSelectedCategories}
                 labelledBy="Categories"
                 className="w-full h-15"
