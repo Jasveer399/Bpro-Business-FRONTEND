@@ -21,21 +21,26 @@ function CategoriesProduct() {
     (state) => state.categories
   );
 
+  console.log("specificCategory ==>", specificCategory);
+
   const [updatedProducts, setUpdatedProducts] = useState([]);
+  const [currentCategoryId, setCurrentCategoryId] = useState(null);
 
   const { items: bookmarkedItems, bookmarkStatus } = useSelector(
     (state) => state.bookmarks
   );
 
   useEffect(() => {
-    if (specificCategoryStatus === "idle") {
+    // Always fetch when the category ID changes
+    if (id && id !== currentCategoryId) {
+      setCurrentCategoryId(id);
       dispatch(fetchSpecificCategoryAsync(id));
     }
 
     if (bookmarkStatus === "idle") {
       dispatch(fetchUserBookmarksAsync());
     }
-  }, [dispatch, bookmarkStatus, specificCategoryStatus]);
+  }, [dispatch, id, currentCategoryId, bookmarkStatus]);
 
   useEffect(() => {
     const updatedData = specificCategory?.products?.map((product) => ({
