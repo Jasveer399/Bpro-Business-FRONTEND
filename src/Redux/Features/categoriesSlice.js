@@ -85,7 +85,7 @@ export const updateCategoryAsync = createAsyncThunk(
   }
 );
 
-//  thunk for deleting a category
+// New thunk for deleting a category
 export const deleteCategoryAsync = createAsyncThunk(
   "categories/deleteCategory",
   async (id, { rejectWithValue }) => {
@@ -107,12 +107,20 @@ const categoriesSlice = createSlice({
     categories: [],
     specificCategory: null,
     specificCategoryStatus: "idle",
+    currentCategoryId: null, // Track the current category ID
     status: "idle",
     updateStatus: "idle",
     deleteStatus: "idle",
     error: null,
   },
-  reducers: {},
+  reducers: {
+    // Add a reducer to reset specific category state
+    resetSpecificCategory: (state) => {
+      state.specificCategory = null;
+      state.specificCategoryStatus = "idle";
+      state.currentCategoryId = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Add Category cases
@@ -171,8 +179,13 @@ const categoriesSlice = createSlice({
         state.error = action.payload;
       })
       // Fetch Specific Category cases
-      .addCase(fetchSpecificCategoryAsync.pending, (state) => {
+      .addCase(fetchSpecificCategoryAsync.pending, (state, action) => {
         state.specificCategoryStatus = "loading";
+        // Clear previous category data if fetching a different category
+        if (state.currentCategoryId !== action.meta.arg) {
+          state.specificCategory = null;
+        }
+        state.currentCategoryId = action.meta.arg;
       })
       .addCase(fetchSpecificCategoryAsync.fulfilled, (state, action) => {
         state.specificCategoryStatus = "succeeded";
@@ -185,4 +198,5 @@ const categoriesSlice = createSlice({
   },
 });
 
+export const { resetSpecificCategory } = categoriesSlice.actions;
 export default categoriesSlice.reducer;

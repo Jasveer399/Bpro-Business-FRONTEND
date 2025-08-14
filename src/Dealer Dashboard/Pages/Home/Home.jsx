@@ -23,6 +23,7 @@ import Loader from "../../../ui/Loader";
 import { fetchFourLatestBlogsAsync } from "../../../Redux/Features/blogsSlice";
 import { Link } from "react-router-dom";
 import { stateOptions } from "../../../Utils/options";
+import ProductSkeleton from "../../../ui/SkeletonLoading/ProductSkeleton";
 
 function Home() {
   const dispatch = useDispatch();
@@ -320,9 +321,9 @@ function Home() {
           </h1>
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 m-2 md:m-4 gap-3 md:gap-5">
             {allProductStatus === "loading" || !locationDetected ? (
-              <div className="flex items-center justify-center my-4">
-                <Loader />
-              </div>
+              Array.from({ length: 4 }).map((_, index) => (
+                <ProductSkeleton key={index} />
+              ))
             ) : updatedProducts && updatedProducts.length > 0 ? (
               updatedProducts
                 .slice(0, 8)

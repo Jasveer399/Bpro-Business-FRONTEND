@@ -3,7 +3,10 @@ import Navbar from "../../Components/Home/Navbar";
 import Header from "../../Components/Home/Header";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchSpecificCategoryAsync } from "../../../Redux/Features/categoriesSlice";
+import {
+  fetchSpecificCategoryAsync,
+  resetSpecificCategory,
+} from "../../../Redux/Features/categoriesSlice";
 import PopularSearches from "../../Components/Home/PopularSearches";
 import LocationCarousel from "../../Components/Home/LocationCard";
 import Loader from "../../../ui/Loader";
@@ -12,28 +15,29 @@ import {
   deleteBookmarkAsync,
   fetchUserBookmarksAsync,
 } from "../../../Redux/Features/bookmarkSlice";
+import ProductSkeleton from "../../../ui/SkeletonLoading/ProductSkeleton";
 
 function CategoriesProduct() {
   const { id, title } = useParams();
   const dispatch = useDispatch();
 
-  const { specificCategory, specificCategoryStatus } = useSelector(
-    (state) => state.categories
-  );
+  const { specificCategory, specificCategoryStatus, currentCategoryId } =
+    useSelector((state) => state.categories);
 
   console.log("specificCategory ==>", specificCategory);
 
   const [updatedProducts, setUpdatedProducts] = useState([]);
-  const [currentCategoryId, setCurrentCategoryId] = useState(null);
 
   const { items: bookmarkedItems, bookmarkStatus } = useSelector(
     (state) => state.bookmarks
   );
 
+  // Product skeleton component using Tailwind
+
   useEffect(() => {
-    // Always fetch when the category ID changes
+    // Reset and fetch new category data when category ID changes
     if (id && id !== currentCategoryId) {
-      setCurrentCategoryId(id);
+      dispatch(resetSpecificCategory());
       dispatch(fetchSpecificCategoryAsync(id));
     }
 
@@ -96,9 +100,10 @@ function CategoriesProduct() {
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 m-2 md:m-4 gap-3 md:gap-5 px-6">
         {specificCategoryStatus === "loading" ? (
-          <div className="flex items-center justify-center">
-            <Loader />
-          </div>
+          // Show skeleton loading for products
+          Array.from({ length: 4 }).map((_, index) => (
+            <ProductSkeleton key={index} />
+          ))
         ) : updatedProducts && updatedProducts.length > 0 ? (
           updatedProducts?.map((product) => (
             <PopularSearches
@@ -108,7 +113,7 @@ function CategoriesProduct() {
             />
           ))
         ) : (
-          <div className="flex items-center justify-center text-lg font-[600]">
+          <div className="flex items-center justify-center text-lg font-[600] col-span-full">
             No Products Found
           </div>
         )}
