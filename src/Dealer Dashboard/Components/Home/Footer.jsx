@@ -1,6 +1,7 @@
 import React from "react";
 import FooterInput from "../../../ui/FooterInput";
 import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 function Footer() {
   const footerBoxes = [
@@ -60,7 +61,9 @@ function Footer() {
           {/* Right Column */}
           <div className="flex flex-col space-y-6 md:w-[65%]">
             <div className="w-full">
-              <h3 className="text-2xl md:text-4xl my-2">Tell Us What You Need</h3>
+              <h3 className="text-2xl md:text-4xl my-2">
+                Tell Us What You Need
+              </h3>
               <p className="text-[#6A6A6A] text-xs leading-relaxed">
                 Lorem ipsum dolor sit amet consectetur, adipisicing elit. At
                 sint tenetur voluptas quasi voluptatum aspernatur eum magni
@@ -105,9 +108,17 @@ function Footer() {
 
         {/* Bottom Section */}
         <div className="border-t border-gray-400 flex flex-col md:flex md:flex-row lg:flex justify-between items-center pt-5 mt-10">
-          <div className="text-sm text-gray-400">
-            <p>© Copyright 2023. All rights reserved.</p>
+          <div className="text-sm flex items-center gap-5">
+            <Link to="/terms-and-conditions" className="hover:underline">
+              Terms & Conditions
+            </Link>
+            <Link to="/privacy-policy" className="hover:underline">
+              Privacy Policy
+            </Link>
           </div>
+          <p className="text-sm text-gray-400">
+            © Copyright 2023. All rights reserved.
+          </p>
           <div className="flex gap-5 mt-3 md:m-0">
             <a
               href="https://www.facebook.com/bproindia"

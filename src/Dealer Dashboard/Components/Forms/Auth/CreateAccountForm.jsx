@@ -23,6 +23,7 @@ function CreateAccountForm() {
   const { status, workers } = useSelector((state) => state.workers);
   const { status: dealerStatus } = useSelector((state) => state.dealers);
   const [snackbar, setSnackbar] = useState({ open: false, type: "", text: "" });
+  const [isAgree, setIsAgree] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [cashfree, setCashfree] = useState(null);
@@ -53,6 +54,14 @@ function CreateAccountForm() {
         open: true,
         type: "error",
         text: "Please select a plan",
+      });
+      return;
+    }
+    if (!isAgree) {
+      setSnackbar({
+        open: true,
+        type: "error",
+        text: "Please agree to terms and conditions",
       });
       return;
     }
@@ -267,6 +276,23 @@ function CreateAccountForm() {
               </div>
             </div>
           )}
+          <div className="mt-3 flex justify-between items-center">
+            <div className="flex items-center text-black gap-1">
+              <input
+                onChange={() => setIsAgree(!isAgree)}
+                type="checkbox"
+                id="terms"
+                className="cursor-pointer"
+              />
+              <small className="text-xs">I Agree to Terms and Conditions</small>
+            </div>
+            <Link
+              to="/terms-and-conditions"
+              className="text-secondary font-semibold text-xs hover:underline"
+            >
+              T&C's Privacy Policy
+            </Link>
+          </div>
           <div className="flex justify-center w-full">
             <button
               type="submit"

@@ -29,7 +29,6 @@ function CustomerLoginForm({ closeDialog, setIsLogin }) {
     customerData,
   } = useSelector((state) => state.customer);
 
-  // Effect to handle OTP verification status change
   useEffect(() => {
     if (isOTPVerified) {
       // Check if user already has completed profile

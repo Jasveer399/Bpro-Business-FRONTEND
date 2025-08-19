@@ -57,6 +57,8 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import AllVIsitingCards from "./Pages/Visiting-Card/AllVIsitingCards";
 import SelectVIsitingCard from "./Dealer Dashboard/Pages/Visiting Card/SelectVIsitingCard";
+import TermsCondition from "./Dealer Dashboard/Pages/Terms & Condition/Terms&Condition";
+import PrivacyPolicy from "./Dealer Dashboard/Pages/Privacy Policy/PrivacyPolicy";
 
 function App() {
   const dealerAccessToken = getDealerAccessToken();
@@ -129,6 +131,8 @@ function App() {
         <Route path="/edtior" element={<Edtior />} />
         <Route path="/payment" element={<Cashfree />} />
         <Route path="/payment-status" element={<PaymentStatus />} />
+        <Route path="/terms-and-conditions" element={<TermsCondition />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
         {/* This Route Goes to Dealer Protected Routes */}
 
