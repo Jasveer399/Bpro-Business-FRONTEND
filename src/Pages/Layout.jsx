@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { LogOut, Menu, UserCircle, X } from "lucide-react";
+import { LogOut, Menu, User, UserCircle, X } from "lucide-react";
 import { PiImagesFill, PiMoonDuotone, PiSunDimDuotone } from "react-icons/pi";
 import { TfiDashboard } from "react-icons/tfi";
 import Header from "../ui/Header";
@@ -27,6 +27,7 @@ function Layout() {
     { name: "Dashboard", icon: TfiDashboard, link: "/dashboard" },
     { name: "Dealers", icon: FaUserTie, link: "/dealers" },
     { name: "Workers", icon: GrUserWorker, link: "/workers" },
+    { name: "Users", icon: User, link: "/users" },
     { name: "Blogs", icon: ImBlogger, link: "/blogs" },
     { name: "Banner", icon: PiImagesFill, link: "/banners" },
     { name: "Category", icon: BiCategoryAlt, link: "/categories" },

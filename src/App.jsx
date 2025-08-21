@@ -59,6 +59,7 @@ import AllVIsitingCards from "./Pages/Visiting-Card/AllVIsitingCards";
 import SelectVIsitingCard from "./Dealer Dashboard/Pages/Visiting Card/SelectVIsitingCard";
 import TermsCondition from "./Dealer Dashboard/Pages/Terms & Condition/Terms&Condition";
 import PrivacyPolicy from "./Dealer Dashboard/Pages/Privacy Policy/PrivacyPolicy";
+import Users from "./Pages/Users/Users";
 
 function App() {
   const dealerAccessToken = getDealerAccessToken();
@@ -151,6 +152,7 @@ function App() {
               element={<DealerProfile />}
             />
             <Route path="/workers" element={<Workers />} />
+            <Route path="/users" element={<Users />} />
             <Route
               path="/workers/dealers-details/:id"
               element={<DealersDetails />}
