@@ -36,7 +36,7 @@ const Navbar = () => {
           <FaLinkedinIn size={20} className="cursor-pointer hover:opacity-80" />
         </div>
         <div className="flex items-center gap-4 lg:gap-8">
-          <Link to="/home" className="hover:opacity-80">
+          <Link to="/" className="hover:opacity-80">
             Home
           </Link>
           <Link to="/about-us" className="hover:opacity-80">

@@ -13,7 +13,7 @@ function ProtectedDealerRoutes() {
 
   // Check if the user is authenticated
   if (!dealerAccessToken) {
-    return <Navigate to="/home" replace />;
+    return <Navigate to="/" replace />;
   }
 
   // Check if the plan has expired (planDaysLeft === 0)

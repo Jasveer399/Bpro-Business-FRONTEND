@@ -8,10 +8,12 @@ import Category from "./Pages/Category/Category";
 import BlogView from "./Components/Forms/Blogs/BlogView";
 import AdminLogin from "./Pages/Login/AdminLogin";
 import Home from "./Dealer Dashboard/Pages/Home/Home";
+
 import {
   ProtectedAdminRoutes,
   RedirectIfAuthenticated,
 } from "./Utils/ProtectedAmdinRoutes";
+
 import Workers from "./Pages/Workers/Workers";
 import SellProduct from "./Pages/Sell Product/SellProduct";
 import Allblogs from "./Dealer Dashboard/Pages/Blogs/Blogs";
@@ -58,7 +60,7 @@ import { useDispatch, useSelector } from "react-redux";
 import AllVIsitingCards from "./Pages/Visiting-Card/AllVIsitingCards";
 import SelectVIsitingCard from "./Dealer Dashboard/Pages/Visiting Card/SelectVIsitingCard";
 import TermsCondition from "./Dealer Dashboard/Pages/Terms & Condition/Terms&Condition";
-import PrivacyPolicy from "./Dealer Dashboard/Pages/Privacy Policy/PrivacyPolicy";
+import AppPrivacyPolicy from "./Dealer Dashboard/Pages/AppPrivacyPolicy/AppPrivacyPolicy";
 import Users from "./Pages/Users/Users";
 
 function App() {
@@ -70,6 +72,7 @@ function App() {
 
   console.log("currentDealer", currentDealer);
 
+  // Fetch dealer data if logged in
   useEffect(() => {
     if (dealerAccessToken) {
       if (!currentDealer) {
@@ -80,44 +83,13 @@ function App() {
       }
     }
   }, [dispatch, currentDealer, dealerAccessToken, planDaysLeftStatus]);
+
   return (
     <>
       <Routes>
-        <Route element={<ProtectedDealerRoutes />}>
-          <Route element={<DealerLayout />}>
-            <Route
-              index
-              element={<Navigate to="/my-dashboard/listing" replace />}
-            />
-            <Route path="/my-dashboard/listing" element={<Listing />} />
-            <Route
-              path="/my-dashboard/accounts"
-              element={<EditDealerProfile />}
-            />
-            <Route path="/my-dashboard/bookmarks" element={<Bookmark />} />
-            <Route path="/my-dashboard/messages" element={<Messages />} />
-            <Route
-              path="/my-dashboard/select-visiting-card"
-              element={<SelectVIsitingCard />}
-            />
-          </Route>
-          <Route path="/create-visiting-card" element={<Visiting_Card />} />
-          <Route
-            path="/my-dashboard/product-detail/:id"
-            element={<ProductDetail />}
-          />
-          <Route
-            path="/my-dashboard/edit-product-detail/:id"
-            element={<EditProductLisiting />}
-          />
-          <Route path="/product-listing" element={<ProductLisiting />} />
-        </Route>
-        <Route element={<RedirectIfDealerAuthenticated />}>
-          <Route path="/register" element={<DealerRegister />} />
-          <Route path="/login" element={<DealerLogin />} />
-        </Route>
-        <Route path="/product-detail/:id" element={<ProductDetail />} />
-        <Route path="/home" element={<Home />} />
+        {/* ================= PUBLIC ROUTES ================= */}
+        <Route index path="/" element={<Home />} /> {/* Loads Home at root / */}
+        <Route path="/home" element={<Navigate to="/" replace />} />
         <Route path="/pricing-plan" element={<PricingPlan />} />
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/sellProduct" element={<SellProduct />} />
@@ -133,18 +105,53 @@ function App() {
         <Route path="/payment" element={<Cashfree />} />
         <Route path="/payment-status" element={<PaymentStatus />} />
         <Route path="/terms-and-conditions" element={<TermsCondition />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-
-        {/* This Route Goes to Dealer Protected Routes */}
-
+        <Route path="/privacy-policy" element={<AppPrivacyPolicy />} />
+        <Route path="/product-detail/:id" element={<ProductDetail />} />
         <Route path="/visiting-card/:id" element={<VisitingCard />} />
+        {/* ================= DEALER AUTH ROUTES ================= */}
+        <Route element={<RedirectIfDealerAuthenticated />}>
+          <Route path="/register" element={<DealerRegister />} />
+          <Route path="/login" element={<DealerLogin />} />
+        </Route>
+        {/* ================= DEALER PROTECTED ROUTES ================= */}
+        <Route element={<ProtectedDealerRoutes />}>
+          <Route element={<DealerLayout />}>
+            {/* Default dealer dashboard redirect */}
+            {/* <Route element={<Navigate to="/my-dashboard/listing" replace />} /> */}
+            <Route path="/my-dashboard/listing" element={<Listing />} />
+            <Route
+              path="/my-dashboard/accounts"
+              element={<EditDealerProfile />}
+            />
+            <Route path="/my-dashboard/bookmarks" element={<Bookmark />} />
+            <Route path="/my-dashboard/messages" element={<Messages />} />
+            <Route
+              path="/my-dashboard/select-visiting-card"
+              element={<SelectVIsitingCard />}
+            />
+          </Route>
 
+          {/* Dealer-specific actions outside main dashboard layout */}
+          <Route path="/create-visiting-card" element={<Visiting_Card />} />
+          <Route
+            path="/my-dashboard/product-detail/:id"
+            element={<ProductDetail />}
+          />
+          <Route
+            path="/my-dashboard/edit-product-detail/:id"
+            element={<EditProductLisiting />}
+          />
+          <Route path="/product-listing" element={<ProductLisiting />} />
+        </Route>
+        {/* ================= ADMIN AUTH ROUTES ================= */}
         <Route element={<RedirectIfAuthenticated />}>
           <Route path="/admin-login" element={<AdminLogin />} />
         </Route>
+        {/* ================= ADMIN PROTECTED ROUTES ================= */}
         <Route element={<ProtectedAdminRoutes />}>
           <Route element={<Layout />}>
-            <Route index element={<Navigate to="/dashboard" replace />} />
+            {/* Default admin redirect */}
+            <Route element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/dealers" element={<Dealers />} />
             <Route

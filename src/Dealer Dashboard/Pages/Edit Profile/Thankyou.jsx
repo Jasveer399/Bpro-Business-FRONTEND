@@ -7,7 +7,7 @@ function Thankyou() {
   const navigate = useNavigate();
 
   setTimeout(() => {
-    navigate("/home");
+    navigate("/");
   }, 15000);
 
   return (

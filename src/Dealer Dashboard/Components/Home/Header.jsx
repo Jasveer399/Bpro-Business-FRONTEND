@@ -6,13 +6,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { getDealerAccessToken } from "../../../Utils/Helper";
 
 function Header() {
-  const token = getDealerAccessToken()
-  const navigate = useNavigate()
+  const token = getDealerAccessToken();
+  const navigate = useNavigate();
   return (
     <>
       <div className="flex flex-col md:flex-row items-center justify-between px-4 py-3 font-montserrat space-y-4 md:space-y-0">
         <div className="flex flex-col w-full md:flex-row md:w-auto items-center gap-4 md:gap-2">
-          <div className="w-full md:w-auto flex justify-center cursor-pointer" onClick={() => navigate("/home")}>
+          <div
+            className="w-full md:w-auto flex justify-center cursor-pointer"
+            onClick={() => navigate("/")}
+          >
             <img
               src="/BproBusiness.png"
               className="w-48 md:w-64"
@@ -33,7 +36,10 @@ function Header() {
             <MdOutlineHelpOutline size={20} className="text-primary" />
             <h1 className="font-semibold text-primary">Help?</h1>
           </div>
-          <Link to={`${token ? "/product-listing" : "/pricing-plan" }`} className="bg-secondary py-2 px-4 rounded-lg font-semibold">
+          <Link
+            to={`${token ? "/product-listing" : "/pricing-plan"}`}
+            className="bg-secondary py-2 px-4 rounded-lg font-semibold"
+          >
             Sell Product?
           </Link>
         </div>
@@ -44,7 +50,10 @@ function Header() {
             <MdOutlineHelpOutline size={20} className="text-primary" />
             <h1 className="font-semibold text-primary">Help?</h1>
           </div>
-          <Link to={`${token ? "/product-listing" : "/pricing-plan" }`} className="bg-secondary py-2 px-4 rounded-lg font-semibold text-sm">
+          <Link
+            to={`${token ? "/product-listing" : "/pricing-plan"}`}
+            className="bg-secondary py-2 px-4 rounded-lg font-semibold text-sm"
+          >
             Sell Product?
           </Link>
         </div>

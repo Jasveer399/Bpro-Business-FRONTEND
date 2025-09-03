@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from "../../Components/Home/Navbar";
 import Header from "../../Components/Home/Header";
 
-const PrivacyPolicy = () => {
+const AppPrivacyPolicy = () => {
   return (
     <div>
       <Navbar />
@@ -24,4 +24,4 @@ const PrivacyPolicy = () => {
   );
 };
 
-export default PrivacyPolicy;
+export default AppPrivacyPolicy;
