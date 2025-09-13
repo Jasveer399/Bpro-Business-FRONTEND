@@ -28,7 +28,7 @@ function Layout() {
     { name: "Dealers", icon: FaUserTie, link: "/dealers" },
     { name: "Workers", icon: GrUserWorker, link: "/workers" },
     { name: "Users", icon: User, link: "/users" },
-    { name: "Blogs", icon: ImBlogger, link: "/blogs" },
+    { name: "Blogs", icon: ImBlogger, link: "/add-blogs" },
     { name: "Banner", icon: PiImagesFill, link: "/banners" },
     { name: "Category", icon: BiCategoryAlt, link: "/categories" },
     { name: "Pricing", icon: IoPricetagsOutline, link: "/pricing" },

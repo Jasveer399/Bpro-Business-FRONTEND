@@ -167,7 +167,7 @@ function App() {
             <Route path="/banners" element={<BannersCategory />} />
             <Route path="/banners/:id" element={<Banner />} />
             <Route path="/categories" element={<Category />} />
-            <Route path="/blogs" element={<Blogs />} />
+            <Route path="/add-blogs" element={<Blogs />} />
             <Route path="/blogview/:id" element={<BlogView />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/all-visiting-card" element={<AllVIsitingCards />} />
