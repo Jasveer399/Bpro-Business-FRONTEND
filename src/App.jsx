@@ -93,7 +93,7 @@ function App() {
         <Route path="/pricing-plan" element={<PricingPlan />} />
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/sellProduct" element={<SellProduct />} />
-        <Route path="/Allblogs" element={<Allblogs />} />
+        <Route path="/blogs" element={<Allblogs />} />
         <Route path="/BlogDetails/:id" element={<BlogDetails />} />
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/dealerProfile/:id" element={<DealerProfilePage />} />

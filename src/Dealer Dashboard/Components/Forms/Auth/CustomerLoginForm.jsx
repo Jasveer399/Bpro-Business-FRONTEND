@@ -166,123 +166,168 @@ function CustomerLoginForm({ closeDialog, setIsLogin }) {
 
   return (
     <>
-      <div className="p-3">
-        <div className="w-full md:w-auto flex justify-center">
-          <img
-            src="/BproBusiness.png"
-            className="w-48 md:w-64"
-            alt="BproBusiness Logo"
-          />
-        </div>
-        <h1 className="text-center font-bold text-black text-2xl mt-2">
-          Welcome!
-        </h1>
-        <h4 className="text-center text-black mt-1">
-          Login and connect with our Dealers
-        </h4>
-
-        {!showOtpInput ? (
-          // STEP 1: Phone number input view
-          <>
-            <MobileNoInput
-              setPhoneNumber={setPhoneNumber}
-              phoneNumber={phoneNumber}
+      <div className="w-full h-full flex flex-col">
+        {/* Main Container */}
+        <div className="flex-1 flex flex-col p-4 sm:p-6 md:p-8">
+          {/* Logo Section */}
+          <div className="w-full flex justify-center mb-4 sm:mb-6">
+            <img
+              src="/BproBusiness.png"
+              className="w-32 sm:w-40 md:w-48 h-auto max-w-full"
+              alt="BproBusiness Logo"
             />
-            <div className="w-[80%] mx-auto mt-3 flex justify-between items-center">
-              <div className="flex items-center text-black gap-1">
-                <input
-                  onChange={() => setIsAgree(!isAgree)}
-                  type="checkbox"
-                  id="terms"
-                />
-                <small className="text-xs">
-                  I Agree to Terms and Conditions
-                </small>
-              </div>
-              <p className="text-secondary font-semibold text-xs">
-                T&C's Privacy Policy
-              </p>
-            </div>
-            <div className="w-[80%] mx-auto mt-8">
-              <button
-                onClick={handleRequestOTP}
-                className="bg-secondary w-full py-3 font-semibold rounded-md shadow-lg flex justify-center items-center"
-                disabled={customerStatus === "loading"}
-              >
-                {customerStatus === "loading" ? <Loader /> : "Send OTP"}
-              </button>
-              <button
-                onClick={() => {
-                  navigate("/login");
-                  closeDialog();
-                }}
-                className="bg-transparent text-gray-500 mt-4 w-full py-3 font-semibold rounded-md flex justify-center items-center border border-gray-300"
-                disabled={customerStatus === "loading"}
-              >
-                Login as Dealer
-              </button>
-            </div>
-          </>
-        ) : showLoginSuccess ? (
-          // Login success view (shown after OTP verification if isUserFillAllDetails=true
-          // or after profile completion)
-          <div className="w-[80%] mx-auto mt-4 text-center">
-            <div className="bg-green-100 text-green-800 p-4 rounded-lg mb-4">
-              <h2 className="text-xl font-bold mb-2">Login Successful!</h2>
-              <p>You are now connected with our dealers.</p>
-            </div>
-            <button
-              onClick={() => {
-                setIsLogin(true);
-                closeDialog();
-              }}
-              className="bg-secondary w-full py-3 font-semibold rounded-md shadow-lg"
-            >
-              Explore Now
-            </button>
           </div>
-        ) : showProfileForm ? (
-          // STEP 3: Name and Location form (shown if OTP verified and isUserFillAllDetails=false)
-          <NameLocationInput
-            onSubmit={handleProfileSubmit}
-            mobileNo={phoneNumber}
-            customerStatus={customerStatus}
-            closeDialog={closeDialog}
-          />
-        ) : (
-          // STEP 2: OTP input view (shown after phone number input regardless of isUserFillAllDetails)
-          <>
-            <div className="w-[80%] mx-auto mt-4">
-              <p className="text-center mb-2">
-                Enter the OTP sent to {phoneNumber}
-              </p>
-              <OTPInput length={4} onComplete={handleOtpComplete} />
-              {otp && (
-                <p className="text-center mt-2 text-gray-500 text-sm">
-                  Development mode - OTP: {otp}
-                </p>
-              )}
-              <div className="flex justify-center mt-3">
+
+          {/* Header Section */}
+          <div className="text-center mb-6">
+            <h1 className="font-bold text-black text-xl sm:text-2xl mb-2">
+              Welcome!
+            </h1>
+            <h4 className="text-black text-sm sm:text-base">
+              Login and connect with our Dealers
+            </h4>
+          </div>
+
+          {!showOtpInput ? (
+            // STEP 1: Phone number input view
+            <div className="flex-1 flex flex-col">
+              <div className="mb-6 flex-1">
+                <MobileNoInput
+                  setPhoneNumber={setPhoneNumber}
+                  phoneNumber={phoneNumber}
+                />
+              </div>
+
+              {/* Terms and Conditions Section */}
+              <div className="mb-6">
+                <div className="flex items-start text-black gap-3">
+                  <input
+                    onChange={() => setIsAgree(!isAgree)}
+                    type="checkbox"
+                    id="terms"
+                    className="mt-1 w-4 h-4 flex-shrink-0"
+                  />
+                  <div className="flex-1">
+                    <label
+                      htmlFor="terms"
+                      className="text-sm leading-relaxed block"
+                    >
+                      I Agree to{" "}
+                      <span className="text-secondary font-semibold">
+                        T&C's
+                      </span>{" "}
+                      Terms and{" "}
+                      <span className="text-secondary font-semibold">
+                        Privacy Policy
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Buttons Section */}
+              <div className="space-y-3 mt-auto">
                 <button
-                  onClick={handleChangeNumber}
-                  className="text-secondary text-sm underline"
+                  onClick={handleRequestOTP}
+                  className="bg-secondary w-full py-4 font-semibold rounded-lg shadow-lg flex justify-center items-center text-base disabled:opacity-70"
+                  disabled={customerStatus === "loading"}
                 >
-                  Change Number
+                  {customerStatus === "loading" ? <Loader /> : "Send OTP"}
+                </button>
+                <button
+                  onClick={() => {
+                    navigate("/login");
+                    closeDialog();
+                  }}
+                  className="bg-transparent text-gray-600 w-full py-4 font-semibold rounded-lg flex justify-center items-center border-2 border-gray-300 text-base hover:bg-gray-50 disabled:opacity-70"
+                  disabled={customerStatus === "loading"}
+                >
+                  Login as Dealer
                 </button>
               </div>
             </div>
-            <div className="w-[80%] mx-auto mt-8">
+          ) : showLoginSuccess ? (
+            // Login success view
+            <div className="flex-1 flex flex-col text-center">
+              <div className="flex-1 flex flex-col justify-center">
+                <div className="bg-green-100 text-green-800 p-6 rounded-lg mb-6">
+                  <h2 className="text-xl font-bold mb-2">Login Successful!</h2>
+                  <p className="text-base">
+                    You are now connected with our dealers.
+                  </p>
+                </div>
+              </div>
               <button
-                onClick={handleVerifyOTP}
-                className="bg-secondary w-full py-3 font-semibold rounded-md shadow-lg flex justify-center items-center"
-                disabled={customerStatus === "loading" || !otpInputValue}
+                onClick={() => {
+                  setIsLogin(true);
+                  closeDialog();
+                }}
+                className="bg-secondary w-full py-4 font-semibold rounded-lg shadow-lg text-base"
               >
-                {customerStatus === "loading" ? <Loader /> : "Verify OTP"}
+                Explore Now
               </button>
             </div>
-          </>
-        )}
+          ) : showProfileForm ? (
+            // STEP 3: Name and Location form
+            <div className="flex-1">
+              <NameLocationInput
+                onSubmit={handleProfileSubmit}
+                mobileNo={phoneNumber}
+                customerStatus={customerStatus}
+                closeDialog={closeDialog}
+              />
+            </div>
+          ) : (
+            // STEP 2: OTP input view
+            <div className="flex-1 flex flex-col">
+              <div className="flex-1">
+                <p className="text-center mb-6 text-base text-gray-700">
+                  Enter the OTP sent to{" "}
+                  <span className="font-semibold text-black block mt-1">
+                    {phoneNumber}
+                  </span>
+                </p>
+
+                {/* OTP Input Container */}
+                <div className="flex justify-center mb-6">
+                  <OTPInput length={4} onComplete={handleOtpComplete} />
+                </div>
+
+                {/* Development OTP Display */}
+                {otp && (
+                  <p className="text-center mb-6 text-gray-600 text-sm bg-yellow-50 py-3 px-4 rounded-lg border">
+                    Development mode - OTP:{" "}
+                    <span className="font-mono font-bold text-lg">{otp}</span>
+                  </p>
+                )}
+
+                {/* Change Number Link */}
+                <div className="flex justify-center">
+                  <button
+                    onClick={handleChangeNumber}
+                    className="text-secondary text-base underline hover:no-underline py-2"
+                  >
+                    Change Number
+                  </button>
+                </div>
+              </div>
+
+              {/* Verify Button */}
+              <div className="mt-auto">
+                <button
+                  onClick={handleVerifyOTP}
+                  className="bg-secondary w-full py-4 font-semibold rounded-lg shadow-lg flex justify-center items-center text-base disabled:opacity-70"
+                  disabled={customerStatus === "loading" || !otpInputValue}
+                >
+                  {customerStatus === "loading" ? <Loader /> : "Verify OTP"}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Snackbar */}
       <Snackbars
         open={snackbar.open}
         type={snackbar.type}

@@ -9,7 +9,6 @@ import {
   removeCustomerAccessToken,
 } from "../../../Utils/Helper";
 import Dialog from "../../../ui/Dialog";
-import MobileNoForm from "../Forms/Auth/MobileNoInput";
 import CustomerLoginForm from "../Forms/Auth/CustomerLoginForm";
 import { useEffect } from "react";
 
@@ -42,7 +41,7 @@ const Navbar = () => {
           <Link to="/about-us" className="hover:opacity-80">
             About Us
           </Link>
-          <Link to="/Allblogs" className="hover:opacity-80">
+          <Link to="/blogs" className="hover:opacity-80">
             Blogs
           </Link>
           <Link to="/contact-us" className="hover:opacity-80">
@@ -67,8 +66,8 @@ const Navbar = () => {
               trigger={
                 <button className="hover:opacity-80">Register/Login</button>
               }
-              width="w-[35%]"
-              height="h-[55%]"
+              width="w-[95%] sm:w-[85%] md:w-[70%] lg:w-[50%] xl:w-[35%] max-w-md"
+              height="h-[95%] sm:h-[90%] md:h-[80%] lg:h-[70%] xl:h-[60%] max-h-[455px] sm:max-h-[500px] md:max-h-[650px]"
             >
               {({ closeDialog }) => (
                 <CustomerLoginForm
@@ -104,13 +103,13 @@ const Navbar = () => {
         {/* Mobile Menu */}
         <div className={`${isOpen ? "block" : "hidden"} px-4 pb-4`}>
           <div className="flex flex-col space-y-4">
-            <Link href="/about" className="hover:opacity-80">
+            <Link to="/about-us" className="hover:opacity-80">
               About Us
             </Link>
-            <Link to="/Allblogs" className="hover:opacity-80">
+            <Link to="/blogs" className="hover:opacity-80">
               Blogs
             </Link>
-            <Link href="/contact" className="hover:opacity-80">
+            <Link to="/contact-us" className="hover:opacity-80">
               Contact Us
             </Link>
             {dealerToken ? (
@@ -118,16 +117,31 @@ const Navbar = () => {
                 Dashboard
               </Link>
             ) : customerToken ? (
-              <button className="hover:opacity-80">Logout</button>
+              <button
+                onClick={() => {
+                  removeCustomerAccessToken();
+                  setIsLogin(false);
+                }}
+                className="hover:opacity-80 text-left"
+              >
+                Logout
+              </button>
             ) : (
               <Dialog
                 trigger={
-                  <button className="hover:opacity-80">Register/Login</button>
+                  <button className="hover:opacity-80 text-left">
+                    Register/Login
+                  </button>
                 }
-                width="w-[35%]"
-                height="h-[55%]"
+                width="w-[95%] sm:w-[85%] md:w-[70%] lg:w-[50%] xl:w-[35%] max-w-md"
+                height="h-[95%] sm:h-[90%] md:h-[80%] lg:h-[70%] xl:h-[60%] max-h-[455px] sm:max-h-[500px] md:max-h-[650px]"
               >
-                <CustomerLoginForm />
+                {({ closeDialog }) => (
+                  <CustomerLoginForm
+                    closeDialog={closeDialog}
+                    setIsLogin={setIsLogin}
+                  />
+                )}
               </Dialog>
             )}
             <div className="flex items-center gap-1 cursor-pointer hover:opacity-80">

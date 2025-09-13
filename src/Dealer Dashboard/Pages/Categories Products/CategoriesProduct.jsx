@@ -87,7 +87,7 @@ function CategoriesProduct() {
           alt="productLisiting"
           className="w-full h-72 object-cover relative"
         />
-        <h1 className="flex flex-col md:text-6xl text-4xl font-semibold text-white absolute top-56 md:left-20 left-5 gap-4">
+        <h1 className="flex flex-col md:text-6xl text-4xl font-semibold text-white absolute top-96 md:top-56 md:left-20 left-5 gap-4">
           Category
           <span className="text-xl">
             {title?.toUpperCase()} | {specificCategory?.products?.length || 0}{" "}

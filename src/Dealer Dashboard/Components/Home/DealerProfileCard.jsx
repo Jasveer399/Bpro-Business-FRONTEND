@@ -153,8 +153,8 @@ function DealerProfileCard() {
       <ProgrammaticDialog
         isOpen={isLoginDialogOpen}
         onClose={handleCloseDialog}
-        width="w-[35%]"
-        height="h-[55%]"
+        width="w-[95%] sm:w-[85%] md:w-[70%] lg:w-[50%] xl:w-[35%] max-w-md"
+        height="h-[95%] sm:h-[90%] md:h-[80%] lg:h-[70%] xl:h-[60%] max-h-[455px] sm:max-h-[500px] md:max-h-[650px]"
         closeOnBackdrop={true}
         showCloseButton={false}
       >

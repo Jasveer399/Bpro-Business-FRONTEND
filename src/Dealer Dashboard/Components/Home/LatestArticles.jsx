@@ -41,7 +41,7 @@ const LatestArticles = ({ articles, status }) => {
       </ul>
       {articles && articles.length > 0 && (
         <Link
-          to="/Allblogs"
+          to="/blogs"
           className="block mt-4 text-secondary font-semibold hover:underline"
         >
           Read More...
